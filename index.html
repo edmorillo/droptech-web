@@ -25,17 +25,20 @@
     <!-- NAVBAR -->
     <header>
         <nav class="navbar">
+            <!-- 1. CAMBIO: Logo y nombre clickables para volver al inicio -->
             <div class="logo">
-    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
-        <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
-        <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <span>Computadoras Lei</span>
-</div>
+                <a href="#" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
+                    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Computadoras Lei</span>
+                </a>
+            </div>
             <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -92,9 +95,9 @@
         <h2>Lista de Precios</h2>
         <p class="prices-subtitle">Valores referenciales para soluciones en taller y soporte programado.</p>
         
-        <!-- CORRECCIÓN DEL ENLACE DE DESCARGA PDF -->
+        <!-- 2. CAMBIO: Arreglo de la carpeta a minúscula "assets" para evitar error de archivo vacío en Linux/Vercel -->
         <div class="pdf-container">
-            <a href="Assets/pdf/Listado_Julio_01-07-2026.pdf" download="Listado_Precios_Lei.pdf" class="btn-pdf">
+            <a href="assets/pdf/Listado_Julio_01-07-2026.pdf" download="Listado_Precios_Lei.pdf" class="btn-pdf">
                 <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
             </a>
         </div>
@@ -163,14 +166,14 @@
     <!-- COMPONENTES Y PRODUCTOS -->
     <section class="products" id="productos">
         <span class="section-tag">Hardware Seleccionado</span>
-        <!-- Cambiá esto de prueba -->
-<h2>Equipos y Accesorios Disponibles 🚀</h2>
+        <h2>Equipos y Accesorios Disponibles 🚀</h2>
         <p class="products-subtitle">Disponemos de componentes nuevos y usados premium con garantía de funcionamiento.</p>
         <div class="products-grid">
+            <!-- 3. CAMBIO: Limpieza de texto en Notebooks Usadas (Sin "Dell" ni "corporativos") -->
             <div class="product-card">
                 <div class="prod-icon">💻</div>
-                <h3>Notebooks Dell Usadas</h3>
-                <p>Equipos corporativos seleccionados, testeados al 100% y en excelente estado estético y operativo.</p>
+                <h3>Notebooks Usadas</h3>
+                <p>Equipos seleccionados, testeados al 100% y en excelente estado estético y operativo.</p>
                 <span class="prod-badge">Premium Usado</span>
             </div>
             <div class="product-card">
