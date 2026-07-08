@@ -1,249 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropTech | Servicio Técnico Especializado</title>
+    <meta name="description" content="Servicio técnico especializado en reparación y mantenimiento de consolas y PC Gamer.">
 
-    <title>DropTech | Servicio Técnico</title>
-
-    <meta name="description"
-        content="Servicio técnico especializado en reparación y mantenimiento de consolas y PC Gamer.">
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
-
 </head>
-
 <body>
 
-    <!-- ========================= -->
-    <!-- NAVBAR -->
-    <!-- ========================= -->
-
     <header>
-
         <nav class="navbar">
-
-            <div class="logo">
-                🎮 DropTech
-            </div>
-
-            <ul class="menu">
-
+            <div class="logo">🎮 DropTech</div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="menu" id="nav-menu">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#precios">Precios</a></li>
+                <li><a href="#elegirnos">¿Por qué elegirnos?</a></li>
                 <li><a href="#contacto">Contacto</a></li>
-
             </ul>
-
         </nav>
-
     </header>
 
-    <!-- ========================= -->
-    <!-- HERO -->
-    <!-- ========================= -->
-
     <section class="hero" id="inicio">
-
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-
-            <span class="subtitle">
-                SERVICIO TÉCNICO ESPECIALIZADO
-            </span>
-
-            <h1>
-                Reparación Profesional de Consolas
-            </h1>
-
-            <p>
-                PlayStation • Xbox • Nintendo Switch • PC Gamer
-            </p>
-
+            <span class="subtitle">SERVICIO TÉCNICO ESPECIALIZADO</span>
+            <h1>Reparación Profesional de Consolas</h1>
+            <p>PlayStation • Xbox • Nintendo Switch • PC Gamer</p>
             <div class="buttons">
-
-                <a href="#precios" class="btn-primary">
-                    Ver precios
+                <a href="#precios" class="btn-primary">Ver precios</a>
+                <a href="https://wa.me/54911XXXXXXXXXX" target="_blank" class="btn-secondary">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
                 </a>
-
-                <a href="https://wa.me/54911XXXXXXXXXX"
-                    target="_blank"
-                    class="btn-secondary">
-
-                    <i class="fa-brands fa-whatsapp"></i>
-
-                    WhatsApp
-
-                </a>
-
             </div>
-
         </div>
-
     </section>
-
-    <!-- ========================= -->
-    <!-- SERVICIOS -->
-    <!-- ========================= -->
 
     <section class="services" id="servicios">
-
         <h2>Nuestros Servicios</h2>
-
         <div class="cards">
-
             <div class="card">
-
                 <i class="fa-solid fa-gamepad"></i>
-
                 <h3>PlayStation</h3>
-
-                <p>
-                    Reparación, mantenimiento, limpieza y diagnóstico.
-                </p>
-
+                <p>Reparación, mantenimiento, limpieza profunda y diagnóstico preciso de fallas de encendido o lectura.</p>
             </div>
-
             <div class="card">
-
                 <i class="fa-solid fa-tv"></i>
-
                 <h3>Puerto HDMI</h3>
-
-                <p>
-                    Cambio de puerto HDMI con soldadura profesional.
-                </p>
-
+                <p>Cambio e instalación de puertos HDMI con micro-soldadura profesional de alta resistencia estructural.</p>
             </div>
-
             <div class="card">
-
                 <i class="fa-solid fa-screwdriver-wrench"></i>
-
                 <h3>Mantenimiento</h3>
-
-                <p>
-                    Limpieza completa, cambio de pasta térmica y optimización.
-                </p>
-
+                <p>Limpieza completa del sistema de ventilación, cambio de pasta térmica premium y optimización de temperatura.</p>
             </div>
-
         </div>
-
     </section>
-    <script src="js/script.js"></script>
 
-    <!-- ========================= -->
-    <!-- ¿POR QUÉ ELEGIRNOS? -->
-    <!-- ========================= -->
+    <section class="prices" id="precios">
+        <h2>Precios Referenciales</h2>
+        <p class="prices-subtitle">Trabajos garantizados con los mejores componentes del mercado</p>
+        <div class="prices-grid">
+            <div class="price-card">
+                <h3>Mantenimiento Base</h3>
+                <div class="price-value">Consolas</div>
+                <p class="price-description">Limpieza interna completa + cambio de pasta térmica de alta conductividad.</p>
+                <span class="price-tag">Consultar</span>
+            </div>
+            <div class="price-card featured">
+                <div class="badge">Más Solicitado</div>
+                <h3>Cambio HDMI</h3>
+                <div class="price-value">PS4 / PS5 / Xbox</div>
+                <p class="price-description">Reemplazo de puerto dañado por un repuesto original con soldadura reforzada.</p>
+                <span class="price-tag">Consultar</span>
+            </div>
+            <div class="price-card">
+                <h3>PC Gamer Pro</h3>
+                <div class="price-value">Mantenimiento</div>
+                <p class="price-description">Desarmado completo, limpieza de componentes, cambio de pads térmicos y gestión de cables.</p>
+                <span class="price-tag">Consultar</span>
+            </div>
+        </div>
+    </section>
 
-    <section class="about">
-
+    <section class="about" id="elegirnos">
         <h2>¿Por qué elegirnos?</h2>
-
         <div class="about-container">
-
             <div class="about-box">
-
                 <i class="fa-solid fa-shield-halved"></i>
-
                 <h3>Garantía</h3>
-
-                <p>
-                    Todos nuestros trabajos cuentan con garantía.
-                </p>
-
+                <p>Todos nuestros trabajos e intervenciones técnicas cuentan con garantía escrita oficial.</p>
             </div>
-
             <div class="about-box">
-
                 <i class="fa-solid fa-bolt"></i>
-
                 <h3>Rapidez</h3>
-
-                <p>
-                    Diagnóstico rápido y tiempos de reparación reducidos.
-                </p>
-
+                <p>Entendemos tus ganas de jugar. Ofrecemos diagnóstico veloz y tiempos de entrega optimizados.</p>
             </div>
-
             <div class="about-box">
-
                 <i class="fa-solid fa-star"></i>
-
                 <h3>Calidad</h3>
-
-                <p>
-                    Repuestos y herramientas de primera calidad.
-                </p>
-
+                <p>Utilizamos exclusivamente repuestos originales, insumos premium y herramientas de última generación.</p>
             </div>
-
         </div>
-
     </section>
 
-    
-
+    <section class="stats">
+        <div class="stat">
+            <h2>+500</h2>
+            <p>Equipos reparados</p>
+        </div>
+        <div class="stat">
+            <h2>+5</h2>
+            <p>Años de experiencia</p>
+        </div>
+        <div class="stat">
+            <h2>100%</h2>
+            <p>Compromiso</p>
+        </div>
+        <div class="stat">
+            <h2>Postventa</h2>
+            <p>Soporte al cliente</p>
+        </div>
     </section>
 
-<!-- ========================= -->
-<!-- ESTADÍSTICAS -->
-<!-- ========================= -->
+    <section class="contact" id="contacto">
+        <h2>¿Listo para reparar tu equipo?</h2>
+        <p>Traé tu consola o PC y dejala en manos de expertos. Respondemos al toque.</p>
+        <div class="contact-buttons">
+            <a href="https://wa.me/54911XXXXXXXXXX" target="_blank" class="btn-contact-action whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Escribinos por WhatsApp
+            </a>
+            <a href="mailto:contacto@droptech.com" class="btn-contact-action email">
+                <i class="fa-solid fa-envelope"></i> Enviar Correo
+            </a>
+        </div>
+    </section>
 
-<section class="stats">
+    <footer class="footer">
+        <p>&copy; 2026 DropTech. Todos los derechos reservados. Diseñado para gamers.</p>
+    </footer>
 
-    <div class="stat">
-
-        <h2>+500</h2>
-
-        <p>Equipos reparados</p>
-
-    </div>
-
-    <div class="stat">
-
-        <h2>+5</h2>
-
-        <p>Años de experiencia</p>
-
-    </div>
-
-    <div class="stat">
-
-        <h2>100%</h2>
-
-        <p>Compromiso</p>
-
-    </div>
-
-    <div class="stat">
-
-        <h2>Postventa</h2>
-
-        <p>Soporte al cliente</p>
-
-    </div>
-
-</section>
-
-<script src="js/script.js"></script>
-
+    <script src="js/script.js"></script>
 </body>
-
 </html>
