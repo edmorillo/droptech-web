@@ -1,14 +1,12 @@
-console.log("DropTech iniciado correctamente de manera profesional.");
+console.log("Computadoras Lei - Consola de desarrollo iniciada.");
 
-// Código para controlar el menú hamburguesa en celulares
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Control del Menú Hamburguesa (Mobile)
     const menuToggle = document.getElementById("menu-toggle");
     const navMenu = document.getElementById("nav-menu");
 
     menuToggle.addEventListener("click", () => {
         navMenu.classList.toggle("active");
-        
-        // Cambia el icono de barras a una 'X' cuando está activo
         const icon = menuToggle.querySelector("i");
         if (navMenu.classList.contains("active")) {
             icon.className = "fa-solid fa-xmark";
@@ -17,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Cerrar el menú automáticamente al hacer clic en un enlace (en móviles)
+    // Cerrar menú móvil automáticamente al seleccionar sección
     const menuLinks = document.querySelectorAll(".menu a");
     menuLinks.forEach(link => {
         link.addEventListener("click", () => {
@@ -28,3 +26,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// 2. Sistema de Control de Pestañas Interactivas (Tabs de Precios)
+function switchTab(category) {
+    // Remover clase 'active' de todos los bloques de contenido
+    document.querySelectorAll(".tab-content").forEach(content => {
+        content.classList.remove("active");
+    });
+    
+    // Remover clase 'active' de todos los botones de pestañas
+    document.querySelectorAll(".tab-btn").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    // Activar el bloque y el botón seleccionado
+    document.getElementById(`tab-${category}`).classList.add("active");
+    
+    // Buscar el botón correspondiente mediante el evento para marcarlo activo
+    const eventTarget = window.event.target;
+    if(eventTarget) {
+        eventTarget.classList.add("active");
+    }
+}

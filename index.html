@@ -3,23 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DropTech | Servicio Técnico Especializado</title>
-    <meta name="description" content="Servicio técnico especializado en reparación y mantenimiento de consolas y PC Gamer.">
+    <title>Computadoras Lei | Soporte Técnico Premium & Armado de PC</title>
+    <meta name="description" content="Mantenimiento físico de consolas y PC, optimización avanzada de software, instalación de sistemas y venta de hardware seleccionado.">
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+    <!-- CSS -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <header>
         <nav class="navbar">
-            <div class="logo">🎮 DropTech</div>
+            <div class="logo">
+    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+        <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+        <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span>Computadoras Lei</span>
+</div>
             <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -27,131 +41,173 @@
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#precios">Precios</a></li>
-                <li><a href="#elegirnos">¿Por qué elegirnos?</a></li>
+                <li><a href="#productos">Tienda</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- HERO -->
     <section class="hero" id="inicio">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <span class="subtitle">SERVICIO TÉCNICO ESPECIALIZADO</span>
-            <h1>Reparación Profesional de Consolas</h1>
-            <p>PlayStation • Xbox • Nintendo Switch • PC Gamer</p>
+            <span class="subtitle">MANTENIMIENTO & OPTIMIZACIÓN DIGITAL</span>
+            <h1>Potenciamos el rendimiento de tus equipos</h1>
+            <p>Especialistas en software informático, armado de PC Gamer a medida y limpieza profunda de hardware para consolas y computadoras.</p>
             <div class="buttons">
-                <a href="#precios" class="btn-primary">Ver precios</a>
-                <a href="https://wa.me/54911XXXXXXXXXX" target="_blank" class="btn-secondary">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                </a>
+                <a href="#precios" class="btn-primary">Ver Lista de Precios</a>
+                <a href="#productos" class="btn-secondary">Ver Equipos y Accesorios</a>
             </div>
         </div>
     </section>
 
+    <!-- SERVICIOS -->
     <section class="services" id="servicios">
-        <h2>Nuestros Servicios</h2>
+        <span class="section-tag">¿Qué hacemos?</span>
+        <h2>Soluciones Técnicas Profesionales</h2>
         <div class="cards">
             <div class="card">
-                <i class="fa-solid fa-gamepad"></i>
-                <h3>PlayStation</h3>
-                <p>Reparación, mantenimiento, limpieza profunda y diagnóstico preciso de fallas de encendido o lectura.</p>
+                <i class="fa-solid fa-laptop-code"></i>
+                <h3>Soporte de Software</h3>
+                <p>Instalación de Sistemas Operativos, respaldos preventivos (Backup), eliminación definitiva de malware y optimización de inicio.</p>
             </div>
             <div class="card">
-                <i class="fa-solid fa-tv"></i>
-                <h3>Puerto HDMI</h3>
-                <p>Cambio e instalación de puertos HDMI con micro-soldadura profesional de alta resistencia estructural.</p>
+                <i class="fa-solid fa-wind"></i>
+                <h3>Mantenimiento Físico</h3>
+                <p>Limpieza profunda de componentes, desarmado modular y cambio de pasta térmica de alta conductividad para PC, Notebooks y Consolas.</p>
             </div>
             <div class="card">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                <h3>Mantenimiento</h3>
-                <p>Limpieza completa del sistema de ventilación, cambio de pasta térmica premium y optimización de temperatura.</p>
+                <i class="fa-solid fa-computer"></i>
+                <h3>Armado & Upgrades</h3>
+                <p>Ensamblado desde cero de plataformas de oficina y PC Gamer de alta gama. Actualizaciones modulares de componentes clave.</p>
             </div>
         </div>
     </section>
 
+    <!-- PRECIOS INTERACTIVOS -->
     <section class="prices" id="precios">
-        <h2>Precios Referenciales</h2>
-        <p class="prices-subtitle">Trabajos garantizados con los mejores componentes del mercado</p>
-        <div class="prices-grid">
-            <div class="price-card">
-                <h3>Mantenimiento Base</h3>
-                <div class="price-value">Consolas</div>
-                <p class="price-description">Limpieza interna completa + cambio de pasta térmica de alta conductividad.</p>
-                <span class="price-tag">Consultar</span>
+        <span class="section-tag">Transparencia</span>
+        <h2>Lista de Precios</h2>
+        <p class="prices-subtitle">Valores referenciales para soluciones en taller y soporte programado.</p>
+        
+        <!-- CORRECCIÓN DEL ENLACE DE DESCARGA PDF -->
+        <div class="pdf-container">
+            <a href="Assets/pdf/Listado_Julio_01-07-2026.pdf" download="Listado_Precios_Lei.pdf" class="btn-pdf">
+                <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
+            </a>
+        </div>
+
+        <!-- Filtros de Pestañas -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('software')">Software y Sistemas</button>
+            <button class="tab-btn" onclick="switchTab('hardware')">Hardware, Limpieza y Armado</button>
+        </div>
+
+        <!-- Tabla Categoría: SOFTWARE -->
+        <div id="tab-software" class="tab-content active">
+            <div class="table-responsive">
+                <table class="prices-table">
+                    <thead>
+                        <tr>
+                            <th>Servicio / Solución Técnica</th>
+                            <th>Compatibilidad</th>
+                            <th>Precio (ARS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Diagnóstico y revisión general</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.877</td></tr>
+                        <tr><td>Formateo e instalación de Sistema Operativo (Sin Backup)</td><td>PC / Notebook / AIO / Consolas</td><td class="price-cell">$69.569</td></tr>
+                        <tr><td class="highlight-text">Combo Full: Limpieza HW + Formateo + SO + Programas + Backup + Cambio a SSD</td><td>PC / Notebook / AIO / Consolas</td><td class="price-cell-featured">$83.402</td></tr>
+                        <tr><td>Respaldo de datos (Backup) por cada 100GB extras</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.877</td></tr>
+                        <tr><td>Inicialización de equipo nuevo (Configuración + Soft básico)</td><td>PC / Notebook / AIO</td><td class="price-cell">$59.629</td></tr>
+                        <tr><td>Eliminación de virus y malware estructural</td><td>PC / Notebook / AIO</td><td class="price-cell">$35.779</td></tr>
+                        <tr><td>Clonado de almacenamiento (Discos sin errores SMART)</td><td>PC / Notebook / AIO</td><td class="price-cell">$59.629</td></tr>
+                        <tr><td>Clonado de almacenamiento (Discos con errores SMART críticos)</td><td>PC / Notebook / AIO</td><td class="price-cell">$89.446</td></tr>
+                        <tr><td>Reparación de inicio de Windows / Restablecer credenciales</td><td>PC / Notebook / AIO</td><td class="price-cell">$52.514</td></tr>
+                        <tr><td>Asistencia remota por hora (Problemas generales de configuración)</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.820</td></tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="price-card featured">
-                <div class="badge">Más Solicitado</div>
-                <h3>Cambio HDMI</h3>
-                <div class="price-value">PS4 / PS5 / Xbox</div>
-                <p class="price-description">Reemplazo de puerto dañado por un repuesto original con soldadura reforzada.</p>
-                <span class="price-tag">Consultar</span>
-            </div>
-            <div class="price-card">
-                <h3>PC Gamer Pro</h3>
-                <div class="price-value">Mantenimiento</div>
-                <p class="price-description">Desarmado completo, limpieza de componentes, cambio de pads térmicos y gestión de cables.</p>
-                <span class="price-tag">Consultar</span>
+        </div>
+
+        <!-- Tabla Categoría: HARDWARE -->
+        <div id="tab-hardware" class="tab-content">
+            <div class="table-responsive">
+                <table class="prices-table">
+                    <thead>
+                        <tr>
+                            <th>Servicio / Solución Técnica</th>
+                            <th>Compatibilidad</th>
+                            <th>Precio (ARS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Armado integral de PC Básica / Oficina desde cero</td><td>Gabinete PC</td><td class="price-cell">$99.384</td></tr>
+                        <tr><td class="highlight-text">Armado avanzado de PC Gamer de alta performance desde cero</td><td>Gabinete PC</td><td class="price-cell-featured">$153.216</td></tr>
+                        <tr><td>Limpieza física completa + Cambio de pasta térmica estructural</td><td>Gabinete PC</td><td class="price-cell">$33.948</td></tr>
+                        <tr><td>Limpieza física avanzada + Cambio de pasta térmica premium</td><td>Notebook / AIO / Consolas</td><td class="price-cell">$72.113</td></tr>
+                        <tr><td>Reemplazo de componente modular interno individual</td><td>Gabinete PC</td><td class="price-cell">$29.815</td></tr>
+                        <tr><td>Despiece completo y cambio de componentes internos complejos</td><td>Notebook / AIO / Consolas</td><td class="price-cell">$79.507</td></tr>
+                        <tr><td>Reemplazo modular de pantalla</td><td>Notebook</td><td class="price-cell">$49.693</td></tr>
+                        <tr><td>Reemplazo modular de teclado integrado</td><td>Notebook</td><td class="price-cell">$29.815</td></tr>
+                        <tr><td>Reemplazo de cable Flex de video interno</td><td>Notebook</td><td class="price-cell">$59.629</td></tr>
+                        <tr><td>Hard Reset + Reconfiguración limpia de fábrica</td><td>Celulares / Tablets / iPads</td><td class="price-cell">$39.754</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
 
-    <section class="about" id="elegirnos">
-        <h2>¿Por qué elegirnos?</h2>
-        <div class="about-container">
-            <div class="about-box">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h3>Garantía</h3>
-                <p>Todos nuestros trabajos e intervenciones técnicas cuentan con garantía escrita oficial.</p>
+    <!-- COMPONENTES Y PRODUCTOS -->
+    <section class="products" id="productos">
+        <span class="section-tag">Hardware Seleccionado</span>
+        <h2>Equipos y Accesorios a la Venta</h2>
+        <p class="products-subtitle">Disponemos de componentes nuevos y usados premium con garantía de funcionamiento.</p>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="prod-icon">💻</div>
+                <h3>Notebooks Dell Usadas</h3>
+                <p>Equipos corporativos seleccionados, testeados al 100% y en excelente estado estético y operativo.</p>
+                <span class="prod-badge">Premium Usado</span>
             </div>
-            <div class="about-box">
-                <i class="fa-solid fa-bolt"></i>
-                <h3>Rapidez</h3>
-                <p>Entendemos tus ganas de jugar. Ofrecemos diagnóstico veloz y tiempos de entrega optimizados.</p>
+            <div class="product-card">
+                <div class="prod-icon">🧠</div>
+                <h3>Memorias RAM & SSDs</h3>
+                <p>Módulos de memoria RAM de 8GB y 16GB (Nuevas y Usadas Premium) y discos sólidos SSD de alta velocidad.</p>
+                <span class="prod-badge">Nuevas / Usadas</span>
             </div>
-            <div class="about-box">
-                <i class="fa-solid fa-star"></i>
-                <h3>Calidad</h3>
-                <p>Utilizamos exclusivamente repuestos originales, insumos premium y herramientas de última generación.</p>
+            <div class="product-card">
+                <div class="prod-icon">🔌</div>
+                <h3>Hardware & Repuestos</h3>
+                <p>Motherboards multizócalo, teclados, mouses, monitores y auriculares de alta fidelidad para tu setup.</p>
+                <span class="prod-badge">Accesorios</span>
             </div>
         </div>
     </section>
 
-    <section class="stats">
-        <div class="stat">
-            <h2>+500</h2>
-            <p>Equipos reparados</p>
-        </div>
-        <div class="stat">
-            <h2>+5</h2>
-            <p>Años de experiencia</p>
-        </div>
-        <div class="stat">
-            <h2>100%</h2>
-            <p>Compromiso</p>
-        </div>
-        <div class="stat">
-            <h2>Postventa</h2>
-            <p>Soporte al cliente</p>
-        </div>
-    </section>
-
+    <!-- CONTACTO -->
     <section class="contact" id="contacto">
-        <h2>¿Listo para reparar tu equipo?</h2>
-        <p>Traé tu consola o PC y dejala en manos de expertos. Respondemos al toque.</p>
-        <div class="contact-buttons">
-            <a href="https://wa.me/54911XXXXXXXXXX" target="_blank" class="btn-contact-action whatsapp">
-                <i class="fa-brands fa-whatsapp"></i> Escribinos por WhatsApp
+        <h2>¿Necesitás optimizar o armar tu equipo?</h2>
+        <p>Ponete en contacto para coordinar la recepción de tus componentes o consolas. Soporte rápido y directo.</p>
+        <div class="contact-info-placeholder">
+            <p class="pending-notice"><i class="fa-solid fa-circle-info"></i> Canales de comunicación en proceso de activación. ¡Pronto disponibles!</p>
+        </div>
+        <div class="contact-buttons blurred">
+            <a href="#" onclick="return false;" class="btn-contact-action whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp (Próximamente)
             </a>
-            <a href="mailto:contacto@droptech.com" class="btn-contact-action email">
-                <i class="fa-solid fa-envelope"></i> Enviar Correo
+            <a href="#" onclick="return false;" class="btn-contact-action email">
+                <i class="fa-solid fa-envelope"></i> Enviar Correo (Próximamente)
             </a>
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="footer">
-        <p>&copy; 2026 DropTech. Todos los derechos reservados. Diseñado para gamers.</p>
+        <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Buenos Aires, Argentina.</p>
     </footer>
 
+    <!-- SCRIPT -->
     <script src="js/script.js"></script>
 </body>
 </html>

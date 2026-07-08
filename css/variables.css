@@ -1,17 +1,20 @@
 :root {
-    /* Paleta de Colores Oficial DropTech */
-    --color-fondo: #0D1117;
-    --color-navbar: rgba(17, 24, 39, 0.95);
-    --color-tarjeta: #161B22;
-    --color-tarjeta-destacada: #1f2631;
-    --color-primario: #00A8FF;
-    --color-primario-hover: #0087CC;
-    --color-blanco: #FFFFFF;
-    --color-gris: #B8B8B8;
-    --color-gris-oscuro: #8B949E;
+    /* Paleta Tecnológica y Premium (Computadoras Lei) */
+    --color-fondo: #070A0F;
+    --color-navbar: rgba(11, 15, 24, 0.96);
+    --color-tarjeta: #111622;
+    --color-tarjeta-destacada: #182030;
     
-    /* Estilos Globales */
-    --radio: 15px;
+    /* Acento Cyan Eléctrico (Sensación de velocidad y software moderno) */
+    --color-primario: #00F0FF;
+    --color-primario-hover: #00B8CC;
+    --color-blanco: #FFFFFF;
+    --color-gris: #94A3B8;
+    --color-gris-oscuro: #64748B;
+    
+    /* Variables de estructura */
+    --radio: 12px;
     --transicion: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    --sombra: 0 8px 30px rgba(0, 0, 0, 0.5);
+    --sombra: 0 10px 30px rgba(0, 240, 255, 0.05);
+    --sombra-heavy: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
