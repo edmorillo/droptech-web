@@ -745,3 +745,87 @@ h2 {
 .footer {
     background: #0b0f17 !important; /* Pasa a oscuro para el cierre definitivo */
 }
+
+/* ==========================================================================
+   UNIFICACIÓN DE EFECTO HOVER NEÓN (PREMIUM GAMER)
+   ========================================================================== */
+
+/* 1. Aplicamos la transición suave a los Medios de Pago (para que no salte de golpe) */
+.payment-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 2. Efecto Neón para los Medios de Pago al pasar el mouse */
+.payment-item:hover {
+    transform: translateY(-4px);
+    border-color: #00F0FF !important;
+    background: rgba(0, 240, 255, 0.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15) !important;
+}
+
+/* 3. Efecto Neón para las Tarjetas de la Tienda (Product Cards) al pasar el mouse */
+.product-card:hover {
+    transform: translateY(-8px) !important;
+    border-color: #00F0FF !important;
+    background: rgba(0, 240, 255, 0.02) !important;
+    box-shadow: 0 10px 25px rgba(0, 240, 255, 0.15) !important;
+}
+
+/* 4. Efecto Neón para las Tarjetas de Servicios (¿Qué hacemos?) */
+.card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.card:hover {
+    transform: translateY(-8px) !important;
+    border-color: #00F0FF !important;
+    background: rgba(0, 240, 255, 0.02) !important;
+    box-shadow: 0 10px 25px rgba(0, 240, 255, 0.15) !important;
+}
+
+/* ==========================================================================
+   INTERACTIVIDAD DE BOTONES Y TABLAS (ESTILIZADO GAMER)
+   ========================================================================== */
+
+/* Unificamos la transición suave para todos los botones del sitio */
+.btn-primary, .btn-secondary, .btn-pdf, .tab-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Potenciamos el botón principal del Hero */
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.5) !important;
+}
+
+/* Potenciamos el botón secundario del Hero */
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    border-color: #00F0FF !important;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+/* Le damos amor al botón de PDF (Efecto Neón Rojo) */
+.btn-pdf:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 74, 74, 0.08) !important;
+    border-color: #ff4a4a !important;
+    box-shadow: 0 6px 18px rgba(255, 74, 74, 0.25) !important;
+}
+
+/* Efecto para las pestañas de precios cuando pasás el mouse */
+.tab-btn:not(.active):hover {
+    transform: translateY(-2px);
+    border-color: #00F0FF !important;
+    color: #fff !important;
+}
+
+/* Efecto de luz guía en las filas de la tabla de precios */
+.prices-table tbody tr {
+    transition: all 0.25s ease;
+}
+
+.prices-table tbody tr:hover {
+    background: rgba(0, 240, 255, 0.02) !important; /* Fondo cian ultra sutil */
+    box-shadow: inset 4px 0 0 #00F0FF; /* Línea de luz neón a la izquierda de la fila */
+}
