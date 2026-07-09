@@ -1,6 +1,6 @@
 # 💻 Computadoras Lei - Soporte Técnico Premium & Armado de PC
 
-¡Bienvenido al repositorio oficial de **Computadoras Lei**! Esta es una landing page moderna, optimizada e interactiva desarrollada para un taller especializado en soporte técnico de software, mantenimiento profundo de hardware y ensamblado de PCs de alta gama en Buenos Aires, Argentina.
+¡Bienvenido al repositorio oficial de **Computadoras Lei**! Esta es una landing page moderna, optimizada e interactiva desarrollada para un taller especializado en soporte técnico de software, mantenimiento profundo de hardware y ensamblado de PCs de alta gama en Lugano, CABA, Argentina.
 
 Probalo en vivo acá: [computadoraslei.vercel.app](https://computadoraslei.vercel.app)
 
