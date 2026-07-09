@@ -382,18 +382,23 @@ h2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
+    justify-content: center; /* <-- NUEVO: Centra las tarjetas si sobra espacio */
 }
 
 .product-card {
     background: var(--color-tarjeta);
     padding: 40px 30px;
-    border-radius: var(--radio);
+    border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.02);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    transition: var(--transicion);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    
+    width: 100%;
+    max-width: 360px; /* <-- NUEVO: Evita que la tarjeta se haga gigante en monitores grandes */
+    margin: 0 auto;   /* <-- NUEVO: Asegura el centrado individual */
 }
 
 .product-card:hover {
@@ -916,4 +921,225 @@ h2 {
 /* MODIFICACIÓN DE LA SECUENCIA: Forzamos a que Marcas pase a fondo oscuro */
 .brands {
     background: #0b0f17 !important;
+}
+
+/* ==========================================================================
+   ESTILOS DE GALERÍA DE IMÁGENES (LIGHTBOX)
+   ========================================================================== */
+
+/* Contenedor de la foto en la tarjeta */
+.prod-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3; /* <-- MAGIA: Toma la forma perfecta de tu foto */
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.main-prod-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* <-- Volvemos a cover, pero ahora no te va a recortar nada vital */
+    transition: transform 0.4s ease;
+}
+
+/* El cartelito de "Ver galería" que aparece al hacer hover */
+.img-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(7, 10, 15, 0.8); /* Fondo oscuro semitransparente */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #00F0FF;
+    font-size: 1.2rem;
+    font-weight: 600;
+    opacity: 0; /* Oculto por defecto */
+    transition: all 0.3s ease;
+}
+
+.prod-image-container:hover .img-overlay {
+    opacity: 1; /* Aparece al pasar el mouse */
+}
+
+.prod-image-container:hover .main-prod-img {
+    transform: scale(1.05); /* Hace zoom a la foto de fondo */
+}
+
+/* El cuadro negro gigante (Modal) */
+.modal {
+    display: none; /* Oculto hasta que JavaScript lo active */
+    position: fixed;
+    z-index: 9999; /* Por encima de todo */
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 80vh;
+}
+
+#modal-img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+/* Botones del Modal */
+.close-modal {
+    position: absolute;
+    top: 20px; right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-modal:hover { color: #00F0FF; }
+
+.gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 240, 255, 0.1);
+    color: #00F0FF;
+    border: 1px solid #00F0FF;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.gallery-btn:hover {
+    background: #00F0FF;
+    color: #000;
+}
+
+.prev-btn { left: -60px; }
+.next-btn { right: -60px; }
+
+.gallery-counter {
+    margin-top: 20px;
+    color: #00F0FF;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Ajuste en celulares para las flechas */
+@media (max-width: 768px) {
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+}
+
+/*============================*/
+/* LIGHTBOX GALLERY (PRODUCTOS) */
+/*============================*/
+.prod-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3; /* <-- MAGIA: Toma la forma perfecta de tu foto */
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.main-prod-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* <-- Volvemos a cover, pero ahora no te va a recortar nada vital */
+    transition: transform 0.4s ease;
+}
+
+.img-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(7, 10, 15, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #00F0FF;
+    font-size: 1.2rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.prod-image-container:hover .img-overlay { opacity: 1; }
+.prod-image-container:hover .main-prod-img { transform: scale(1.05); }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 80vh;
+}
+
+#modal-img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px; right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.close-modal:hover { color: #00F0FF; }
+
+.gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 240, 255, 0.1);
+    color: #00F0FF;
+    border: 1px solid #00F0FF;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.gallery-btn:hover { background: #00F0FF; color: #000; }
+
+.prev-btn { left: -60px; }
+.next-btn { right: -60px; }
+
+.gallery-counter { margin-top: 20px; color: #00F0FF; font-weight: bold; letter-spacing: 2px; }
+
+@media (max-width: 768px) {
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
 }

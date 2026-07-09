@@ -48,3 +48,87 @@ function switchTab(category) {
         eventTarget.classList.add("active");
     }
 }
+
+// ==========================================
+// GALERÍA DE IMÁGENES (LIGHTBOX PARA PRODUCTOS)
+// ==========================================
+
+// Acá guardamos las fotos reales de cada compu
+const galleries = {
+    'dell-5490': [
+        'assets/img/dell-1.jpg',
+        'assets/img/dell-2.jpg',
+        'assets/img/dell-3.jpg'
+    ],
+    'hp-440': [
+        'assets/img/hp-1.jpg',
+        'assets/img/hp-2.jpg'
+    ]
+};
+
+let currentGallery = [];
+let currentIndex = 0;
+
+// Abrir la galería
+function openGallery(galleryId) {
+    currentGallery = galleries[galleryId];
+    if (!currentGallery || currentGallery.length === 0) return;
+    
+    currentIndex = 0;
+    updateModalImage();
+    document.getElementById('gallery-modal').style.display = 'flex';
+}
+
+// Cerrar la galería
+function closeGallery() {
+    document.getElementById('gallery-modal').style.display = 'none';
+}
+
+// Cambiar de imagen (flechas)
+function changeImage(direction) {
+    currentIndex += direction;
+    
+    if (currentIndex >= currentGallery.length) {
+        currentIndex = 0;
+    } else if (currentIndex < 0) {
+        currentIndex = currentGallery.length - 1;
+    }
+    
+    updateModalImage();
+}
+
+// Actualizar la foto en pantalla
+function updateModalImage() {
+    const modalImg = document.getElementById('modal-img');
+    if (modalImg) {
+        modalImg.src = currentGallery[currentIndex];
+        document.getElementById('current-img-num').innerText = currentIndex + 1;
+        document.getElementById('total-img-num').innerText = currentGallery.length;
+    }
+}
+
+// Cerrar haciendo clic afuera
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('gallery-modal');
+    if (event.target === modal) {
+        closeGallery();
+    }
+});
+
+// Cerrar la galería automáticamente si se presiona la tecla Escape (Esc)
+window.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('gallery-modal');
+    // Si la tecla presionada es Escape y el modal está visible, lo cerramos
+    if (event.key === 'Escape' && modal.style.display === 'flex') {
+        closeGallery();
+    }
+});
+
+
+
+
+
+
+
+
+

@@ -20,7 +20,7 @@
 </head>
 <body>
 
-    <!-- NAVBAR (Con enlaces de retorno a index.html) -->
+    <!-- NAVBAR -->
     <header>
         <nav class="navbar">
             <div class="logo">
@@ -55,38 +55,98 @@
 
         <div class="products-grid">
             
-            <!-- EQUIPO 1 -->
+            <!-- EQUIPO 1: DELL -->
             <div class="product-card">
-                <!-- Acá irá la etiqueta <img> con tu foto. Por ahora dejamos el recuadro con un icono -->
-                <div style="width: 100%; height: 220px; background: rgba(0, 240, 255, 0.03); border: 1px dashed rgba(0, 240, 255, 0.2); border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-laptop" style="font-size: 60px; color: #00F0FF; opacity: 0.5;"></i>
+                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
+                <div class="prod-image-container" onclick="openGallery('dell-5490')">
+                    <img src="assets/img/dell-1.jpg" alt="Dell 5490" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
                 </div>
                 
                 <h3>Dell Latitude 5490</h3>
-                
-                <!-- Lista de especificaciones técnicas -->
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
                     <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
                     <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
                     <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
                 </ul>
-
                 <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                     $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
                 </div>
-                
-                <!-- Botón de consulta específico para este equipo -->
                 <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                     <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
                 </a>
             </div>
 
-            <!-- EQUIPO 2 (Para que veas cómo se arma la grilla) -->
+
+<!-- EQUIPO 2: test -->
             <div class="product-card">
-                <div style="width: 100%; height: 220px; background: rgba(0, 240, 255, 0.03); border: 1px dashed rgba(0, 240, 255, 0.2); border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-laptop" style="font-size: 60px; color: #00F0FF; opacity: 0.5;"></i>
+                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
+                <div class="prod-image-container" onclick="openGallery('dell-test')">
+                    <img src="assets/img/dell-1.jpg" alt="Dell 5490" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
                 </div>
+                
+                <h3>Dell Latitude test</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
+                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                </a>
+            </div>
+
+
+            <!-- EQUIPO 3: Asus -->
+            <div class="product-card">
+                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
+                <div class="prod-image-container" onclick="openGallery('Asus')">
+                    <img src="assets/img/dell-1.jpg" alt="Dell 5490" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+                
+                <h3>Asus VivoBook</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
+                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                </a>
+            </div>
+
+
+            <!-- EQUIPO 2: HP -->
+            <div class="product-card">
+                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
+                <div class="prod-image-container" onclick="openGallery('hp-440')">
+                    <img src="https://via.placeholder.com/600x400/0b0f17/00F0FF?text=HP+ProBook+(Principal)" alt="HP ProBook 440 G6" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+
                 <h3>HP ProBook 440 G6</h3>
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i7 8va Gen</li>
@@ -110,7 +170,17 @@
         <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
     </footer>
 
-    <!-- SCRIPT (Importante para que ande el menú en el celu) -->
+    <!-- GALERÍA LIGHTBOX OCULTA -->
+    <div id="gallery-modal" class="modal">
+        <span class="close-modal" onclick="closeGallery()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Imagen ampliada">
+            <button class="gallery-btn prev-btn" onclick="changeImage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="gallery-btn next-btn" onclick="changeImage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="gallery-counter"><span id="current-img-num">1</span> / <span id="total-img-num">3</span></div>
+    </div>
+
     <script src="js/script.js"></script>
 </body>
 </html>
