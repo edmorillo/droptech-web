@@ -1163,3 +1163,41 @@ h2 {
     box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
     outline: none;
 }
+
+/*============================*/
+/* BOTÓN FLOTANTE WHATSAPP    */
+/*============================*/
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 35px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 9999; /* Asegura que siempre esté por encima de todo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #1ebe57;
+}
+
+/* Efecto de latido suave */
+@keyframes pulse-wa {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+.whatsapp-float {
+    animation: pulse-wa 2s infinite;
+}
