@@ -88,10 +88,22 @@ const galleries = {
         'assets/img/dell-2.jpg',
         'assets/img/dell-3.jpg'
     ],
-    'hp-440': [
+    'dell-5490-equipo2': [
         'assets/img/dell-1.jpg', // (Acordate de cambiar estas fotos por las de la HP después)
-        'assets/img/dell-2.jpg'
+        'assets/img/dell-2.jpg'  
+    ],
+
+    'Asus-equipo3': [
+        'assets/img/dell-1.jpg',
+        'assets/img/dell-2.jpg',
+        'assets/img/dell-3.jpg'
+    ],
+    'hp-440-equipo4': [
+        'assets/img/dell-1.jpg', // (Acordate de cambiar estas fotos por las de la HP después)
+        'assets/img/dell-2.jpg'  
     ]
+
+    
 };
 
 let currentGallery = [];
@@ -160,5 +172,46 @@ window.addEventListener('keydown', function(event) {
         } else if (event.key === 'ArrowLeft')  {
             changeImage(-1); // Foto anterior
         }
+    }
+});
+
+// ==========================================
+// 4. MODAL DE VIDEOS EN PANTALLA COMPLETA
+// ==========================================
+
+function openVideoModal(videoSrc) {
+    const modal = document.getElementById('video-modal');
+    const player = document.getElementById('modal-video-player');
+    
+    if (modal && player) {
+        player.src = videoSrc; // Carga el video seleccionado
+        modal.style.display = 'flex'; // Muestra la pantalla negra
+    }
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('video-modal');
+    const player = document.getElementById('modal-video-player');
+    
+    if (modal && player) {
+        player.pause(); // Frena el video
+        player.src = ''; // Vacía el reproductor para que no siga sonando
+        modal.style.display = 'none'; // Oculta la pantalla
+    }
+}
+
+// Sumamos el video a la función de "cerrar con Escape"
+window.addEventListener('keydown', function(event) {
+    const videoModal = document.getElementById('video-modal');
+    if (event.key === 'Escape' && videoModal && videoModal.style.display === 'flex') {
+        closeVideoModal();
+    }
+});
+
+// Sumamos el video a la función de "cerrar tocando afuera"
+window.addEventListener('click', function(event) {
+    const videoModal = document.getElementById('video-modal');
+    if (videoModal && event.target === videoModal) {
+        closeVideoModal();
     }
 });
