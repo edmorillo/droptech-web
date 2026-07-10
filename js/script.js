@@ -1,33 +1,61 @@
 console.log("Computadoras Lei - Consola de desarrollo iniciada.");
 
+// ==========================================
+// 1. MENÚ MÓVIL (NAVBAR) MEJORADO
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Control del Menú Hamburguesa (Mobile)
     const menuToggle = document.getElementById("menu-toggle");
     const navMenu = document.getElementById("nav-menu");
 
-    menuToggle.addEventListener("click", () => {
-        navMenu.classList.toggle("active");
-        const icon = menuToggle.querySelector("i");
-        if (navMenu.classList.contains("active")) {
-            icon.className = "fa-solid fa-xmark";
-        } else {
-            icon.className = "fa-solid fa-bars";
+    // Función maestra: Cierra el menú y resetea la "X" a las 3 rayitas
+    function closeMobileMenu() {
+        if (navMenu && navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            if (menuToggle) {
+                menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        }
+    }
+
+    if (menuToggle && navMenu) {
+        // Cuando tocás el botón hamburguesa o la X
+        menuToggle.addEventListener('click', (event) => {
+            event.stopPropagation(); // Frena el click para que no active el "tocar afuera" accidentalmente
+            navMenu.classList.toggle('active');
+            
+            // Cambia el ícono de rayitas a X y viceversa
+            if (navMenu.classList.contains('active')) {
+                menuToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        });
+    }
+
+    // Cierra al tocar cualquier enlace del menú
+    document.querySelectorAll('.menu a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Cierra al tocar en cualquier parte de la pantalla (afuera del menú)
+    document.addEventListener('click', (event) => {
+        if (navMenu && navMenu.classList.contains('active')) {
+            // Si tocaste en cualquier lado que NO sea el menú ni el botón, lo cierra
+            if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                closeMobileMenu();
+            }
         }
     });
 
-    // Cerrar menú móvil automáticamente al seleccionar sección
-    const menuLinks = document.querySelectorAll(".menu a");
-    menuLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            if (navMenu.classList.contains("active")) {
-                navMenu.classList.remove("active");
-                menuToggle.querySelector("i").className = "fa-solid fa-bars";
-            }
-        });
+    // Cierra al deslizar la pantalla (scroll)
+    window.addEventListener('scroll', () => {
+        closeMobileMenu();
     });
 });
 
-// 2. Sistema de Control de Pestañas Interactivas (Tabs de Precios)
+// ==========================================
+// 2. SISTEMA DE PESTAÑAS (TABS DE PRECIOS)
+// ==========================================
 function switchTab(category) {
     // Remover clase 'active' de todos los bloques de contenido
     document.querySelectorAll(".tab-content").forEach(content => {
@@ -50,7 +78,7 @@ function switchTab(category) {
 }
 
 // ==========================================
-// GALERÍA DE IMÁGENES (LIGHTBOX PARA PRODUCTOS)
+// 3. GALERÍA DE IMÁGENES (LIGHTBOX PARA PRODUCTOS)
 // ==========================================
 
 // Acá guardamos las fotos reales de cada compu
@@ -61,7 +89,7 @@ const galleries = {
         'assets/img/dell-3.jpg'
     ],
     'hp-440': [
-        'assets/img/dell-1.jpg',
+        'assets/img/dell-1.jpg', // (Acordate de cambiar estas fotos por las de la HP después)
         'assets/img/dell-2.jpg'
     ]
 };
@@ -119,15 +147,7 @@ window.addEventListener('click', function(event) {
 // EXTRAS: EXPERIENCIA DE USUARIO (UX)
 // ==========================================
 
-// 1. Cierra el menú móvil automáticamente si deslizas el dedo (scroll)
-window.addEventListener('scroll', () => {
-    const navMenu = document.getElementById('nav-menu');
-    if (navMenu && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-    }
-});
-
-// 2. Control de la galería con el teclado (Esc y Flechas)
+// Control de la galería con el teclado (Esc y Flechas)
 window.addEventListener('keydown', function(event) {
     const modal = document.getElementById('gallery-modal');
     
@@ -142,12 +162,3 @@ window.addEventListener('keydown', function(event) {
         }
     }
 });
-
-
-
-
-
-
-
-
-
