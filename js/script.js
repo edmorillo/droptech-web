@@ -157,7 +157,7 @@ window.addEventListener('keydown', function(event) {
             closeGallery(); // Cierra con Esc
         } else if (event.key === 'ArrowRight') {
             changeImage(1); // Siguiente foto
-        } else if (event.key === 'ArrowLeft') {
+        } else if (event.key === 'ArrowLeft')  {
             changeImage(-1); // Foto anterior
         }
     }
