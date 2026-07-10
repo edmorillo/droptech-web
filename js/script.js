@@ -61,8 +61,8 @@ const galleries = {
         'assets/img/dell-3.jpg'
     ],
     'hp-440': [
-        'assets/img/hp-1.jpg',
-        'assets/img/hp-2.jpg'
+        'assets/img/dell-1.jpg',
+        'assets/img/dell-2.jpg'
     ]
 };
 
@@ -115,12 +115,31 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// Cerrar la galería automáticamente si se presiona la tecla Escape (Esc)
+// ==========================================
+// EXTRAS: EXPERIENCIA DE USUARIO (UX)
+// ==========================================
+
+// 1. Cierra el menú móvil automáticamente si deslizas el dedo (scroll)
+window.addEventListener('scroll', () => {
+    const navMenu = document.getElementById('nav-menu');
+    if (navMenu && navMenu.classList.contains('active')) {
+        navMenu.classList.remove('active');
+    }
+});
+
+// 2. Control de la galería con el teclado (Esc y Flechas)
 window.addEventListener('keydown', function(event) {
     const modal = document.getElementById('gallery-modal');
-    // Si la tecla presionada es Escape y el modal está visible, lo cerramos
-    if (event.key === 'Escape' && modal.style.display === 'flex') {
-        closeGallery();
+    
+    // Solo actuamos si el cuadro negro de la galería está abierto
+    if (modal && modal.style.display === 'flex') {
+        if (event.key === 'Escape') {
+            closeGallery(); // Cierra con Esc
+        } else if (event.key === 'ArrowRight') {
+            changeImage(1); // Siguiente foto
+        } else if (event.key === 'ArrowLeft') {
+            changeImage(-1); // Foto anterior
+        }
     }
 });
 
