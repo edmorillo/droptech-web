@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware y Accesorios | Computadoras Lei</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
+                    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Computadoras Lei</span>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="menu" id="nav-menu">
+                <li><a href="index.html#inicio">Inicio</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="index.html#productos" style="color: #00F0FF;">Volver a Tienda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="products" style="margin-top: 80px; padding-top: 60px; min-height: 80vh;">
+        <span class="section-tag">Setup Profesional</span>
+        <h2>Hardware & Repuestos</h2>
+        <p class="products-subtitle">Motherboards, periféricos y repuestos de alta fidelidad para el armado de tu setup.</p>
+
+        <div class="products-grid">
+            
+            <div class="product-card">
+                <div class="prod-image-container" onclick="openGallery('mother-1')">
+                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Motherboard" alt="Motherboard" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+                
+                <h3>Motherboard Gigabyte AM4</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Socket: AMD AM4</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> Soporte RAM: DDR4 Dual Channel</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-plug" style="width: 25px; color: #00F0FF;"></i> Puertos: M.2, USB 3.2, HDMI</li>
+                    <li><i class="fa-solid fa-shield-halved" style="width: 25px; color: #00F0FF;"></i> Estado: Excelente</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
+                </a>
+            </div>
+
+            <div class="product-card">
+                <div class="prod-image-container" onclick="openGallery('teclado-1')">
+                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Teclado+RGB" alt="Teclado Gamer" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+
+                <h3>Teclado Mecánico RGB</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-keyboard" style="width: 25px; color: #00F0FF;"></i> Tipo: Mecánico (Switches Red)</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-palette" style="width: 25px; color: #00F0FF;"></i> Iluminación: RGB Personalizable</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-globe" style="width: 25px; color: #00F0FF;"></i> Distribución: Español (con Ñ)</li>
+                    <li><i class="fa-solid fa-gamepad" style="width: 25px; color: #00F0FF;"></i> Ideal para: Gaming / Programación</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
+    </footer>
+
+    <div id="gallery-modal" class="modal">
+        <span class="close-modal" onclick="closeGallery()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Imagen ampliada">
+            <button class="gallery-btn prev-btn" onclick="changeImage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="gallery-btn next-btn" onclick="changeImage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="gallery-counter"><span id="current-img-num">1</span> / <span id="total-img-num">3</span></div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

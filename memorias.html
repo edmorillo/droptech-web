@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorias RAM y SSDs | Computadoras Lei</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
+                    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                        <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Computadoras Lei</span>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="menu" id="nav-menu">
+                <li><a href="index.html#inicio">Inicio</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="index.html#productos" style="color: #00F0FF;">Volver a Tienda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="products" style="margin-top: 80px; padding-top: 60px; min-height: 80vh;">
+        <span class="section-tag">Potenciá tu equipo</span>
+        <h2>Memorias RAM y SSDs</h2>
+        <p class="products-subtitle">Componentes testeados para llevar la velocidad de tu PC o Notebook al siguiente nivel.</p>
+
+        <div class="products-grid">
+            
+            <div class="product-card">
+                <div class="prod-image-container" onclick="openGallery('ram-1')">
+                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=RAM+16GB" alt="Memoria RAM" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+                
+                <h3>Memoria RAM 16GB DDR4</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> Capacidad: 16GB</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-bolt" style="width: 25px; color: #00F0FF;"></i> Frecuencia: 3200MHz</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-desktop" style="width: 25px; color: #00F0FF;"></i> Formato: DIMM (Para PC)</li>
+                    <li><i class="fa-solid fa-check-circle" style="width: 25px; color: #00F0FF;"></i> Estado: Nuevo / Sellado</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
+                </a>
+            </div>
+
+            <div class="product-card">
+                <div class="prod-image-container" onclick="openGallery('ssd-1')">
+                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=SSD+500GB" alt="Disco Sólido" class="main-prod-img">
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Ver galería</span>
+                    </div>
+                </div>
+
+                <h3>Disco Sólido SSD 500GB</h3>
+                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> Capacidad: 500GB</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Tipo: M.2 NVMe</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-rocket" style="width: 25px; color: #00F0FF;"></i> Velocidad: Ultra Rápida</li>
+                    <li><i class="fa-solid fa-check-circle" style="width: 25px; color: #00F0FF;"></i> Instalación: Opcional en taller</li>
+                </ul>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                </div>
+                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
+    </footer>
+
+    <div id="gallery-modal" class="modal">
+        <span class="close-modal" onclick="closeGallery()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Imagen ampliada">
+            <button class="gallery-btn prev-btn" onclick="changeImage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="gallery-btn next-btn" onclick="changeImage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="gallery-counter"><span id="current-img-num">1</span> / <span id="total-img-num">3</span></div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
