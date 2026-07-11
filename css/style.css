@@ -1203,3 +1203,50 @@ h2 {
 .whatsapp-float {
     animation: pulse-wa 2s infinite;
 }
+
+
+/*============================*/
+/* REPRODUCTOR DE VIDEO MODAL */
+/*============================*/
+
+/* 1. Achicamos la caja para que no ocupe toda la pantalla en el celu */
+.video-modal-content {
+    position: relative;
+    width: 90%; /* Deja aire por los costados */
+    max-width: 400px; /* En PC no se va a hacer gigante */
+    margin: 0 auto;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* 2. El video: contenido y no gigante */
+#modal-video-player {
+    width: 100%;
+    max-height: 55vh; /* CLAVE: Nunca ocupa más de la mitad de la pantalla */
+    object-fit: cover;
+    border-radius: 12px;
+    background: #000;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+    outline: none;
+}
+
+/* 3. La X flotante arriba del video para que no se pierda */
+.video-close {
+    position: absolute;
+    top: -50px; /* Sube la X afuera del video */
+    right: 0px;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.6);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 1px solid #00F0FF;
+    z-index: 10000; /* Asegura que la X quede por encima de todo */
+}
