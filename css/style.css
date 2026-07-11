@@ -1228,16 +1228,31 @@ h2 {
     outline: none;
 }
 
-/* La X original para PC y iPad (esquina superior derecha de la pantalla) */
+/* La X para PC y iPad (Flotante en la esquina de la pantalla y con estilo premium) */
 .video-close {
-    position: absolute;
-    top: -40px;
-    right: 0;
+    position: fixed; /* La despegamos del video y la fijamos a la pantalla del navegador */
+    top: 30px;
+    right: 40px;
     color: #fff;
-    font-size: 40px;
+    font-size: 35px;
     font-weight: bold;
     cursor: pointer;
-    z-index: 10000;
+    z-index: 100000;
+    background: rgba(0, 0, 0, 0.8); /* Círculo oscuro para que resalte */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #00F0FF; /* Borde neón */
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por encima en la PC */
+.video-close:hover {
+    background: #00F0FF;
+    color: #000;
 }
 
 
