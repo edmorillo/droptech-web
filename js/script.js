@@ -215,3 +215,49 @@ window.addEventListener('click', function(event) {
         closeVideoModal();
     }
 });
+
+// --- AGREGAR ESTO AL FINAL DE LA SECCIÓN DE VIDEOS ---
+
+// Detectar deslizamiento hacia abajo (Swipe Down) para cerrar en celulares
+let touchStartY = 0;
+let touchEndY = 0;
+
+const videoModalElement = document.getElementById('video-modal');
+
+if (videoModalElement) {
+    videoModalElement.addEventListener('touchstart', function(event) {
+        // Guarda el punto exacto donde el usuario apoya el dedo
+        touchStartY = event.changedTouches[0].screenY;
+    }, { passive: true });
+
+    videoModalElement.addEventListener('touchend', function(event) {
+        // Guarda el punto donde el usuario levanta el dedo
+        touchEndY = event.changedTouches[0].screenY;
+        
+        // Si el dedo se movió hacia abajo más de 60 píxeles, cerramos el video
+        if (touchEndY - touchStartY > 60) {
+            closeVideoModal();
+        }
+    }, { passive: true });
+}
+
+// ==========================================
+// FIX: Evita el salto loco de pantalla al actualizar en celulares
+// ==========================================
+if ('scrollRestoration' in history) {
+    // Le dice al navegador que maneje el scroll de forma manual y precisa
+    history.scrollRestoration = 'manual';
+}
+
+// Cuando la página termina de cargar completamente, lo ubica en su lugar exacto
+window.addEventListener('load', () => {
+    const currentScroll = sessionStorage.getItem('savedScrollPosition');
+    if (currentScroll) {
+        window.scrollTo(0, parseInt(currentScroll, 10));
+    }
+});
+
+// Guarda la posición real antes de que la página se reinicie
+window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('savedScrollPosition', window.scrollY);
+});
