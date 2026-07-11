@@ -185,10 +185,8 @@ function openVideoModal(videoSrc) {
         player.src = videoSrc;
         modal.style.display = 'flex';
         
-        // Reproduce automáticamente (el 'muted' en el HTML permite que esto funcione en celulares)
-        setTimeout(() => {
-            player.play().catch(e => console.log("Bloqueado por el celular:", e));
-        }, 100);
+        // Forzamos el play de respaldo por si el navegador se duerme
+        player.play().catch(e => console.log("Auto-reproducción asistida", e));
     }
 }
 
@@ -222,21 +220,19 @@ window.addEventListener('click', function(event) {
 // ==========================================
 // SWIPE DOWN (Deslizar hacia abajo para cerrar)
 // ==========================================
-const videoModal = document.getElementById('video-modal');
-let touchStartY = 0;
+const videoModalSection = document.getElementById('video-modal');
+let touchStartPointY = 0;
 
-if (videoModal) {
-    // Registra dónde apoyás el dedo
-    videoModal.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
+if (videoModalSection) {
+    videoModalSection.addEventListener('touchstart', (e) => {
+        touchStartPointY = e.touches[0].clientY;
     }, { passive: true });
 
-    // Detecta el movimiento en tiempo real
-    videoModal.addEventListener('touchmove', (e) => {
+    videoModalSection.addEventListener('touchmove', (e) => {
         let currentY = e.touches[0].clientY;
         
-        // Si el dedo bajó más de 70 píxeles, cerramos automáticamente
-        if (currentY - touchStartY > 70) {
+        // Si el usuario desliza el dedo hacia abajo más de 70px, se cierra
+        if (currentY - touchStartPointY > 70) {
             closeVideoModal();
         }
     }, { passive: true });

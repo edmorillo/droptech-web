@@ -328,7 +328,16 @@
     <div id="video-modal" class="modal">
         <span class="close-modal" onclick="closeVideoModal()">&times;</span>
         <div class="modal-content" style="max-width: 900px; width: 100%; padding: 0 10px;">
-            <video id="modal-video-player" src="" controls playsinline muted autoplay style="width: 100%; max-height: 80vh; object-fit: contain; background: #000; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.2); outline: none;"></video>
+            <video id="modal-video-player" 
+                   src="" 
+                   controls 
+                   autoplay 
+                   muted 
+                   loop 
+                   playsinline 
+                   webkit-playsinline 
+                   style="width: 100%; max-height: 75vh; object-fit: contain; background: #000; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.2); outline: none;">
+            </video>
         </div>
     </div>
 
