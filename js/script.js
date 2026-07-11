@@ -174,7 +174,7 @@ window.addEventListener('keydown', function(event) {
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS (MODO YOUTUBE MÓVIL)
+// 4. MODAL DE VIDEOS (VERSIÓN DEFINITIVA MOBILE)
 // ==========================================
 
 function openVideoModal(videoSrc) {
@@ -185,19 +185,10 @@ function openVideoModal(videoSrc) {
         player.src = videoSrc;
         modal.style.display = 'flex';
         
-        // 1. Forzar reproducción (Evita el bloqueo de los celulares)
+        // Reproduce automáticamente (el 'muted' en el HTML permite que esto funcione en celulares)
         setTimeout(() => {
-            player.play().catch(error => console.log("El navegador pide interactuar primero", error));
-        }, 150); // Le damos un mini respiro para que cargue
-
-        // 2. Comportamiento YouTube: Forzar Pantalla Completa Nativa en Celulares
-        if (window.innerWidth <= 768) {
-            if (player.requestFullscreen) {
-                player.requestFullscreen(); // Android
-            } else if (player.webkitEnterFullscreen) { 
-                player.webkitEnterFullscreen(); // iPhone / iOS
-            }
-        }
+            player.play().catch(e => console.log("Bloqueado por el celular:", e));
+        }, 100);
     }
 }
 
@@ -206,28 +197,10 @@ function closeVideoModal() {
     const player = document.getElementById('modal-video-player');
     
     if (modal && player) {
-        if (document.fullscreenElement) {
-            document.exitFullscreen().catch(err => console.log(err));
-        }
         player.pause();
         player.src = '';
         modal.style.display = 'none';
     }
-}
-
-// Escuchar si el usuario cierra la pantalla nativa (Android) para ocultar el fondo negro
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        closeVideoModal();
-    }
-});
-
-// Escuchar si el usuario cierra la pantalla nativa en iPhone
-const playerTarget = document.getElementById('modal-video-player');
-if (playerTarget) {
-    playerTarget.addEventListener('webkitendfullscreen', () => {
-        closeVideoModal();
-    });
 }
 
 // Cerrar con Escape en PC
@@ -238,13 +211,36 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-// Cerrar tocando afuera
+// Cerrar tocando afuera del video (fondo negro)
 window.addEventListener('click', function(event) {
     const videoModal = document.getElementById('video-modal');
     if (videoModal && event.target === videoModal) {
         closeVideoModal();
     }
 });
+
+// ==========================================
+// SWIPE DOWN (Deslizar hacia abajo para cerrar)
+// ==========================================
+const videoModal = document.getElementById('video-modal');
+let touchStartY = 0;
+
+if (videoModal) {
+    // Registra dónde apoyás el dedo
+    videoModal.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    // Detecta el movimiento en tiempo real
+    videoModal.addEventListener('touchmove', (e) => {
+        let currentY = e.touches[0].clientY;
+        
+        // Si el dedo bajó más de 70 píxeles, cerramos automáticamente
+        if (currentY - touchStartY > 70) {
+            closeVideoModal();
+        }
+    }, { passive: true });
+}
 
 // ==========================================
 // FIX: Evita el salto loco de pantalla al actualizar en celulares
