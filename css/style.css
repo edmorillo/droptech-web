@@ -1205,48 +1205,65 @@ h2 {
 }
 
 
-/*============================*/
-/* REPRODUCTOR DE VIDEO MODAL */
-/*============================*/
+/*==================================================*/
+/* REPRODUCTOR DE VIDEO MODAL (DISEÑO INTELIGENTE)  */
+/*==================================================*/
 
-/* 1. Achicamos la caja para que no ocupe toda la pantalla en el celu */
+/* --- 1. CONFIGURACIÓN PARA PANTALLAS GRANDES (Notebook y iPad) --- */
 .video-modal-content {
     position: relative;
-    width: 90%; /* Deja aire por los costados */
-    max-width: 400px; /* En PC no se va a hacer gigante */
+    width: 90%;
+    max-width: 900px; /* <--- En PC y iPad mantiene su tamaño gigante original */
     margin: 0 auto;
     background: transparent;
-    box-shadow: none;
 }
 
-/* 2. El video: contenido y no gigante */
 #modal-video-player {
     width: 100%;
-    max-height: 55vh; /* CLAVE: Nunca ocupa más de la mitad de la pantalla */
-    object-fit: cover;
-    border-radius: 12px;
+    max-height: 80vh; /* <--- Ocupa el 80% del alto en pantallas grandes */
+    object-fit: contain;
+    border-radius: 8px;
     background: #000;
     box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
     outline: none;
 }
 
-/* 3. La X flotante arriba del video para que no se pierda */
+/* La X original para PC y iPad (esquina superior derecha de la pantalla) */
 .video-close {
     position: absolute;
-    top: -50px; /* Sube la X afuera del video */
-    right: 0px;
+    top: -40px;
+    right: 0;
     color: #fff;
-    font-size: 35px;
+    font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.6);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    border: 1px solid #00F0FF;
-    z-index: 10000; /* Asegura que la X quede por encima de todo */
+    z-index: 10000;
+}
+
+
+/* --- 2. REGLAS EXCLUSIVAS PARA CELULARES (Pantallas menores a 768px) --- */
+@media (max-width: 768px) {
+    .video-modal-content {
+        max-width: 360px; /* <--- Achica la caja SOLO en celulares */
+    }
+
+    #modal-video-player {
+        max-height: 50vh; /* <--- Limita el alto SOLO en celulares */
+        border-radius: 12px;
+    }
+
+    /* La X flotante redonda que te funcionó bien en el celu */
+    .video-close {
+        top: -50px;
+        right: 10px;
+        font-size: 30px;
+        background: rgba(0, 0, 0, 0.6);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #00F0FF;
+    }
 }
