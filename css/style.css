@@ -1296,3 +1296,28 @@ h2 {
     opacity: 1;
     transform: translateY(0);
 }
+
+/*=====================================*/
+/* EFECTO CASCADA PARA TARJETAS REVEAL */
+/*=====================================*/
+
+/* Retraso para la primera tarjeta de cada fila */
+.cards .card:nth-child(1),
+.products-grid .product-card:nth-child(1),
+.why-us-grid .why-card:nth-child(1) { 
+    transition-delay: 0s; 
+}
+
+/* Retraso para la segunda tarjeta */
+.cards .card:nth-child(2),
+.products-grid .product-card:nth-child(2),
+.why-us-grid .why-card:nth-child(2) { 
+    transition-delay: 0.15s; 
+}
+
+/* Retraso para la tercera tarjeta */   
+.cards .card:nth-child(3),
+.products-grid .product-card:nth-child(3),
+.why-us-grid .why-card:nth-child(3) { 
+    transition-delay: 0.3s; 
+}   
