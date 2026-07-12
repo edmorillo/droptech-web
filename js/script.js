@@ -258,3 +258,27 @@ window.addEventListener('load', () => {
 window.addEventListener('beforeunload', () => {
     sessionStorage.setItem('savedScrollPosition', window.scrollY);
 });
+
+// ==========================================
+// 5. ANIMACIONES AL SCROLLEAR (EFECTO APPLE)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    // Configuramos el observador
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            // Si el elemento entra en la pantalla...
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active'); // Arranca la animación
+                observer.unobserve(entry.target);     // ¡CLAVE! Lo desvincula para que no vuelva a pasar
+            }
+        });
+    }, {
+        threshold: 0.15, // Se activa cuando asoma un 15% del elemento
+        rootMargin: "0px 0px -50px 0px" // Le da un poco de respiro antes de aparecer
+    });
+
+    // Buscamos todo lo que tenga la clase 'reveal' y lo ponemos a observar
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+});

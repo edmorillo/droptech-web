@@ -1282,3 +1282,17 @@ h2 {
         border: 1px solid #00F0FF;
     }
 }
+
+/*============================*/
+/* ANIMACIONES SCROLL REVEAL  */
+/*============================*/
+.reveal {
+    opacity: 0;
+    transform: translateY(40px); /* Un salto más cortito y sutil */
+    transition: all 0.9s cubic-bezier(0.25, 1, 0.5, 1); /* Curva de velocidad estilo Apple */
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
