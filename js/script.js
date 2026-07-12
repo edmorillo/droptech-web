@@ -239,24 +239,37 @@ if (videoModalSection) {
 }
 
 // ==========================================
-// FIX: Evita el salto loco de pantalla al actualizar en celulares
+// FIX MEJORADO: Manejo de scroll entre páginas
 // ==========================================
 if ('scrollRestoration' in history) {
-    // Le dice al navegador que maneje el scroll de forma manual y precisa
     history.scrollRestoration = 'manual';
 }
 
-// Cuando la página termina de cargar completamente, lo ubica en su lugar exacto
 window.addEventListener('load', () => {
-    const currentScroll = sessionStorage.getItem('savedScrollPosition');
-    if (currentScroll) {
-        window.scrollTo(0, parseInt(currentScroll, 10));
+    // 1. Si venimos de un enlace con # (ej: index.html#productos), vamos a esa sección
+    if (window.location.hash) {
+        const targetSection = document.querySelector(window.location.hash);
+        if (targetSection) {
+            // Un micro-retraso para asegurar que la página ya dibujó todo antes de bajar
+            setTimeout(() => {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+    } 
+    // 2. Si no hay #, restauramos el scroll PERO identificando de qué página es
+    else {
+        const pagePath = window.location.pathname;
+        const currentScroll = sessionStorage.getItem('scroll_' + pagePath);
+        if (currentScroll) {
+            window.scrollTo(0, parseInt(currentScroll, 10));
+        }
     }
 });
 
-// Guarda la posición real antes de que la página se reinicie
+// Guardamos la posición asociándola al nombre de la página actual
 window.addEventListener('beforeunload', () => {
-    sessionStorage.setItem('savedScrollPosition', window.scrollY);
+    const pagePath = window.location.pathname;
+    sessionStorage.setItem('scroll_' + pagePath, window.scrollY);
 });
 
 // ==========================================
