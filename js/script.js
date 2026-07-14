@@ -295,3 +295,65 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(el);
     });
 });
+
+// =========================================================================
+// 6. CONEXIÓN A SUPABASE (LA MAGIA DE LA BASE DE DATOS)
+// =========================================================================
+
+// ACÁ PEGÁ TUS CLAVES (Dejalas adentro de las comillas simples)
+const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
+const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C'; 
+
+// Inicializamos el motor de la base de datos
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Función para ir a buscar los precios a tu tabla
+async function cargarPreciosDinamicos() {
+    const tabla = document.getElementById('tabla-precios-supabase');
+    
+    // Si no estamos en el index.html (donde está la tabla), no hacemos nada
+    if (!tabla) return;
+
+    try {
+        // Pedimos todos los datos de la tabla 'precios' que creaste el otro día
+        const { data, error } = await db.from('precios').select('*');
+
+        if (error) throw error; // Si hay error, lo atajamos en el catch abajo
+
+        // Si la tabla está vacía (todavía no cargaste nada en Supabase)
+        if (data.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #a0aec0; padding: 20px;">No hay precios cargados todavía. Agregalos desde tu panel.</td></tr>';
+            return;
+        }
+
+        // Si hay datos, limpiamos el "Cargando..." y dibujamos las filas reales
+        tabla.innerHTML = ''; 
+
+        data.forEach(item => {
+            // Formateamos el número para que tenga el punto de miles (Ej: 19.877)
+            const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
+            
+            // Creamos la fila HTML idéntica a tu diseño
+            const fila = `
+                <tr>
+                    <td>${item.servicio}</td>
+                    <td>${item.compatibilidad}</td>
+                    <td class="price-cell">$${precioLindo}</td>
+                </tr>
+            `;
+            tabla.innerHTML += fila;
+        });
+
+    } catch (err) {
+        console.error("Error al traer los precios de Supabase:", err);
+        tabla.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #ff4a4a; padding: 20px;">Error de conexión con la base de datos.</td></tr>';
+    }
+}
+
+// Apenas la página carga, ejecutamos la función para que llene la tabla
+document.addEventListener("DOMContentLoaded", () => {
+    // Si el objeto 'supabase' existe (porque pusimos el link en el HTML), cargamos los precios
+    if (typeof supabase !== 'undefined') {
+        cargarPreciosDinamicos();
+    }
+});

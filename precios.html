@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console | Computadoras Lei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Estilos basados en tu diseño Premium Gamer */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #070A0F; color: #fff; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #111622; padding: 40px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 240, 255, 0.05); }
+        h1 { text-align: center; color: #00F0FF; margin-bottom: 30px; font-weight: 800; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94A3B8; font-size: 14px; font-weight: 500; }
+        input { width: 100%; padding: 14px; border-radius: 8px; background: #0b0f17; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #00F0FF; box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); }
+        
+        .btn { background: #00F0FF; color: #070A0F; padding: 14px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #00B8CC; transform: translateY(-2px); }
+        
+        .btn-delete { background: rgba(255, 74, 74, 0.1); color: #ff4a4a; padding: 8px 14px; border-radius: 6px; border: 1px solid #ff4a4a; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; }
+        .btn-delete:hover { background: #ff4a4a; color: #fff; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 50px; background: #0b0f17; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 18px 20px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        th { color: #fff; background: #171e2c; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        td { font-size: 14px; color: #94A3B8; }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+        
+        .toast { position: fixed; top: 20px; right: 20px; background: #00ff66; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: 700; display: none; z-index: 999; box-shadow: 0 5px 15px rgba(0, 255, 102, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-check"></i> Precio guardado con éxito</div>
+
+    <div class="container">
+        <h1><i class="fa-solid fa-terminal"></i> Console Precios</h1>
+        
+        <form id="form-precios">
+            <div class="form-group">
+                <label>Servicio o Solución Técnica</label>
+                <input type="text" id="servicio" placeholder="Ej: Diagnóstico y revisión general" required>
+            </div>
+            <div class="form-group">
+                <label>Compatibilidad</label>
+                <input type="text" id="compatibilidad" placeholder="Ej: PC / Notebook / AIO" required>
+            </div>
+            <div class="form-group">
+                <label>Precio (ARS) - Escribir sin puntos ni signos</label>
+                <input type="number" id="precio" placeholder="Ej: 19877" required>
+            </div>
+            <button type="submit" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Subir a la Base de Datos</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Compatibilidad</th>
+                    <th>Precio</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-admin">
+                <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Tus llaves reales extraídas de tu captura
+        const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
+
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 1. Función para Cargar los precios en la tablita de abajo
+        async function cargarPrecios() {
+            const tabla = document.getElementById('tabla-admin');
+            
+            // Pedimos los datos ordenados por ID
+            const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
+            
+            if (error) {
+                tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar. Revisá tu conexión.</td></tr>';
+                return;
+            }
+
+            if (data.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">Tu base de datos está vacía. Agregá tu primer precio arriba ☝️</td></tr>';
+                return;
+            }
+
+            tabla.innerHTML = ''; // Limpiamos el cargando
+            
+            // Dibujamos las filas
+            data.forEach(item => {
+                const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
+                tabla.innerHTML += `
+                    <tr>
+                        <td style="color:#fff; font-weight:500;">${item.servicio}</td>
+                        <td>${item.compatibilidad}</td>
+                        <td style="color:#00F0FF; font-weight:600;">$${precioFormateado}</td>
+                        <td><button class="btn-delete" onclick="borrarPrecio(${item.id})"><i class="fa-solid fa-trash"></i> Borrar</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 2. Función para Agregar un precio nuevo a Supabase
+        document.getElementById('form-precios').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que la página parpadee al enviar
+            
+            const servicio = document.getElementById('servicio').value;
+            const compatibilidad = document.getElementById('compatibilidad').value;
+            const precio = document.getElementById('precio').value;
+
+            // Mandamos los datos a la tabla 'precios'
+            const { error } = await db.from('precios').insert([
+                { servicio: servicio, compatibilidad: compatibilidad, precio: parseInt(precio) }
+            ]);
+
+            if (error) {
+                alert("Error al guardar: " + error.message);
+            } else {
+                mostrarToast(); // Mostramos el cartel verde
+                document.getElementById('form-precios').reset(); // Vaciamos el formulario
+                cargarPrecios(); // Recargamos la tablita para que aparezca el nuevo
+            }
+        });
+
+        // 3. Función para Borrar un precio
+        async function borrarPrecio(id_del_precio) {
+            if(confirm("¿Seguro que querés borrar este precio para siempre?")) {
+                const { error } = await db.from('precios').delete().eq('id', id_del_precio);
+                
+                if (error) {
+                    alert("Error al borrar: " + error.message);
+                } else {
+                    cargarPrecios(); // Recargamos la tablita
+                }
+            }
+        }
+
+        // Función para mostrar el cartelito verde de éxito
+        function mostrarToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000); // Se va a los 3 segundos
+        }
+
+        // Apenas abrimos el panel, ejecutamos la carga
+        cargarPrecios();
+    </script>
+</body>
+</html>

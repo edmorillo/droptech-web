@@ -8,7 +8,7 @@
     <meta name="description" content="Computadoras Lei - Soporte técnico profesional, mantenimiento avanzado de hardware y venta de notebooks seleccionadas en Lugano, CABA.">
     <meta property="og:title" content="Computadoras Lei | Soporte & Hardware">
     <meta property="og:description" content="Potenciamos tu equipo. Especialistas en armado de PC Gamer, limpieza estructural y componentes de alta calidad.">
-    <meta property="og:image" content="assets/img/logo.png"> <!-- <-- ACÁ SE IMPLEMENTA TU LOGO -->
+    <meta property="og:image" content="assets/img/logo.png"> 
     <meta property="og:type" content="website">
     
     <!-- Icono personalizado para la pestaña del navegador (Favicon) -->
@@ -26,13 +26,15 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- CONECTOR OFICIAL DE SUPABASE PARA HTML CLÁSICO -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
     <!-- NAVBAR -->
     <header>
         <nav class="navbar">
-            <!-- 1. CAMBIO: Logo y nombre clickables para volver al inicio -->
             <div class="logo">
                 <a href="#" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
                     <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,7 +104,6 @@
         <h2 class="reveal">Lista de Precios</h2>
         <p class="prices-subtitle">Valores referenciales para soluciones en taller y soporte programado.</p>
         
-        <!-- 2. CAMBIO: Arreglo de la carpeta a minúscula "assets" para evitar error de archivo vacío en Linux/Vercel -->
         <div class="pdf-container reveal">
             <a href="assets/pdf/Listado_Julio_01-07-2026.pdf" download="Listado_Precios_Lei.pdf" class="btn-pdf">
                 <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
@@ -115,7 +116,7 @@
             <button class="tab-btn" onclick="switchTab('hardware')">Hardware, Limpieza y Armado</button>
         </div>
 
-        <!-- Tabla Categoría: SOFTWARE -->
+        <!-- Tabla Categoría: SOFTWARE (CONECTADA A SUPABASE) -->
         <div id="tab-software" class="tab-content active reveal">
             <div class="table-responsive">
                 <table class="prices-table">
@@ -126,17 +127,12 @@
                             <th>Precio (ARS)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td>Diagnóstico y revisión general</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.877</td></tr>
-                        <tr><td>Formateo e instalación de Sistema Operativo (Sin Backup)</td><td>PC / Notebook / AIO / Consolas</td><td class="price-cell">$69.569</td></tr>
-                        <tr><td class="highlight-text">Combo Full: Limpieza HW + Formateo + SO + Programas + Backup + Cambio a SSD</td><td>PC / Notebook / AIO / Consolas</td><td class="price-cell-featured">$83.402</td></tr>
-                        <tr><td>Respaldo de datos (Backup) por cada 100GB extras</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.877</td></tr>
-                        <tr><td>Inicialización de equipo nuevo (Configuración + Soft básico)</td><td>PC / Notebook / AIO</td><td class="price-cell">$59.629</td></tr>
-                        <tr><td>Eliminación de virus y malware estructural</td><td>PC / Notebook / AIO</td><td class="price-cell">$35.779</td></tr>
-                        <tr><td>Clonado de almacenamiento (Discos sin errores SMART)</td><td>PC / Notebook / AIO</td><td class="price-cell">$59.629</td></tr>
-                        <tr><td>Clonado de almacenamiento (Discos con errores SMART críticos)</td><td>PC / Notebook / AIO</td><td class="price-cell">$89.446</td></tr>
-                        <tr><td>Reparación de inicio de Windows / Restablecer credenciales</td><td>PC / Notebook / AIO</td><td class="price-cell">$52.514</td></tr>
-                        <tr><td>Asistencia remota por hora (Problemas generales de configuración)</td><td>PC / Notebook / AIO</td><td class="price-cell">$19.820</td></tr>
+                    <tbody id="tabla-precios-supabase">
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -176,7 +172,6 @@
         <h2 class="reveal">Equipos y Accesorios Disponibles 🚀</h2>
         <p class="products-subtitle">Disponemos de componentes nuevos y usados premium con garantía de funcionamiento.</p>
         <div class="products-grid">
-            <!-- 3. CAMBIO: Limpieza de texto en Notebooks Usadas (Sin "Dell" ni "corporativos") -->
             <div class="product-card reveal">
                 <div class="prod-icon">💻</div>
                 <h3>Notebooks Usadas</h3>
@@ -187,15 +182,13 @@
                 <div class="prod-icon">🧠</div>
                 <h3>Memorias RAM & SSDs</h3>
                 <p>Módulos de memoria RAM de 8GB y 16GB (Nuevas y Usadas Premium) y discos sólidos SSD de alta velocidad.</p>
-                <!-- Cambiá el span por esto: -->
-<a href="memorias.html" class="prod-badge" style="text-decoration: none;">Nuevas / Usadas</a>
+                <a href="memorias.html" class="prod-badge" style="text-decoration: none;">Nuevas / Usadas</a>
             </div>
             <div class="product-card reveal">
                 <div class="prod-icon">🔌</div>
                 <h3>Hardware & Repuestos</h3>
                 <p>Motherboards multizócalo, teclados, mouses, monitores y auriculares de alta fidelidad para tu setup.</p>
-                <!-- Cambiá el span por esto: -->
-<a href="accesorios.html" class="prod-badge" style="text-decoration: none;">Accesorios</a>
+                <a href="accesorios.html" class="prod-badge" style="text-decoration: none;">Accesorios</a>
             </div>
         </div>
     </section>
@@ -227,10 +220,9 @@
 <section class="work-videos" id="videos">
     <span class="section-tag">El taller por dentro</span>
     <h2 class="reveal">Nuestros Trabajos en Acción</h2>
-    <p class="videos-subtitle">Mirá de cerca cómo cuidamos, limpiamos y potenciamos cada equipo que pasa por nuestras manos.</p>
+    <p class="videos-subtitle">Mirá de cerca cómo cuidamos, limpiamos y potenciamos cada equipo que pasa por hands.</p>
     
     <div class="videos-grid">
-        <!-- Video 1 -->
         <div class="video-card reveal">
             <div class="video-wrapper" onclick="openVideoModal('assets/videos/Limpieza_PC.mp4')">
                 <video src="assets/videos/Limpieza_PC.mp4" autoplay loop muted playsinline></video>
@@ -245,7 +237,6 @@
             </div>
         </div>
         
-        <!-- Video 2 -->
         <div class="video-card reveal">
             <div class="video-wrapper" onclick="openVideoModal('assets/videos/PC_Gamer.mp4')">
                 <video src="assets/videos/PC_Gamer.mp4" autoplay loop muted playsinline></video>
