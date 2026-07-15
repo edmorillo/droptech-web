@@ -49,30 +49,20 @@ function switchTab(category) {
 }
 
 // ==========================================
-// 3. GALERÍA DE IMÁGENES (LIGHTBOX)
+// 3. GALERÍA DE IMÁGENES (LIGHTBOX MODIFICADO)
 // ==========================================
-const galleries = {
-    'dell-5490': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg', 'assets/img/dell-3.jpg'],
-    'dell-5490-equipo2': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg'],
-    'Asus-equipo3': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg', 'assets/img/dell-3.jpg'],
-    'hp-440-equipo4': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg']
-};
-
 let currentGallery = [];
 let currentIndex = 0;
 
-// Para galerías fijas (Si las usás en otro lado)
-function openGallery(galleryId) {
-    currentGallery = galleries[galleryId];
-    if (!currentGallery || currentGallery.length === 0) return;
-    currentIndex = 0;
-    updateModalImage();
-    document.getElementById('gallery-modal').style.display = 'flex';
-}
-
-// NUEVO: Para abrir la foto individual de la Notebook dinámica
-function openGalleryDinamic(imgUrl) {
-    currentGallery = [imgUrl]; // Crea una mini galería con 1 sola foto
+// Esta función ahora lee las imágenes que separamos con comas
+function openGalleryDinamic(imgString) {
+    // Si hay texto, lo partimos por la coma para crear un listado de fotos. Si no, ponemos la genérica.
+    if (imgString && imgString.trim() !== '') {
+        currentGallery = imgString.split(',');
+    } else {
+        currentGallery = ['https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium'];
+    }
+    
     currentIndex = 0;
     updateModalImage();
     document.getElementById('gallery-modal').style.display = 'flex';
@@ -251,20 +241,21 @@ async function cargarNotebooksDinamicas() {
         data.forEach((item, index) => {
             const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
             
-            // Si te olvidás de poner imagen, te pone una foto genérica linda para que no se rompa el diseño
-            const imagenSrc = item.imagen && item.imagen.trim() !== '' ? item.imagen : 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
+            // Extraemos la primera foto para que sea la portada (Si subió muchas)
+            let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
+            if (item.imagen && item.imagen.trim() !== '') {
+                imagenPortada = item.imagen.split(',')[0];
+            }
             
-            // Creamos el mensaje de WhatsApp pre-armado
             const mensajeWs = encodeURIComponent(`Hola Lei! 👋 Me interesa la notebook ${item.titulo} que publicaste a $${precioLindo}. ¿Tenés stock?`);
 
-            // Armamos la tarjeta HTML
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
-                    <div class="prod-image-container" onclick="openGalleryDinamic('${imagenSrc}')">
-                        <img src="${imagenSrc}" alt="${item.titulo}" class="main-prod-img">
+                    <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
+                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay">
                             <i class="fa-solid fa-expand"></i>
-                            <span>Ver imagen</span>
+                            <span>Ver galería</span>
                         </div>
                     </div>
                     
@@ -292,7 +283,6 @@ async function cargarNotebooksDinamicas() {
     }
 }
 
-// Ejecutamos ambas cuando carga cualquier página (el código solo actuará en la página correcta)
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof supabase !== 'undefined') {
         cargarPreciosDinamicos();
@@ -302,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // =========================================================================
-// 7. GENERADOR AUTOMÁTICO DE PDF (1 SOLA PÁGINA)
+// 7. GENERADOR AUTOMÁTICO DE PDF
 // =========================================================================
 async function generarPDF(event) {
     event.preventDefault(); 

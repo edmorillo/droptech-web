@@ -39,6 +39,11 @@
         input, select { width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
         input:focus, select:focus { border-color: #00F0FF; }
         
+        /* Estilo especial para el input de archivos */
+        input[type="file"] { padding: 10px; background: #070A0F; color: #94A3B8; cursor: pointer; }
+        input[type="file"]::-webkit-file-upload-button { background: #00F0FF; color: #000; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; margin-right: 15px; transition: 0.3s; }
+        input[type="file"]::-webkit-file-upload-button:hover { background: #00B8CC; }
+
         .btn { background: #00F0FF; color: #070A0F; padding: 14px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
         .btn:hover { background: #00B8CC; transform: translateY(-2px); }
         
@@ -192,9 +197,13 @@
                             <input type="text" id="nb-bateria" placeholder="Ej: Batería en excelente estado" required>
                         </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Ruta de la Imagen (o link de internet)</label>
-                        <input type="text" id="nb-imagen" placeholder="Ej: assets/img/dell-1.jpg" required>
+                        <label>Subir Fotos del Equipo (Podés seleccionar varias a la vez)</label>
+                        <input type="file" id="nb-imagenes" accept="image/*" multiple>
+                        <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;">
+                            <i class="fa-solid fa-circle-info"></i> Mantené presionado 'Ctrl' al seleccionar para subir varias. La primera será la portada. Si editás el equipo y no subís fotos nuevas, se mantienen las anteriores.
+                        </small>
                     </div>
                     
                     <button type="submit" id="btn-submit-nb" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook</button>
@@ -346,7 +355,7 @@
         }
 
         // ==========================================
-        // 2. LÓGICA DE NOTEBOOKS
+        // 2. LÓGICA DE NOTEBOOKS CON SUBIDA DE FOTOS
         // ==========================================
         let notebooksActuales = [];
         let editandoNbId = null;
@@ -364,8 +373,12 @@
             tabla.innerHTML = ''; 
             notebooksActuales.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
-                // Imagen de respaldo por si escribe mal la ruta
-                const imgFondo = item.imagen ? item.imagen : 'https://via.placeholder.com/50';
+                
+                // Si la columna imagen tiene datos, extraemos la primera foto de la lista (separada por comas)
+                let imgFondo = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
+                if (item.imagen && item.imagen.trim() !== '') {
+                    imgFondo = item.imagen.split(',')[0]; 
+                }
 
                 tabla.innerHTML += `
                     <tr>
@@ -395,7 +408,7 @@
             document.getElementById('nb-almacenamiento').value = item.almacenamiento;
             document.getElementById('nb-bateria').value = item.bateria;
             document.getElementById('nb-precio').value = item.precio;
-            document.getElementById('nb-imagen').value = item.imagen;
+            // El input file NO se puede rellenar por seguridad de los navegadores, por eso aclaramos en el HTML que se mantienen solas
 
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-nb').style.background = '#00ff66';
@@ -413,25 +426,73 @@
 
         document.getElementById('form-notebooks').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = {
-                titulo: document.getElementById('nb-titulo').value,
-                procesador: document.getElementById('nb-procesador').value,
-                ram: document.getElementById('nb-ram').value,
-                almacenamiento: document.getElementById('nb-almacenamiento').value,
-                bateria: document.getElementById('nb-bateria').value,
-                precio: parseInt(document.getElementById('nb-precio').value),
-                imagen: document.getElementById('nb-imagen').value
-            };
+            
+            const btnSubmit = document.getElementById('btn-submit-nb');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo fotos y guardando...';
+            btnSubmit.style.pointerEvents = 'none';
 
-            if (editandoNbId) {
-                const { error } = await db.from('notebooks').update(payload).eq('id', editandoNbId);
-                if (error) { alert("Error al editar: " + error.message); return; }
-            } else {
-                const { error } = await db.from('notebooks').insert([payload]);
-                if (error) { alert("Error al guardar: " + error.message); return; }
+            try {
+                let stringDeImagenes = ""; // Acá guardaremos la lista de URLs separadas por coma
+                const inputArchivos = document.getElementById('nb-imagenes');
+                
+                // Si el usuario seleccionó fotos, las subimos a Supabase Storage
+                if (inputArchivos.files.length > 0) {
+                    let urlsSubidas = [];
+                    for (let i = 0; i < inputArchivos.files.length; i++) {
+                        const archivo = inputArchivos.files[i];
+                        // Inventamos un nombre único para que no se pisen archivos iguales
+                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                        
+                        // Sube la foto al disco duro 'imagenes'
+                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                        if (uploadError) throw uploadError;
+                        
+                        // Pedimos la URL pública de la foto recién subida
+                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                        urlsSubidas.push(urlData.publicUrl);
+                    }
+                    stringDeImagenes = urlsSubidas.join(','); // Unimos todas las URLs con una coma (Ej: url1,url2,url3)
+                } else {
+                    // Si NO seleccionó fotos y estamos editando, mantenemos las viejas
+                    if (editandoNbId) {
+                        const itemViejo = notebooksActuales.find(n => n.id === editandoNbId);
+                        stringDeImagenes = itemViejo.imagen || "";
+                    } else {
+                        // Si es nuevo y no puso foto, no guardamos nada (el front usará la imagen por defecto)
+                        stringDeImagenes = "";
+                    }
+                }
+
+                const payload = {
+                    titulo: document.getElementById('nb-titulo').value,
+                    procesador: document.getElementById('nb-procesador').value,
+                    ram: document.getElementById('nb-ram').value,
+                    almacenamiento: document.getElementById('nb-almacenamiento').value,
+                    bateria: document.getElementById('nb-bateria').value,
+                    precio: parseInt(document.getElementById('nb-precio').value),
+                    imagen: stringDeImagenes
+                };
+
+                if (editandoNbId) {
+                    const { error } = await db.from('notebooks').update(payload).eq('id', editandoNbId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await db.from('notebooks').insert([payload]);
+                    if (error) throw error;
+                }
+
+                mostrarToast(); 
+                cancelarEdicionNotebook(); 
+                cargarNotebooks();
+
+            } catch (err) {
+                console.error(err);
+                alert("Error al procesar la solicitud: " + err.message);
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.style.pointerEvents = 'auto';
             }
-
-            mostrarToast(); cancelarEdicionNotebook(); cargarNotebooks(); 
         });
 
         async function borrarNotebook(id) {
