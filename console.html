@@ -101,7 +101,7 @@
                 </div>
                 <div class="stat-card">
                     <h3>Stock Memorias / SSD</h3>
-                    <div class="number" style="color: #a0aec0;">Próximamente</div>
+                    <div class="number" id="stat-memorias">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>Stock Accesorios</h3>
@@ -230,10 +230,63 @@
 
         <section id="sec-memorias" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-memory"></i> Listado de Memorias y SSDs</h1>
-            <div class="panel-card" style="text-align: center; padding: 60px;">
-                <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #00F0FF; margin-bottom: 20px;"></i>
-                <h3 style="color: #fff; margin-bottom: 10px;">Sección en construcción</h3>
-                <p style="color: #94A3B8;">Acá vas a poder cargar el stock de módulos RAM y discos.</p>
+            
+            <div class="panel-card">
+                <form id="form-memorias">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Título del Componente</label>
+                            <input type="text" id="mem-titulo" placeholder="Ej: Kingston Fury Beast DDR4" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio (ARS) - Solo números</label>
+                            <input type="number" id="mem-precio" placeholder="Ej: 35000" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Componente</label>
+                            <select id="mem-tipo" required>
+                                <option value="" disabled selected>Seleccioná...</option>
+                                <option value="Memoria RAM">Memoria RAM</option>
+                                <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacidad / Frecuencia</label>
+                            <input type="text" id="mem-capacidad" placeholder="Ej: 8GB 3200MHz / 480GB SSD" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <input type="text" id="mem-estado" placeholder="Ej: Nuevo / Usado Premium" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Subir Fotos (Se puede múltiple)</label>
+                            <input type="file" id="mem-imagenes" accept="image/*" multiple>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btn-submit-mem" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente</button>
+                    <button type="button" id="btn-cancelar-mem" onclick="cancelarEdicionMemoria()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+                </form>
+            </div>
+
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Detalles</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-memorias">
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -502,9 +555,141 @@
             }
         }
 
+        // ==========================================
+        // 3. LÓGICA DE MEMORIAS Y SSDs
+        // ==========================================
+        let memoriasActuales = [];
+        let editandoMemId = null;
+
+        async function cargarMemorias() {
+            const tabla = document.getElementById('tabla-admin-memorias');
+            if(!tabla) return;
+            const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
+            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
+
+            memoriasActuales = data || []; 
+            document.getElementById('stat-memorias').innerText = memoriasActuales.length;
+
+            if (memoriasActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay memorias registradas.</td></tr>'; return; }
+
+            tabla.innerHTML = ''; 
+            memoriasActuales.forEach(item => {
+                const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
+                let imgFondo = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Componente';
+                if (item.imagen && item.imagen.trim() !== '') {
+                    imgFondo = item.imagen.split(',')[0]; 
+                }
+
+                tabla.innerHTML += `
+                    <tr>
+                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;">
+                            <img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">
+                            ${item.titulo}
+                        </td>
+                        <td style="font-size: 13px; color: #94A3B8;">${item.tipo} <br> ${item.capacidad} | ${item.estado}</td>
+                        <td style="color:#00F0FF; font-weight:600;">$${precioFormateado}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="prepararEdicionMemoria(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-delete" onclick="borrarMemoria(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function prepararEdicionMemoria(id) {
+            const item = memoriasActuales.find(m => m.id === id);
+            if (!item) return;
+            editandoMemId = id;
+            document.getElementById('mem-titulo').value = item.titulo;
+            document.getElementById('mem-precio').value = item.precio;
+            document.getElementById('mem-tipo').value = item.tipo;
+            document.getElementById('mem-capacidad').value = item.capacidad;
+            document.getElementById('mem-estado').value = item.estado;
+
+            document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
+            document.getElementById('btn-submit-mem').style.background = '#00ff66';
+            document.getElementById('btn-cancelar-mem').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionMemoria() {
+            editandoMemId = null;
+            document.getElementById('form-memorias').reset();
+            document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente';
+            document.getElementById('btn-submit-mem').style.background = '#00F0FF';
+            document.getElementById('btn-cancelar-mem').style.display = 'none';
+        }
+
+        document.getElementById('form-memorias').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-mem');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo fotos...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                let stringDeImagenes = "";
+                const inputArchivos = document.getElementById('mem-imagenes');
+                
+                if (inputArchivos.files.length > 0) {
+                    let urlsSubidas = [];
+                    for (let i = 0; i < inputArchivos.files.length; i++) {
+                        const archivo = inputArchivos.files[i];
+                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                        if (uploadError) throw uploadError;
+                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                        urlsSubidas.push(urlData.publicUrl);
+                    }
+                    stringDeImagenes = urlsSubidas.join(',');
+                } else {
+                    if (editandoMemId) {
+                        const itemViejo = memoriasActuales.find(m => m.id === editandoMemId);
+                        stringDeImagenes = itemViejo.imagen || "";
+                    }
+                }
+
+                const payload = {
+                    titulo: document.getElementById('mem-titulo').value,
+                    tipo: document.getElementById('mem-tipo').value,
+                    capacidad: document.getElementById('mem-capacidad').value,
+                    estado: document.getElementById('mem-estado').value,
+                    precio: parseInt(document.getElementById('mem-precio').value),
+                    imagen: stringDeImagenes
+                };
+
+                if (editandoMemId) {
+                    const { error } = await db.from('memorias').update(payload).eq('id', editandoMemId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await db.from('memorias').insert([payload]);
+                    if (error) throw error;
+                }
+
+                mostrarToast(); cancelarEdicionMemoria(); cargarMemorias();
+
+            } catch (err) {
+                console.error(err);
+                alert("Error al guardar: " + err.message);
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.style.pointerEvents = 'auto';
+            }
+        });
+
+        async function borrarMemoria(id) {
+            if(confirm("¿Seguro que querés borrar este componente?")) {
+                const { error } = await db.from('memorias').delete().eq('id', id);
+                if (error) alert("Error al borrar: " + error.message); else cargarMemorias();
+            }
+        }
+
         // Al iniciar, cargamos todo
         cargarPrecios();
         cargarNotebooks();
+        cargarMemorias();
     </script>
 </body>
 </html>

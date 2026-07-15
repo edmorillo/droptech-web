@@ -287,9 +287,70 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof supabase !== 'undefined') {
         cargarPreciosDinamicos();
         cargarNotebooksDinamicas();
+        cargarMemoriasDinamicas();
     }
 });
 
+
+// C) CARGAR MEMORIAS EN LA TIENDA
+async function cargarMemoriasDinamicas() {
+    const grid = document.getElementById('grid-memorias');
+    if (!grid) return; 
+
+    try {
+        const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (data.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #a0aec0; padding: 40px; font-size: 18px;">No hay memorias o discos en stock por el momento. ¡Consultanos por WhatsApp!</div>';
+            return;
+        }
+
+        grid.innerHTML = ''; 
+
+        data.forEach((item, index) => {
+            const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
+            
+            let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Componente';
+            if (item.imagen && item.imagen.trim() !== '') {
+                imagenPortada = item.imagen.split(',')[0];
+            }
+            
+            // Texto sin emojis ni acentos raros para evitar rombos en el WhatsApp
+            const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el componente " + item.titulo + " (" + item.capacidad + ") que publicaste a $" + precioLindo + ". Tenes stock?");
+
+            const card = `
+                <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
+                    <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
+                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                        <div class="img-overlay">
+                            <i class="fa-solid fa-expand"></i>
+                            <span>Ver galeria</span>
+                        </div>
+                    </div>
+                    
+                    <h3>${item.titulo}</h3>
+                    <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> ${item.tipo}</li>
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> ${item.capacidad}</li>
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-star" style="width: 25px; color: #00F0FF;"></i> ${item.estado}</li>
+                    </ul>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
+                        $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                    </div>
+                    <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                    </a>
+                </div>
+            `;
+            grid.innerHTML += card;
+        });
+
+    } catch (err) {
+        console.error("Error al traer memorias:", err);
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #ff4a4a; padding: 40px;">Hubo un error de conexion al cargar el stock.</div>';
+    }
+}
 
 // =========================================================================
 // 7. GENERADOR AUTOMÁTICO DE PDF
