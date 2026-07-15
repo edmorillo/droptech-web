@@ -247,7 +247,7 @@ async function cargarNotebooksDinamicas() {
                 imagenPortada = item.imagen.split(',')[0];
             }
             
-            const mensajeWs = encodeURIComponent(`Hola Lei! 👋 Me interesa la notebook ${item.titulo} que publicaste a $${precioLindo}. ¿Tenés stock?`);
+            const mensajeWs = encodeURIComponent(`Hola Lei! Me interesa la notebook ${item.titulo} que publicaste a $${precioLindo}. ¿Tenés stock?`);
 
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
@@ -269,7 +269,7 @@ async function cargarNotebooksDinamicas() {
                     <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                         $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
                     </div>
-                    <a href="https://wa.me/5491100000000?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                         <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
                     </a>
                 </div>
