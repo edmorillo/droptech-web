@@ -5,29 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notebooks Usadas | Computadoras Lei</title>
 
-    <!-- CONFIGURACIÓN SEO Y COMPARTIR EN REDES -->
     <meta name="description" content="Computadoras Lei - Soporte técnico profesional, mantenimiento avanzado de hardware y venta de notebooks seleccionadas en Lugano, CABA.">
     <meta property="og:title" content="Computadoras Lei | Soporte & Hardware">
     <meta property="og:description" content="Potenciamos tu equipo. Especialistas en armado de PC Gamer, limpieza estructural y componentes de alta calidad.">
-    <meta property="og:image" content="assets/img/logo.png"> <!-- <-- ACÁ SE IMPLEMENTA TU LOGO -->
+    <meta property="og:image" content="assets/img/logo.png">
     <meta property="og:type" content="website">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
     
-    <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <header>
         <nav class="navbar">
             <div class="logo">
@@ -54,130 +51,23 @@
         </nav>
     </header>
 
-    <!-- GRILLA DE NOTEBOOKS -->
     <section class="products" style="margin-top: 80px; padding-top: 60px; min-height: 80vh;">
         <span class="section-tag">Stock Disponible</span>
         <h2 class="reveal">Notebooks Usadas Premium</h2>
         <p class="products-subtitle">Equipos seleccionados, testeados al 100% y con garantía de funcionamiento.</p>
 
-        <div class="products-grid">
-            
-            <!-- EQUIPO 1: DELL -->
-            <div class="product-card reveal">
-                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
-                <div class="prod-image-container" onclick="openGallery('dell-5490')">
-                    <img src="assets/img/dell-1.jpg" alt="Dell 5490" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-                
-                <h3>Dell Latitude 5490</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
-                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
-                </a>
+        <div class="products-grid" id="grid-notebooks">
+            <div style="grid-column: 1 / -1; text-align: center; color: #00F0FF; padding: 40px;">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 30px; margin-bottom: 15px;"></i>
+                <p>Cargando stock en tiempo real...</p>
             </div>
-
-
-<!-- EQUIPO 2: test -->
-            <div class="product-card reveal">
-                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
-                <div class="prod-image-container" onclick="openGallery('dell-5490-equipo2')">
-                    <img src="assets/img/Gabinete_Gamer.jpg" alt="Dell 5490" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-                
-                <h3>Dell Latitude test</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
-                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
-                </a>
-            </div>
-
-
-            <!-- EQUIPO 3: Asus -->
-            <div class="product-card reveal">
-                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
-                <div class="prod-image-container" onclick="openGallery('Asus-equipo3')">
-                    <img src="assets/img/Hp_Elitebook_840G.jpg" alt="Dell 5490" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-                
-                <h3>Asus VivoBook</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i5 8va Gen</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 8GB RAM DDR4</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 256GB SSD M.2 NVMe</li>
-                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Batería en excelente estado</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $450.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
-                </a>
-            </div>
-
-
-            <!-- EQUIPO 4: HP -->
-            <div class="product-card reveal">
-                <!-- CONTENEDOR DE IMAGEN INTERACTIVA -->
-                <div class="prod-image-container" onclick="openGallery('hp-440-equipo4')">
-                    <img src="assets/img/dell-1.jpg" alt="HP ProBook 440 G6" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-
-                <h3>HP ProBook 440 G6</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Intel Core i7 8va Gen</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> 16GB RAM DDR4</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> 512GB SSD M.2</li>
-                    <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> Cargador Original</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $580.000 <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
-                </a>
-            </div>
-
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
     </footer>
 
-    <!-- GALERÍA LIGHTBOX OCULTA -->
     <div id="gallery-modal" class="modal">
         <span class="close-modal" onclick="closeGallery()">&times;</span>
         <div class="modal-content">
@@ -190,8 +80,7 @@
 
     <script src="js/script.js"></script>
 
-    <!-- Whatsapp Flotante -->|
-     <a href="https://wa.me/5491100000000?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+    <a href="https://wa.me/5491100000000?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 </body>
