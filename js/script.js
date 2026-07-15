@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================================================================
-// 7. GENERADOR AUTOMÁTICO DE PDF V3 (Limpió y Descarga Directa)
+// 7. GENERADOR AUTOMÁTICO DE PDF (1 SOLA PÁGINA)
 // =========================================================================
 async function generarPDF(event) {
     event.preventDefault(); 
@@ -396,97 +396,97 @@ async function generarPDF(event) {
             author: 'Computadoras Lei'
         });
 
-        // --- DISEÑO DEL ENCABEZADO LIMPIO ---
+        // --- DISEÑO DEL ENCABEZADO ---
         
-        // 1. Dibujamos el Logo SVG con código puro (para que sea ultra nítido)
-        doc.setDrawColor(0, 180, 200); // Color cyan oscurecido para impresión
+        doc.setDrawColor(0, 180, 200); 
         doc.setLineWidth(0.8);
         
         // Monitor
         doc.roundedRect(14, 12, 16, 11, 1.5, 1.5, 'S'); 
-        doc.line(18, 23, 16, 28); // Pata izquierda
-        doc.line(16, 28, 28, 28); // Base
-        doc.line(28, 28, 26, 23); // Pata derecha
+        doc.line(18, 23, 16, 28); 
+        doc.line(16, 28, 28, 28); 
+        doc.line(28, 28, 26, 23); 
         
         // Gabinete
         doc.roundedRect(33, 10, 8, 18, 1.5, 1.5, 'S');
-        doc.line(36, 13, 38, 13); // Botón
-        doc.line(36, 16, 38, 16); // Línea detalle
+        doc.line(36, 13, 38, 13); 
+        doc.line(36, 16, 38, 16); 
         
-        // Cruz en el monitor (opcional detalle técnico)
+        // Cruz en el monitor
         doc.setDrawColor(150, 150, 150);
         doc.line(19, 17.5, 25, 17.5);
         doc.line(22, 14.5, 22, 20.5);
 
-        // 2. Título Principal (Alineado a la derecha del logo)
+        // Título Principal
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(22);
         doc.setFont("helvetica", "bold");
         doc.text("COMPUTADORAS LEI", 48, 19);
         
-        // 3. Subtítulo
+        // Subtítulo
         doc.setTextColor(100, 100, 100);
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
         doc.text("Soporte Técnico Premium & Armado de PC", 48, 25);
 
-        // 4. Fecha Actualizada (Alineada a la derecha de la hoja)
+        // Fecha Actualizada
         const fechaHoy = new Date().toLocaleDateString('es-AR');
         doc.setFontSize(9);
         doc.text(`Actualizado el: ${fechaHoy}`, 196, 20, { align: "right" });
 
-        let posicionY = 38; // Arrancamos las tablas más arriba para ahorrar espacio
+        // ACA ESTÁ LA MAGIA DEL TAMAÑO: Arranca más arriba y compactamos
+        let posicionY = 34; 
 
-        // Configuración unificada para que las columnas siempre midan lo mismo
+        // Configuración unificada de anchos
         const columnasDiseño = {
             0: { halign: 'left', cellWidth: 90 },
             1: { halign: 'left', cellWidth: 55 },
-            2: { halign: 'center', cellWidth: 37, fontStyle: 'bold', textColor: [0, 130, 150] } // El precio en color oscuro
+            2: { halign: 'center', cellWidth: 37, fontStyle: 'bold', textColor: [0, 130, 150] }
         };
 
         // --- TABLA DE SOFTWARE ---
         if (softwareData.length > 0) {
-            doc.setTextColor(0, 150, 170); // Título de categoría Cyan
-            doc.setFontSize(13);
+            doc.setTextColor(0, 150, 170); 
+            doc.setFontSize(12); // Un poco más chico
             doc.setFont("helvetica", "bold");
             doc.text("Software y Sistemas", 14, posicionY);
             
             doc.autoTable({
-                startY: posicionY + 4,
+                startY: posicionY + 3, // Más pegado al título
                 head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO (ARS)']],
                 body: softwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
                 columnStyles: columnasDiseño,
-                styles: { fontSize: 9, cellPadding: 4 }, // Menos padding para ahorrar altura
-                alternateRowStyles: { fillColor: [248, 250, 252] } // Gris hiper claro
+                // Reducimos el padding y el tamaño de fuente para que ocupe menos alto
+                styles: { fontSize: 8.5, cellPadding: 2.5 }, 
+                alternateRowStyles: { fillColor: [248, 250, 252] }
             });
-            posicionY = doc.lastAutoTable.finalY + 15; 
+            // Mucho menos margen para la siguiente tabla
+            posicionY = doc.lastAutoTable.finalY + 10; 
         }
 
         // --- TABLA DE HARDWARE ---
         if (hardwareData.length > 0) {
             doc.setTextColor(0, 150, 170);
-            doc.setFontSize(13);
+            doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
             doc.text("Hardware, Limpieza y Armado", 14, posicionY);
             
             doc.autoTable({
-                startY: posicionY + 4,
+                startY: posicionY + 3,
                 head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO (ARS)']],
                 body: hardwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
                 columnStyles: columnasDiseño,
-                styles: { fontSize: 9, cellPadding: 4 },
+                styles: { fontSize: 8.5, cellPadding: 2.5 }, // Mismo ajuste compacto
                 alternateRowStyles: { fillColor: [248, 250, 252] }
             });
         }
 
-        // 5. DESCARGA DIRECTA (La solución definitiva al nombre raro)
         doc.save('Listado_Precios_Computadoras_Lei.pdf');
 
-        // Mostramos un éxito temporal en el botón
         btnPdf.innerHTML = '<i class="fa-solid fa-check"></i> ¡Descarga Exitosa!';
         btnPdf.style.background = '#00ff66';
         btnPdf.style.color = '#000';
@@ -496,7 +496,6 @@ async function generarPDF(event) {
         console.error("Error al generar PDF:", err);
         alert("Hubo un error al generar el PDF. Revisá tu conexión a internet.");
     } finally {
-        // Restauramos el botón a la normalidad después de 2.5 segundos
         setTimeout(() => {
             btnPdf.innerHTML = textoOriginal;
             btnPdf.style.pointerEvents = 'auto';
