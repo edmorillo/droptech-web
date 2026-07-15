@@ -276,96 +276,113 @@ document.addEventListener("DOMContentLoaded", () => {
 // 7. GENERADOR AUTOMÁTICO DE PDF (jsPDF + AutoTable)
 // =========================================================================
 async function generarPDF(event) {
-    event.preventDefault(); // Evita que la página salte para arriba
+    event.preventDefault(); 
     
-    // Cambiamos el texto del botón para avisar que está cargando
     const btnPdf = event.currentTarget;
     const textoOriginal = btnPdf.innerHTML;
     btnPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
     btnPdf.style.pointerEvents = 'none';
 
-    // TRUCO ANTI-BLOQUEADOR: Abrimos la pestaña antes de pedir datos a la base
     const pdfWindow = window.open("", "_blank");
     if (pdfWindow) {
+        // Le forzamos el nombre a la pestaña para que quede más pro
+        pdfWindow.document.title = "Listado de Precios - Computadoras Lei";
         pdfWindow.document.write('<h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#333;">Generando tu lista de precios... ⏳</h2>');
     }
 
     try {
-        // 1. Buscamos los datos actuales en Supabase
         const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
         if (error) throw error;
 
-        // Separamos Software y Hardware
         const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
         const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
 
-        // 2. Creamos el documento PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // 3. Diseño del Encabezado (Banda oscura y título cyan)
-        doc.setFillColor(7, 10, 15); // Fondo oscuro 
-        doc.rect(0, 0, 210, 35, 'F');
+        // Le pasamos el título interno al archivo
+        doc.setProperties({
+            title: 'Listado_Precios_Computadoras_Lei.pdf',
+            author: 'Computadoras Lei'
+        });
+
+        // 3. NUEVO DISEÑO DEL ENCABEZADO (Clean & Neon)
         
-        doc.setTextColor(0, 240, 255); // Color #00F0FF
-        doc.setFontSize(22);
+        // Línea superior cyan para darle el toque premium
+        doc.setFillColor(0, 240, 255);
+        doc.rect(0, 0, 210, 6, 'F');
+        
+        // Título Principal
+        doc.setTextColor(0, 0, 0); // Texto negro
+        doc.setFontSize(26);
         doc.setFont("helvetica", "bold");
-        doc.text("COMPUTADORAS LEI", 105, 18, { align: "center" });
+        doc.text("COMPUTADORAS LEI", 105, 24, { align: "center" });
         
-        doc.setTextColor(255, 255, 255); // Blanco
-        doc.setFontSize(10);
+        // Subtítulo
+        doc.setTextColor(100, 100, 100); // Gris elegante
+        doc.setFontSize(11);
         doc.setFont("helvetica", "normal");
-        doc.text("Soporte Técnico Premium & Armado de PC", 105, 26, { align: "center" });
+        doc.text("Soporte Técnico Premium & Armado de PC", 105, 32, { align: "center" });
 
-        // Fecha actual
+        // Fecha (centrada abajo del título)
         const fechaHoy = new Date().toLocaleDateString('es-AR');
-        doc.setTextColor(100, 100, 100);
-        doc.setFontSize(9);
-        doc.text(`Lista actualizada automáticamente el: ${fechaHoy}`, 14, 45);
+        doc.setFontSize(10);
+        doc.text(`Lista actualizada automáticamente el: ${fechaHoy}`, 105, 40, { align: "center" });
 
-        let posicionY = 50; // Dónde arrancan las tablas
+        let posicionY = 55; 
 
-        // 4. Dibujar Tabla de Software
+        // 4. TABLA DE SOFTWARE
         if (softwareData.length > 0) {
+            // Título de la categoría afuera de la tabla
+            doc.setTextColor(0, 200, 220); // Cyan oscurecido para leerse bien en fondo blanco
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("Software y Sistemas", 105, posicionY, { align: "center" });
+            
             doc.autoTable({
-                startY: posicionY,
-                head: [['Software y Sistemas', 'Compatibilidad', 'Precio (ARS)']],
+                startY: posicionY + 5, // Damos espacio debajo del título
+                head: [['Servicio', 'Compatibilidad', 'Precio (ARS)']], // <-- Cambiado a Servicio
                 body: softwareData,
                 theme: 'grid',
-                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-                styles: { fontSize: 9, cellPadding: 5 },
-                alternateRowStyles: { fillColor: [245, 245, 245] }
+                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { halign: 'left' }, 1: { halign: 'center' }, 2: { halign: 'center', fontStyle: 'bold' } },
+                styles: { fontSize: 10, cellPadding: 6 },
+                alternateRowStyles: { fillColor: [248, 255, 255] }
             });
-            posicionY = doc.lastAutoTable.finalY + 15; 
+            posicionY = doc.lastAutoTable.finalY + 20; 
         }
 
-        // 5. Dibujar Tabla de Hardware
+        // 5. TABLA DE HARDWARE
         if (hardwareData.length > 0) {
+            // Título de la categoría afuera de la tabla
+            doc.setTextColor(0, 200, 220);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("Hardware, Limpieza y Armado", 105, posicionY, { align: "center" });
+            
             doc.autoTable({
-                startY: posicionY,
-                head: [['Hardware, Limpieza y Armado', 'Compatibilidad', 'Precio (ARS)']],
+                startY: posicionY + 5,
+                head: [['Servicio', 'Compatibilidad', 'Precio (ARS)']], // <-- Cambiado a Servicio
                 body: hardwareData,
                 theme: 'grid',
-                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-                styles: { fontSize: 9, cellPadding: 5 },
-                alternateRowStyles: { fillColor: [245, 245, 245] }
+                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { halign: 'left' }, 1: { halign: 'center' }, 2: { halign: 'center', fontStyle: 'bold' } },
+                styles: { fontSize: 10, cellPadding: 6 },
+                alternateRowStyles: { fillColor: [248, 255, 255] }
             });
         }
 
-        // 6. Previsualizar el archivo en la pestaña que abrimos
         if (pdfWindow) {
             pdfWindow.location.href = doc.output('bloburl');
         } else {
-            // Plan B: Si el navegador bloqueó la pestaña igual, se lo descargamos
             doc.save('Listado_Precios_Computadoras_Lei.pdf');
         }
 
     } catch (err) {
         console.error("Error al generar PDF:", err);
-        if (pdfWindow) pdfWindow.close(); // Cerramos la pestaña si hubo error
+        if (pdfWindow) pdfWindow.close();
         alert("Hubo un error al generar el PDF. Revisá tu conexión a internet.");
     } finally {
-        // Restauramos el botón a la normalidad
         btnPdf.innerHTML = textoOriginal;
         btnPdf.style.pointerEvents = 'auto';
     }
