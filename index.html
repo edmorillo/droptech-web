@@ -4,35 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Computadoras Lei | Soporte Técnico Premium & Armado de PC</title>
-    <!-- CONFIGURACIÓN SEO Y COMPARTIR EN REDES -->
     <meta name="description" content="Computadoras Lei - Soporte técnico profesional, mantenimiento avanzado de hardware y venta de notebooks seleccionadas en Lugano, CABA.">
     <meta property="og:title" content="Computadoras Lei | Soporte & Hardware">
     <meta property="og:description" content="Potenciamos tu equipo. Especialistas en armado de PC Gamer, limpieza estructural y componentes de alta calidad.">
     <meta property="og:image" content="assets/img/logo.png"> 
     <meta property="og:type" content="website">
     
-    <!-- Icono personalizado para la pestaña del navegador (Favicon) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
-    <meta name="description" content="Mantenimiento físico de consolas y PC, optimización avanzada de software, instalación de sistemas y venta de hardware seleccionado.">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- CONECTOR OFICIAL DE SUPABASE PARA HTML CLÁSICO -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <header>
         <nav class="navbar">
             <div class="logo">
@@ -61,7 +54,6 @@
         </nav>
     </header>
 
-    <!-- HERO -->
     <section class="hero" id="inicio">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -75,7 +67,6 @@
         </div>
     </section>
 
-    <!-- SERVICIOS -->
     <section class="services" id="servicios">
         <span class="section-tag">¿Qué hacemos?</span>
         <h2 class="reveal">Soluciones Técnicas Profesionales</h2>
@@ -98,25 +89,22 @@
         </div>
     </section>
 
-    <!-- PRECIOS INTERACTIVOS -->
     <section class="prices" id="precios">
         <span class="section-tag">Transparencia</span>
         <h2 class="reveal">Lista de Precios</h2>
         <p class="prices-subtitle">Valores referenciales para soluciones en taller y soporte programado.</p>
         
         <div class="pdf-container reveal">
-            <a href="assets/pdf/Listado_Julio_01-07-2026.pdf" download="Listado_Precios_Lei.pdf" class="btn-pdf">
-                <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
-            </a>
-        </div>
+    <a href="#" onclick="generarPDF(event)" class="btn-pdf">
+        <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
+    </a>
+</div>
 
-        <!-- Filtros de Pestañas -->
         <div class="tabs-container reveal">
             <button class="tab-btn active" onclick="switchTab('software')">Software y Sistemas</button>
             <button class="tab-btn" onclick="switchTab('hardware')">Hardware, Limpieza y Armado</button>
         </div>
 
-        <!-- Tabla Categoría: SOFTWARE (CONECTADA A SUPABASE) -->
         <div id="tab-software" class="tab-content active reveal">
             <div class="table-responsive">
                 <table class="prices-table">
@@ -127,18 +115,13 @@
                             <th>Precio (ARS)</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-precios-supabase">
-                        <tr>
-                            <td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;">
-                                <i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...
-                            </td>
-                        </tr>
+                    <tbody id="tabla-software-dinamica">
+                        <tr><td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Tabla Categoría: HARDWARE -->
         <div id="tab-hardware" class="tab-content reveal">
             <div class="table-responsive">
                 <table class="prices-table">
@@ -149,24 +132,14 @@
                             <th>Precio (ARS)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td>Armado integral de PC Básica / Oficina desde cero</td><td>Gabinete PC</td><td class="price-cell">$99.384</td></tr>
-                        <tr><td class="highlight-text">Armado avanzado de PC Gamer de alta performance desde cero</td><td>Gabinete PC</td><td class="price-cell-featured">$153.216</td></tr>
-                        <tr><td>Limpieza física completa + Cambio de pasta térmica estructural</td><td>Gabinete PC</td><td class="price-cell">$33.948</td></tr>
-                        <tr><td>Limpieza física avanzada + Cambio de pasta térmica premium</td><td>Notebook / AIO / Consolas</td><td class="price-cell">$72.113</td></tr>
-                        <tr><td>Reemplazo de componente modular interno individual</td><td>Gabinete PC</td><td class="price-cell">$29.815</td></tr>
-                        <tr><td>Despiece completo y cambio de componentes internos complejos</td><td>Notebook / AIO / Consolas</td><td class="price-cell">$79.507</td></tr>
-                        <tr><td>Reemplazo modular de pantalla</td><td>Notebook</td><td class="price-cell">$49.693</td></tr>
-                        <tr><td>Reemplazo modular de teclado integrado</td><td>Notebook</td><td class="price-cell">$29.815</td></tr>
-                        <tr><td>Reemplazo de cable Flex de video interno</td><td>Notebook</td><td class="price-cell">$59.629</td></tr>
-                        <tr><td>Hard Reset + Reconfiguración limpia de fábrica</td><td>Celulares / Tablets / iPads</td><td class="price-cell">$39.754</td></tr>
+                    <tbody id="tabla-hardware-dinamica">
+                        <tr><td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <!-- COMPONENTES Y PRODUCTOS -->
     <section class="products" id="productos">
         <span class="section-tag">Hardware Seleccionado</span>
         <h2 class="reveal">Equipos y Accesorios Disponibles 🚀</h2>
@@ -193,113 +166,109 @@
         </div>
     </section>
 
-    <!-- ¿POR QUÉ ELEGIRNOS? -->
-<section class="why-us" id="por-que-elegirnos">
-    <span class="section-tag">Diferencial</span>
-    <h2 class="reveal">¿Por qué elegirnos?</h2>
-    <div class="why-us-grid">
-        <div class="why-card reveal">
-            <div class="why-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
-            <h4>Garantía Escrita</h4>
-            <p>Todos nuestros trabajos de hardware y software cuentan con respaldo y soporte técnico asegurado.</p>
+    <section class="why-us" id="por-que-elegirnos">
+        <span class="section-tag">Diferencial</span>
+        <h2 class="reveal">¿Por qué elegirnos?</h2>
+        <div class="why-us-grid">
+            <div class="why-card reveal">
+                <div class="why-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                <h4>Garantía Escrita</h4>
+                <p>Todos nuestros trabajos de hardware y software cuentan con respaldo y soporte técnico asegurado.</p>
+            </div>
+            <div class="why-card reveal">
+                <div class="why-icon-box"><i class="fa-solid fa-bolt"></i></div>
+                <h4>Presupuestos Rápidos</h4>
+                <p>Evaluación veloz y transparente para que no te quedes sin tu herramienta de trabajo o juego.</p>
+            </div>
+            <div class="why-card reveal">
+                <div class="why-icon-box"><i class="fa-solid fa-microchip"></i></div>
+                <h4>Soporte Especializado</h4>
+                <p>Pasión por el hardware. Utilizamos insumos premium y herramientas de última generación.</p>
+            </div>
         </div>
-        <div class="why-card reveal">
-            <div class="why-icon-box"><i class="fa-solid fa-bolt"></i></div>
-            <h4>Presupuestos Rápidos</h4>
-            <p>Evaluación veloz y transparente para que no te quedes sin tu herramienta de trabajo o juego.</p>
-        </div>
-        <div class="why-card reveal">
-            <div class="why-icon-box"><i class="fa-solid fa-microchip"></i></div>
-            <h4>Soporte Especializado</h4>
-            <p>Pasión por el hardware. Utilizamos insumos premium y herramientas de última generación.</p>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- TRABAJOS EN VIDEO (FASE 3) -->
-<section class="work-videos" id="videos">
-    <span class="section-tag">El taller por dentro</span>
-    <h2 class="reveal">Nuestros Trabajos en Acción</h2>
-    <p class="videos-subtitle">Mirá de cerca cómo cuidamos, limpiamos y potenciamos cada equipo que pasa por hands.</p>
-    
-    <div class="videos-grid">
-        <div class="video-card reveal">
-            <div class="video-wrapper" onclick="openVideoModal('assets/videos/Limpieza_PC.mp4')">
-                <video src="assets/videos/Limpieza_PC.mp4" autoplay loop muted playsinline></video>
-                <div class="img-overlay">
-                    <i class="fa-solid fa-play"></i>
-                    <span>Ver completo</span>
+    <section class="work-videos" id="videos">
+        <span class="section-tag">El taller por dentro</span>
+        <h2 class="reveal">Nuestros Trabajos en Acción</h2>
+        <p class="videos-subtitle">Mirá de cerca cómo cuidamos, limpiamos y potenciamos cada equipo que pasa por nuestras manos.</p>
+        
+        <div class="videos-grid">
+            <div class="video-card reveal">
+                <div class="video-wrapper" onclick="openVideoModal('assets/videos/Limpieza_PC.mp4')">
+                    <video src="assets/videos/Limpieza_PC.mp4" autoplay loop muted playsinline></video>
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Ver completo</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h4>Mantenimiento Avanzado</h4>
+                    <p>Desarme completo, remoción de polvo estructural y cambio de pasta térmica premium en consolas y notebooks.</p>
                 </div>
             </div>
-            <div class="video-info">
-                <h4>Mantenimiento Avanzado</h4>
-                <p>Desarme completo, remoción de polvo estructural y cambio de pasta térmica premium en consolas y notebooks.</p>
+            
+            <div class="video-card reveal">
+                <div class="video-wrapper" onclick="openVideoModal('assets/videos/PC_Gamer.mp4')">
+                    <video src="assets/videos/PC_Gamer.mp4" autoplay loop muted playsinline></video>
+                    <div class="img-overlay">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Ver completo</span>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h4>Ensamblado Gamer RGB</h4>
+                    <p>Armado modular desde cero con componentes seleccionados y gestión de cables de alta competencia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="brands" id="marcas">
+        <h3>Especialistas en las principales marcas</h3>
+        <div class="brands-logos-container reveal">
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/asus/ffffff" alt="ASUS"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/hp/ffffff" alt="HP"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/dell/ffffff" alt="DELL"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/lenovo/ffffff" alt="LENOVO"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/acer/ffffff" alt="ACER"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/msi/ffffff" alt="MSI"></div>
+            <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/apple/ffffff" alt="APPLE"></div>
+        </div>
+    </section>
+
+    <section class="social-payments" id="social-payments">
+        <div class="payment-methods reveal">
+            <h3>Medios de Pago</h3>
+            <div class="payment-grid">
+                <div class="payment-item">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <span class="payment-text">Transferencia / Efectivo<br><small class="no-fee">Sin recargo</small></span>
+                </div>
+                <div class="payment-item">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span class="payment-text">Mercado Pago / QR<br><small class="fee">Con interés</small></span>
+                </div>
+                <div class="payment-item">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span class="payment-text">Crédito / Débito<br><small class="fee">Con interés</small></span>
+                </div>
             </div>
         </div>
         
-        <div class="video-card reveal">
-            <div class="video-wrapper" onclick="openVideoModal('assets/videos/PC_Gamer.mp4')">
-                <video src="assets/videos/PC_Gamer.mp4" autoplay loop muted playsinline></video>
-                <div class="img-overlay">
-                    <i class="fa-solid fa-play"></i>
-                    <span>Ver completo</span>
-                </div>
-            </div>
-            <div class="video-info">
-                <h4>Ensamblado Gamer RGB</h4>
-                <p>Armado modular desde cero con componentes seleccionados y gestión de cables de alta competencia.</p>
+        <div class="social-links reveal">
+            <h3>Seguinos en nuestras redes</h3>
+            <div class="social-buttons">
+                <a href="https://instagram.com/tu-usuario" target="_blank" class="social-btn instagram">
+                    <i class="fa-brands fa-instagram"></i> Instagram
+                </a>
+                <a href="https://facebook.com/tu-usuario" target="_blank" class="social-btn facebook">
+                    <i class="fa-brands fa-facebook"></i> Facebook
+                </a>
             </div>
         </div>
-</section>
+    </section>
 
-<!-- MARCAS CON LOGOS REALES -->
-<section class="brands" id="marcas">
-    <h3>Especialistas en las principales marcas</h3>
-    <div class="brands-logos-container reveal">
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/asus/ffffff" alt="ASUS"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/hp/ffffff" alt="HP"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/dell/ffffff" alt="DELL"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/lenovo/ffffff" alt="LENOVO"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/acer/ffffff" alt="ACER"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/msi/ffffff" alt="MSI"></div>
-        <div class="brand-logo-item"><img src="https://cdn.simpleicons.org/apple/ffffff" alt="APPLE"></div>
-    </div>
-</section>
-
-<!-- REDES Y PAGOS -->
-<section class="social-payments" id="social-payments">
-    <div class="payment-methods reveal">
-        <h3>Medios de Pago</h3>
-        <div class="payment-grid">
-            <div class="payment-item">
-                <i class="fa-solid fa-money-bill-transfer"></i>
-                <span class="payment-text">Transferencia / Efectivo<br><small class="no-fee">Sin recargo</small></span>
-            </div>
-            <div class="payment-item">
-                <i class="fa-solid fa-qrcode"></i>
-                <span class="payment-text">Mercado Pago / QR<br><small class="fee">Con interés</small></span>
-            </div>
-            <div class="payment-item">
-                <i class="fa-solid fa-credit-card"></i>
-                <span class="payment-text">Crédito / Débito<br><small class="fee">Con interés</small></span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="social-links reveal">
-        <h3>Seguinos en nuestras redes</h3>
-        <div class="social-buttons">
-            <a href="https://instagram.com/tu-usuario" target="_blank" class="social-btn instagram">
-                <i class="fa-brands fa-instagram"></i> Instagram
-            </a>
-            <a href="https://facebook.com/tu-usuario" target="_blank" class="social-btn facebook">
-                <i class="fa-brands fa-facebook"></i> Facebook
-            </a>
-        </div>
-    </div>
-</section>
-
-    <!-- CONTACTO -->
     <section class="contact" id="contacto">
         <h2 class="reveal">¿Necesitás optimizar o armar tu equipo?</h2>
         <p class="reveal">Ponete en contacto para coordinar la recepción de tus componentes o consolas. Soporte rápido y directo.</p>
@@ -319,29 +288,17 @@
     <div id="video-modal" class="modal">
         <div class="modal-content video-modal-content">
             <span class="close-modal video-close" onclick="closeVideoModal()">&times;</span>
-            
-            <video id="modal-video-player" 
-                   src="" 
-                   controls 
-                   autoplay 
-                   muted 
-                   loop 
-                   playsinline 
-                   webkit-playsinline>
-            </video>
+            <video id="modal-video-player" src="" controls autoplay muted loop playsinline webkit-playsinline></video>
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
     </footer>
 
-    <!-- SCRIPT -->
     <script src="js/script.js"></script>
 
-    <!-- Whatsapp Flotante -->|
-     <a href="https://wa.me/5491100000000?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+    <a href="https://wa.me/5491100000000?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 </body>

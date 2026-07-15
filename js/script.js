@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuToggle = document.getElementById("menu-toggle");
     const navMenu = document.getElementById("nav-menu");
 
-    // Función maestra: Cierra el menú y resetea la "X" a las 3 rayitas
     function closeMobileMenu() {
         if (navMenu && navMenu.classList.contains('active')) {
             navMenu.classList.remove('active');
@@ -18,12 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (menuToggle && navMenu) {
-        // Cuando tocás el botón hamburguesa o la X
         menuToggle.addEventListener('click', (event) => {
-            event.stopPropagation(); // Frena el click para que no active el "tocar afuera" accidentalmente
+            event.stopPropagation(); 
             navMenu.classList.toggle('active');
-            
-            // Cambia el ícono de rayitas a X y viceversa
             if (navMenu.classList.contains('active')) {
                 menuToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             } else {
@@ -32,22 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Cierra al tocar cualquier enlace del menú
     document.querySelectorAll('.menu a').forEach(link => {
         link.addEventListener('click', closeMobileMenu);
     });
 
-    // Cierra al tocar en cualquier parte de la pantalla (afuera del menú)
     document.addEventListener('click', (event) => {
         if (navMenu && navMenu.classList.contains('active')) {
-            // Si tocaste en cualquier lado que NO sea el menú ni el botón, lo cierra
             if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
                 closeMobileMenu();
             }
         }
     });
 
-    // Cierra al deslizar la pantalla (scroll)
     window.addEventListener('scroll', () => {
         closeMobileMenu();
     });
@@ -57,20 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
 // 2. SISTEMA DE PESTAÑAS (TABS DE PRECIOS)
 // ==========================================
 function switchTab(category) {
-    // Remover clase 'active' de todos los bloques de contenido
     document.querySelectorAll(".tab-content").forEach(content => {
         content.classList.remove("active");
     });
     
-    // Remover clase 'active' de todos los botones de pestañas
     document.querySelectorAll(".tab-btn").forEach(button => {
         button.classList.remove("active");
     });
 
-    // Activar el bloque y el botón seleccionado
     document.getElementById(`tab-${category}`).classList.add("active");
     
-    // Buscar el botón correspondiente mediante el evento para marcarlo activo
     const eventTarget = window.event.target;
     if(eventTarget) {
         eventTarget.classList.add("active");
@@ -78,36 +66,18 @@ function switchTab(category) {
 }
 
 // ==========================================
-// 3. GALERÍA DE IMÁGENES (LIGHTBOX PARA PRODUCTOS)
+// 3. GALERÍA DE IMÁGENES (LIGHTBOX)
 // ==========================================
-
-// Acá guardamos las fotos reales de cada compu
 const galleries = {
-    'dell-5490': [
-        'assets/img/dell-1.jpg',
-        'assets/img/dell-2.jpg',
-        'assets/img/dell-3.jpg'
-    ],
-    'dell-5490-equipo2': [
-        'assets/img/dell-1.jpg', 
-        'assets/img/dell-2.jpg'  
-    ],
-
-    'Asus-equipo3': [
-        'assets/img/dell-1.jpg',
-        'assets/img/dell-2.jpg',
-        'assets/img/dell-3.jpg'
-    ],
-    'hp-440-equipo4': [
-        'assets/img/dell-1.jpg', 
-        'assets/img/dell-2.jpg'  
-    ]
+    'dell-5490': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg', 'assets/img/dell-3.jpg'],
+    'dell-5490-equipo2': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg'],
+    'Asus-equipo3': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg', 'assets/img/dell-3.jpg'],
+    'hp-440-equipo4': ['assets/img/dell-1.jpg', 'assets/img/dell-2.jpg']
 };
 
 let currentGallery = [];
 let currentIndex = 0;
 
-// Abrir la galería
 function openGallery(galleryId) {
     currentGallery = galleries[galleryId];
     if (!currentGallery || currentGallery.length === 0) return;
@@ -117,25 +87,17 @@ function openGallery(galleryId) {
     document.getElementById('gallery-modal').style.display = 'flex';
 }
 
-// Cerrar la galería
 function closeGallery() {
     document.getElementById('gallery-modal').style.display = 'none';
 }
 
-// Cambiar de imagen (flechas)
 function changeImage(direction) {
     currentIndex += direction;
-    
-    if (currentIndex >= currentGallery.length) {
-        currentIndex = 0;
-    } else if (currentIndex < 0) {
-        currentIndex = currentGallery.length - 1;
-    }
-    
+    if (currentIndex >= currentGallery.length) currentIndex = 0;
+    else if (currentIndex < 0) currentIndex = currentGallery.length - 1;
     updateModalImage();
 }
 
-// Actualizar la foto en pantalla
 function updateModalImage() {
     const modalImg = document.getElementById('modal-img');
     if (modalImg) {
@@ -145,47 +107,29 @@ function updateModalImage() {
     }
 }
 
-// Cerrar haciendo clic afuera
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('gallery-modal');
-    if (event.target === modal) {
-        closeGallery();
-    }
+    if (event.target === modal) closeGallery();
 });
 
-// ==========================================
-// EXTRAS: EXPERIENCIA DE USUARIO (UX)
-// ==========================================
-
-// Control de la galería con el teclado (Esc y Flechas)
 window.addEventListener('keydown', function(event) {
     const modal = document.getElementById('gallery-modal');
-    
-    // Solo actuamos si el cuadro negro de la galería está abierto
     if (modal && modal.style.display === 'flex') {
-        if (event.key === 'Escape') {
-            closeGallery(); // Cierra con Esc
-        } else if (event.key === 'ArrowRight') {
-            changeImage(1); // Siguiente foto
-        } else if (event.key === 'ArrowLeft')  {
-            changeImage(-1); // Foto anterior
-        }
+        if (event.key === 'Escape') closeGallery();
+        else if (event.key === 'ArrowRight') changeImage(1);
+        else if (event.key === 'ArrowLeft') changeImage(-1);
     }
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS (VERSIÓN DEFINITIVA MOBILE)
+// 4. MODAL DE VIDEOS
 // ==========================================
-
 function openVideoModal(videoSrc) {
     const modal = document.getElementById('video-modal');
     const player = document.getElementById('modal-video-player');
-    
     if (modal && player) {
         player.src = videoSrc;
         modal.style.display = 'flex';
-        
-        // Forzamos el play de respaldo por si el navegador se duerme
         player.play().catch(e => console.log("Auto-reproducción asistida", e));
     }
 }
@@ -193,7 +137,6 @@ function openVideoModal(videoSrc) {
 function closeVideoModal() {
     const modal = document.getElementById('video-modal');
     const player = document.getElementById('modal-video-player');
-    
     if (modal && player) {
         player.pause();
         player.src = '';
@@ -201,7 +144,6 @@ function closeVideoModal() {
     }
 }
 
-// Cerrar con Escape en PC
 window.addEventListener('keydown', function(event) {
     const videoModal = document.getElementById('video-modal');
     if (event.key === 'Escape' && videoModal && videoModal.style.display === 'flex') {
@@ -209,131 +151,88 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-// Cerrar tocando afuera del video (fondo negro)
 window.addEventListener('click', function(event) {
     const videoModal = document.getElementById('video-modal');
-    if (videoModal && event.target === videoModal) {
-        closeVideoModal();
-    }
+    if (videoModal && event.target === videoModal) closeVideoModal();
 });
 
-// ==========================================
-// SWIPE DOWN (Deslizar hacia abajo para cerrar)
-// ==========================================
 const videoModalSection = document.getElementById('video-modal');
 let touchStartPointY = 0;
-
 if (videoModalSection) {
-    videoModalSection.addEventListener('touchstart', (e) => {
-        touchStartPointY = e.touches[0].clientY;
-    }, { passive: true });
-
+    videoModalSection.addEventListener('touchstart', (e) => { touchStartPointY = e.touches[0].clientY; }, { passive: true });
     videoModalSection.addEventListener('touchmove', (e) => {
         let currentY = e.touches[0].clientY;
-        
-        // Si el usuario desliza el dedo hacia abajo más de 70px, se cierra
-        if (currentY - touchStartPointY > 70) {
-            closeVideoModal();
-        }
+        if (currentY - touchStartPointY > 70) closeVideoModal();
     }, { passive: true });
 }
 
 // ==========================================
-// FIX MEJORADO: Manejo de scroll entre páginas
+// MANEJO DE SCROLL & ANIMACIONES
 // ==========================================
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-}
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 window.addEventListener('load', () => {
-    // 1. Si venimos de un enlace con # (ej: index.html#productos), vamos a esa sección
     if (window.location.hash) {
         const targetSection = document.querySelector(window.location.hash);
-        if (targetSection) {
-            // Un micro-retraso para asegurar que la página ya dibujó todo antes de bajar
-            setTimeout(() => {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        }
-    } 
-    // 2. Si no hay #, restauramos el scroll PERO identificando de qué página es
-    else {
+        if (targetSection) setTimeout(() => { targetSection.scrollIntoView({ behavior: 'smooth' }); }, 100);
+    } else {
         const pagePath = window.location.pathname;
         const currentScroll = sessionStorage.getItem('scroll_' + pagePath);
-        if (currentScroll) {
-            window.scrollTo(0, parseInt(currentScroll, 10));
-        }
+        if (currentScroll) window.scrollTo(0, parseInt(currentScroll, 10));
     }
 });
 
-// Guardamos la posición asociándola al nombre de la página actual
 window.addEventListener('beforeunload', () => {
     const pagePath = window.location.pathname;
     sessionStorage.setItem('scroll_' + pagePath, window.scrollY);
 });
 
-// ==========================================
-// 5. ANIMACIONES AL SCROLLEAR (EFECTO APPLE)
-// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Configuramos el observador
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-            // Si el elemento entra en la pantalla...
             if (entry.isIntersecting) {
-                entry.target.classList.add('active'); // Arranca la animación
-                observer.unobserve(entry.target);     // ¡CLAVE! Lo desvincula para que no vuelva a pasar
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
             }
         });
-    }, {
-        threshold: 0.15, // Se activa cuando asoma un 15% del elemento
-        rootMargin: "0px 0px -50px 0px" // Le da un poco de respiro antes de aparecer
-    });
+    }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
 
-    // Buscamos todo lo que tenga la clase 'reveal' y lo ponemos a observar
-    document.querySelectorAll('.reveal').forEach(el => {
-        observer.observe(el);
-    });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
 
 // =========================================================================
-// 6. CONEXIÓN A SUPABASE (LA MAGIA DE LA BASE DE DATOS)
+// 6. CONEXIÓN A SUPABASE (SEPARANDO SOFTWARE Y HARDWARE)
 // =========================================================================
-
-// ACÁ PEGÁ TUS CLAVES (Dejalas adentro de las comillas simples)
 const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
 const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C'; 
 
-// Inicializamos el motor de la base de datos
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Función para ir a buscar los precios a tu tabla
 async function cargarPreciosDinamicos() {
-    const tabla = document.getElementById('tabla-precios-supabase');
+    const tablaSoftware = document.getElementById('tabla-software-dinamica');
+    const tablaHardware = document.getElementById('tabla-hardware-dinamica');
     
-    // Si no estamos en el index.html (donde está la tabla), no hacemos nada
-    if (!tabla) return;
+    // Si no estamos en el index.html, salimos para que no tire error
+    if (!tablaSoftware && !tablaHardware) return;
 
     try {
-        // Pedimos todos los datos de la tabla 'precios' que creaste el otro día
-        const { data, error } = await db.from('precios').select('*');
+        const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
 
-        if (error) throw error; // Si hay error, lo atajamos en el catch abajo
+        if (error) throw error;
 
-        // Si la tabla está vacía (todavía no cargaste nada en Supabase)
+        // Si la base de datos está totalmente vacía
         if (data.length === 0) {
-            tabla.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #a0aec0; padding: 20px;">No hay precios cargados todavía. Agregalos desde tu panel.</td></tr>';
+            const msjVacio = '<tr><td colspan="3" style="text-align: center; color: #a0aec0; padding: 20px;">No hay precios cargados todavía. Agregalos desde tu Console.</td></tr>';
+            if (tablaSoftware) tablaSoftware.innerHTML = msjVacio;
+            if (tablaHardware) tablaHardware.innerHTML = msjVacio;
             return;
         }
 
-        // Si hay datos, limpiamos el "Cargando..." y dibujamos las filas reales
-        tabla.innerHTML = ''; 
+        let htmlSoftware = '';
+        let htmlHardware = '';
 
         data.forEach(item => {
-            // Formateamos el número para que tenga el punto de miles (Ej: 19.877)
             const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
-            
-            // Creamos la fila HTML idéntica a tu diseño
             const fila = `
                 <tr>
                     <td>${item.servicio}</td>
@@ -341,19 +240,133 @@ async function cargarPreciosDinamicos() {
                     <td class="price-cell">$${precioLindo}</td>
                 </tr>
             `;
-            tabla.innerHTML += fila;
+            
+            // Reparcelamos cada fila a la bolsa que le corresponde
+            if (item.categoria === 'hardware') {
+                htmlHardware += fila;
+            } else {
+                htmlSoftware += fila;
+            }
         });
+
+        // Pintamos el HTML en la web. Si alguna bolsa quedó vacía, mostramos mensaje.
+        if (tablaSoftware) {
+            tablaSoftware.innerHTML = htmlSoftware !== '' ? htmlSoftware : '<tr><td colspan="3" style="text-align: center; color: #a0aec0; padding: 20px;">No hay servicios de software cargados.</td></tr>';
+        }
+        
+        if (tablaHardware) {
+            tablaHardware.innerHTML = htmlHardware !== '' ? htmlHardware : '<tr><td colspan="3" style="text-align: center; color: #a0aec0; padding: 20px;">No hay servicios de hardware cargados.</td></tr>';
+        }
 
     } catch (err) {
         console.error("Error al traer los precios de Supabase:", err);
-        tabla.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #ff4a4a; padding: 20px;">Error de conexión con la base de datos.</td></tr>';
+        const msjError = '<tr><td colspan="3" style="text-align: center; color: #ff4a4a; padding: 20px;">Error de conexión con la base de datos.</td></tr>';
+        if (tablaSoftware) tablaSoftware.innerHTML = msjError;
+        if (tablaHardware) tablaHardware.innerHTML = msjError;
     }
 }
 
-// Apenas la página carga, ejecutamos la función para que llene la tabla
 document.addEventListener("DOMContentLoaded", () => {
-    // Si el objeto 'supabase' existe (porque pusimos el link en el HTML), cargamos los precios
     if (typeof supabase !== 'undefined') {
         cargarPreciosDinamicos();
     }
 });
+
+// =========================================================================
+// 7. GENERADOR AUTOMÁTICO DE PDF (jsPDF + AutoTable)
+// =========================================================================
+async function generarPDF(event) {
+    event.preventDefault(); // Evita que la página salte para arriba
+    
+    // Cambiamos el texto del botón para avisar que está cargando
+    const btnPdf = event.currentTarget;
+    const textoOriginal = btnPdf.innerHTML;
+    btnPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
+    btnPdf.style.pointerEvents = 'none';
+
+    // TRUCO ANTI-BLOQUEADOR: Abrimos la pestaña antes de pedir datos a la base
+    const pdfWindow = window.open("", "_blank");
+    if (pdfWindow) {
+        pdfWindow.document.write('<h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#333;">Generando tu lista de precios... ⏳</h2>');
+    }
+
+    try {
+        // 1. Buscamos los datos actuales en Supabase
+        const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        // Separamos Software y Hardware
+        const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
+        const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
+
+        // 2. Creamos el documento PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // 3. Diseño del Encabezado (Banda oscura y título cyan)
+        doc.setFillColor(7, 10, 15); // Fondo oscuro 
+        doc.rect(0, 0, 210, 35, 'F');
+        
+        doc.setTextColor(0, 240, 255); // Color #00F0FF
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("COMPUTADORAS LEI", 105, 18, { align: "center" });
+        
+        doc.setTextColor(255, 255, 255); // Blanco
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Soporte Técnico Premium & Armado de PC", 105, 26, { align: "center" });
+
+        // Fecha actual
+        const fechaHoy = new Date().toLocaleDateString('es-AR');
+        doc.setTextColor(100, 100, 100);
+        doc.setFontSize(9);
+        doc.text(`Lista actualizada automáticamente el: ${fechaHoy}`, 14, 45);
+
+        let posicionY = 50; // Dónde arrancan las tablas
+
+        // 4. Dibujar Tabla de Software
+        if (softwareData.length > 0) {
+            doc.autoTable({
+                startY: posicionY,
+                head: [['Software y Sistemas', 'Compatibilidad', 'Precio (ARS)']],
+                body: softwareData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+                styles: { fontSize: 9, cellPadding: 5 },
+                alternateRowStyles: { fillColor: [245, 245, 245] }
+            });
+            posicionY = doc.lastAutoTable.finalY + 15; 
+        }
+
+        // 5. Dibujar Tabla de Hardware
+        if (hardwareData.length > 0) {
+            doc.autoTable({
+                startY: posicionY,
+                head: [['Hardware, Limpieza y Armado', 'Compatibilidad', 'Precio (ARS)']],
+                body: hardwareData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 240, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+                styles: { fontSize: 9, cellPadding: 5 },
+                alternateRowStyles: { fillColor: [245, 245, 245] }
+            });
+        }
+
+        // 6. Previsualizar el archivo en la pestaña que abrimos
+        if (pdfWindow) {
+            pdfWindow.location.href = doc.output('bloburl');
+        } else {
+            // Plan B: Si el navegador bloqueó la pestaña igual, se lo descargamos
+            doc.save('Listado_Precios_Computadoras_Lei.pdf');
+        }
+
+    } catch (err) {
+        console.error("Error al generar PDF:", err);
+        if (pdfWindow) pdfWindow.close(); // Cerramos la pestaña si hubo error
+        alert("Hubo un error al generar el PDF. Revisá tu conexión a internet.");
+    } finally {
+        // Restauramos el botón a la normalidad
+        btnPdf.innerHTML = textoOriginal;
+        btnPdf.style.pointerEvents = 'auto';
+    }
+}
