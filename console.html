@@ -418,17 +418,7 @@
         <section id="sec-accesorios" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-keyboard"></i> Listado de Accesorios</h1>
             
-            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
-                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
-                <select id="filtro-accesorios" onchange="filtrarAccesorios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
-                    <option value="TODOS">Mostrar Todo</option>
-                    <option value="Auriculares">Auriculares</option>
-                    <option value="Cargadores">Cargadores</option>
-                    <option value="Motherboards">Motherboards</option>
-                    <option value="Pendrives">Pendrives</option>
-                    <option value="Otros">Otros</option>
-                </select>
-            </div>
+        
 
             <div class="panel-card">
                 <form id="form-accesorios">
@@ -488,6 +478,18 @@
                     
                     <button type="button" id="btn-cancelar-acc" onclick="cancelarEdicionAccesorio()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
                 </form>
+            </div>
+
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
+                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                <select id="filtro-accesorios" onchange="filtrarAccesorios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                    <option value="TODOS">Mostrar Todo</option>
+                    <option value="Auriculares">Auriculares</option>
+                    <option value="Cargadores">Cargadores</option>
+                    <option value="Motherboards">Motherboards</option>
+                    <option value="Pendrives">Pendrives</option>
+                    <option value="Otros">Otros</option>
+                </select>
             </div>
 
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
