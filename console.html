@@ -109,9 +109,21 @@
                     <h3>Stock Discos SSD</h3>
                     <div class="number" id="stat-ssd">0</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Stock Accesorios</h3>
-                    <div class="number" id="stat-accesorios">0</div>
+                <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
+                    <h3 style="color: #f0b400;">Stock Auriculares</h3>
+                    <div class="number" id="stat-auriculares" style="color: #f0b400;">0</div>
+                </div>
+                <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
+                    <h3 style="color: #f0b400;">Stock Cargadores</h3>
+                    <div class="number" id="stat-cargadores" style="color: #f0b400;">0</div>
+                </div>
+                <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
+                    <h3 style="color: #f0b400;">Stock Motherboards</h3>
+                    <div class="number" id="stat-motherboards" style="color: #f0b400;">0</div>
+                </div>
+                <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
+                    <h3 style="color: #f0b400;">Stock Pendrives</h3>
+                    <div class="number" id="stat-pendrives" style="color: #f0b400;">0</div>
                 </div>
             </div>
         </section>
@@ -418,10 +430,80 @@
                 </select>
             </div>
 
-            <div class="panel-card" style="text-align: center; padding: 60px;">
-                <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #00F0FF; margin-bottom: 20px;"></i>
-                <h3 style="color: #fff; margin-bottom: 10px;">Sección en construcción</h3>
-                <p style="color: #94A3B8;">Acá gestionaremos periféricos y repuestos.</p>
+            <div class="panel-card">
+                <form id="form-accesorios">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Accesorio</label>
+                            <select id="acc-tipo" onchange="adaptarFormularioAccesorio()" required>
+                                <option value="" disabled selected>Seleccioná el tipo...</option>
+                                <option value="Auriculares">Auriculares</option>
+                                <option value="Cargadores">Cargadores</option>
+                                <option value="Motherboards">Motherboards</option>
+                                <option value="Pendrives">Pendrives</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Título / Modelo</label>
+                            <input type="text" id="acc-titulo" placeholder="Primero seleccioná el tipo..." required>
+                        </div>
+                    </div>
+                    
+                    <div id="campos-dinamicos-acc" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lbl-acc-detalle-1">Detalle 1</label>
+                                <input type="text" id="acc-detalle-1" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lbl-acc-detalle-2">Detalle 2</label>
+                                <input type="text" id="acc-detalle-2" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <select id="acc-estado">
+                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
+                                    <option value="Usado Premium">Usado Premium</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Subir Fotos (Se puede múltiple)</label>
+                                <input type="file" id="acc-imagenes" accept="image/*" multiple>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio (ARS) - Solo números</label>
+                            <input type="number" id="acc-precio" placeholder="Ej: 15000" required>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button type="submit" id="btn-submit-acc" class="btn" style="width: 100%;"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Accesorio</button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="btn-cancelar-acc" onclick="cancelarEdicionAccesorio()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+                </form>
+            </div>
+
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Accesorio</th>
+                            <th>Detalles</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-accesorios">
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -917,11 +999,219 @@
         }
 
         // =========================================================================
-        // 5. CARGA DE DATOS AL INICIAR LA PANTALLA
+        // 5. LÓGICA DE ACCESORIOS (Súper Formulario Inteligente)
+        // =========================================================================
+        let accesoriosActuales = [];
+        let editandoAccId = null;
+
+        /* --- 1. Muestra y adapta los labels del formulario según el accesorio --- */
+        function adaptarFormularioAccesorio() {
+            const tipo = document.getElementById('acc-tipo').value;
+            const caja = document.getElementById('campos-dinamicos-acc');
+            const lbl1 = document.getElementById('lbl-acc-detalle-1');
+            const in1 = document.getElementById('acc-detalle-1');
+            const lbl2 = document.getElementById('lbl-acc-detalle-2');
+            const in2 = document.getElementById('acc-detalle-2');
+            const titulo = document.getElementById('acc-titulo');
+            
+            caja.style.display = 'block';
+
+            if (tipo === 'Auriculares') {
+                titulo.placeholder = 'Ej: Auriculares Redragon Zeus';
+                lbl1.innerText = 'Conectividad (Ej: Bluetooth, Cable 3.5mm)';
+                in1.placeholder = 'Ej: Cableado USB / 3.5mm';
+                lbl2.innerText = 'Diseño / Extra (Ej: In-Ear, Micrófono extraíble)';
+                in2.placeholder = 'Ej: Over-Ear con Micrófono';
+            } else if (tipo === 'Cargadores') {
+                titulo.placeholder = 'Ej: Cargador Original Lenovo';
+                lbl1.innerText = 'Voltaje y Amperaje (Ej: 20V 3.25A - 65W)';
+                in1.placeholder = 'Ej: 20V 3.25A (65W)';
+                lbl2.innerText = 'Ficha / Pin (Ej: Tipo C, Punta fina)';
+                in2.placeholder = 'Ej: Pin rectangular amarillo';
+            } else if (tipo === 'Motherboards') {
+                titulo.placeholder = 'Ej: Motherboard Gigabyte H310M';
+                lbl1.innerText = 'Socket (Ej: LGA 1151, AM4)';
+                in1.placeholder = 'Ej: Intel LGA 1151';
+                lbl2.innerText = 'Chipset y Memoria (Ej: H310 DDR4)';
+                in2.placeholder = 'Ej: Chipset H310 - Soporta DDR4';
+            } else if (tipo === 'Pendrives') {
+                titulo.placeholder = 'Ej: Pendrive Kingston DataTraveler';
+                lbl1.innerText = 'Capacidad (Ej: 32GB, 64GB)';
+                in1.placeholder = 'Ej: 64GB';
+                lbl2.innerText = 'Velocidad / Versión (Ej: USB 3.0)';
+                in2.placeholder = 'Ej: USB 3.2 Gen 1';
+            } else {
+                titulo.placeholder = 'Ej: Pad Mouse Redragon XL';
+                lbl1.innerText = 'Característica Principal';
+                in1.placeholder = 'Ej: Tamaño 80x30cm';
+                lbl2.innerText = 'Característica Secundaria';
+                in2.placeholder = 'Ej: Base antideslizante';
+            }
+        }
+
+        /* --- 2. Trae el inventario y calcula estadísticas desglosadas --- */
+        async function cargarAccesorios() {
+            const tabla = document.getElementById('tabla-admin-accesorios');
+            if(!tabla) return;
+            const { data, error } = await db.from('accesorios').select('*').order('id', { ascending: false });
+            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar.</td></tr>'; return; }
+
+            accesoriosActuales = data || []; 
+            
+            document.getElementById('stat-auriculares').innerText = accesoriosActuales.filter(a => a.tipo === 'Auriculares').length;
+            document.getElementById('stat-cargadores').innerText = accesoriosActuales.filter(a => a.tipo === 'Cargadores').length;
+            document.getElementById('stat-motherboards').innerText = accesoriosActuales.filter(a => a.tipo === 'Motherboards').length;
+            document.getElementById('stat-pendrives').innerText = accesoriosActuales.filter(a => a.tipo === 'Pendrives').length;
+
+            renderizarTablaAccesorios();
+        }
+
+        /* --- 3. Dibuja la tabla aplicando el filtro de búsqueda --- */
+        function renderizarTablaAccesorios() {
+            const tabla = document.getElementById('tabla-admin-accesorios');
+            const filtro = document.getElementById('filtro-accesorios').value;
+
+            const datosFiltrados = accesoriosActuales.filter(item => {
+                if (filtro === 'TODOS') return true;
+                return item.tipo === filtro; 
+            });
+
+            if (datosFiltrados.length === 0) { 
+                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay accesorios para este filtro.</td></tr>'; 
+                return; 
+            }
+
+            tabla.innerHTML = ''; 
+            datosFiltrados.forEach(item => {
+                const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
+                let imgFondo = 'https://via.placeholder.com/50';
+                if (item.imagen && item.imagen.trim() !== '') { imgFondo = item.imagen.split(',')[0]; }
+
+                tabla.innerHTML += `
+                    <tr>
+                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;">
+                            <img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">
+                            ${item.titulo}
+                        </td>
+                        <td style="font-size: 13px; color: #94A3B8;">${item.tipo} <br> ${item.detalle_1} | ${item.detalle_2}</td>
+                        <td style="color:#00F0FF; font-weight:600;">$${precioFormateado}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="prepararEdicionAccesorio(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-delete" onclick="borrarAccesorio(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function filtrarAccesorios() { renderizarTablaAccesorios(); }
+
+        /* --- 4. Rellena el formulario para editar --- */
+        function prepararEdicionAccesorio(id) {
+            const item = accesoriosActuales.find(a => a.id === id);
+            if (!item) return;
+            editandoAccId = id;
+            
+            document.getElementById('acc-tipo').value = item.tipo;
+            adaptarFormularioAccesorio();
+
+            document.getElementById('acc-titulo').value = item.titulo;
+            document.getElementById('acc-precio').value = item.precio;
+            document.getElementById('acc-detalle-1').value = item.detalle_1;
+            document.getElementById('acc-detalle-2').value = item.detalle_2;
+            document.getElementById('acc-estado').value = item.estado;
+
+            document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
+            document.getElementById('btn-submit-acc').style.background = '#00ff66';
+            document.getElementById('btn-cancelar-acc').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* --- 5. Cancela la edición y limpia --- */
+        function cancelarEdicionAccesorio() {
+            editandoAccId = null;
+            document.getElementById('form-accesorios').reset();
+            document.getElementById('campos-dinamicos-acc').style.display = 'none';
+            document.getElementById('filtro-accesorios').value = 'TODOS';
+            document.getElementById('acc-titulo').placeholder = 'Primero seleccioná el tipo...';
+            
+            document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Accesorio';
+            document.getElementById('btn-submit-acc').style.background = '#00F0FF';
+            document.getElementById('btn-cancelar-acc').style.display = 'none';
+            renderizarTablaAccesorios();
+        }
+
+        /* --- 6. Sube fotos y guarda datos --- */
+        document.getElementById('form-accesorios').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-acc');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                let stringDeImagenes = "";
+                const inputArchivos = document.getElementById('acc-imagenes');
+                if (inputArchivos.files.length > 0) {
+                    let urlsSubidas = [];
+                    for (let i = 0; i < inputArchivos.files.length; i++) {
+                        const archivo = inputArchivos.files[i];
+                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                        if (uploadError) throw uploadError;
+                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                        urlsSubidas.push(urlData.publicUrl);
+                    }
+                    stringDeImagenes = urlsSubidas.join(',');
+                } else if (editandoAccId) {
+                    stringDeImagenes = accesoriosActuales.find(a => a.id === editandoAccId).imagen || "";
+                }
+
+                const payload = {
+                    titulo: document.getElementById('acc-titulo').value,
+                    tipo: document.getElementById('acc-tipo').value,
+                    detalle_1: document.getElementById('acc-detalle-1').value,
+                    detalle_2: document.getElementById('acc-detalle-2').value,
+                    estado: document.getElementById('acc-estado').value,
+                    precio: parseInt(document.getElementById('acc-precio').value),
+                    imagen: stringDeImagenes
+                };
+
+                if (editandoAccId) {
+                    const { error } = await db.from('accesorios').update(payload).eq('id', editandoAccId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await db.from('accesorios').insert([payload]);
+                    if (error) throw error;
+                }
+
+                mostrarToast(); cancelarEdicionAccesorio(); cargarAccesorios();
+
+            } catch (err) {
+                console.error(err);
+                alert("Error al guardar: " + err.message);
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.style.pointerEvents = 'auto';
+            }
+        });
+
+        /* --- 7. Borra un accesorio --- */
+        async function borrarAccesorio(id) {
+            if(confirm("¿Seguro que querés borrar este accesorio?")) {
+                const { error } = await db.from('accesorios').delete().eq('id', id);
+                if (error) alert("Error al borrar: " + error.message); else cargarAccesorios();
+            }
+        }
+
+        // =========================================================================
+        // 6. CARGA DE DATOS AL INICIAR LA PANTALLA
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
         cargarMemorias();
+        cargarAccesorios();
     </script>
 </body>
 </html>
