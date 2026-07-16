@@ -56,6 +56,15 @@
         <h2 class="reveal">Memorias RAM & Discos SSD</h2>
         <p class="products-subtitle">Aumentá la velocidad y capacidad de tu PC o Notebook al instante.</p>
 
+        <div style="max-width: 1200px; margin: 0 auto 30px auto; padding: 0 20px; display: flex; align-items: center; gap: 15px;">
+            <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+            <select id="filtro-memorias-publico" onchange="filtrarMemoriasPublicas()" style="width: auto; min-width: 220px; padding: 10px 15px; background: #111622; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer; outline: none;">
+                <option value="TODOS">Mostrar Todo</option>
+                <option value="Memoria RAM">Memoria RAM</option>
+                <option value="Disco SSD / Almacenamiento">Discos SSD / Almacenamiento</option>
+            </select>
+        </div>
+
         <div class="products-grid" id="grid-memorias">
             <div style="grid-column: 1 / -1; text-align: center; color: #00F0FF; padding: 40px;">
                 <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 30px; margin-bottom: 15px;"></i>

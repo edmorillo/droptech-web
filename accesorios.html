@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardware y Accesorios | Computadoras Lei</title>
+    <title>Accesorios y Periféricos | Computadoras Lei</title>
 
-    <!-- CONFIGURACIÓN SEO Y COMPARTIR EN REDES -->
-    <meta name="description" content="Computadoras Lei - Soporte técnico profesional, mantenimiento avanzado de hardware y venta de notebooks seleccionadas en Lugano, CABA.">
-    <meta property="og:title" content="Computadoras Lei | Soporte & Hardware">
-    <meta property="og:description" content="Potenciamos tu equipo. Especialistas en armado de PC Gamer, limpieza estructural y componentes de alta calidad.">
-    <meta property="og:image" content="assets/img/logo.png"> <!-- <-- ACÁ SE IMPLEMENTA TU LOGO -->
-    <meta property="og:type" content="website">
-    
+    <meta name="description" content="Computadoras Lei - Periféricos y accesorios tecnológicos de alta calidad.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,9 +32,7 @@
                     <span>Computadoras Lei</span>
                 </a>
             </div>
-            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button class="menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
             <ul class="menu" id="nav-menu">
                 <li><a href="index.html#inicio">Inicio</a></li>
                 <li><a href="index.html#servicios">Servicios</a></li>
@@ -49,71 +42,36 @@
     </header>
 
     <section class="products" style="margin-top: 80px; padding-top: 60px; min-height: 80vh;">
-        <span class="section-tag">Setup Profesional</span>
-        <h2 class="reveal">Hardware & Repuestos</h2>
-        <p class="products-subtitle">Motherboards, periféricos y repuestos de alta fidelidad para el armado de tu setup.</p>
+        <span class="section-tag">Novedades</span>
+        <h2 class="reveal">Accesorios y Periféricos</h2>
+        <p class="products-subtitle">Todo lo que necesitas para equipar tu setup al máximo nivel.</p>
 
-        <div class="products-grid">
-            
-            <div class="product-card reveal">
-                <div class="prod-image-container" onclick="openGallery('mother-1')">
-                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Motherboard" alt="Motherboard" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-                
-                <h3>Motherboard Gigabyte AM4</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Socket: AMD AM4</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> Soporte RAM: DDR4 Dual Channel</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-plug" style="width: 25px; color: #00F0FF;"></i> Puertos: M.2, USB 3.2, HDMI</li>
-                    <li><i class="fa-solid fa-shield-halved" style="width: 25px; color: #00F0FF;"></i> Estado: Excelente</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
-                </a>
+        <div style="max-width: 1200px; margin: 0 auto 30px auto; padding: 0 20px; display: flex; align-items: center; gap: 15px;">
+            <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+            <select id="filtro-accesorios-publico" onchange="filtrarAccesoriosPublicos()" style="width: auto; min-width: 220px; padding: 10px 15px; background: #111622; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer; outline: none;">
+                <option value="TODOS">Mostrar Todo</option>
+                <option value="Auriculares">Auriculares</option>
+                <option value="Cargadores">Cargadores</option>
+                <option value="Motherboards">Motherboards</option>
+                <option value="Pendrives">Pendrives</option>
+                <option value="Otros">Otros</option>
+            </select>
+        </div>
+
+        <div class="products-grid" id="grid-accesorios">
+            <div style="grid-column: 1 / -1; text-align: center; color: #00F0FF; padding: 40px;">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 30px; margin-bottom: 15px;"></i>
+                <p>Cargando catálogo en tiempo real...</p>
             </div>
-
-            <div class="product-card reveal">
-                <div class="prod-image-container" onclick="openGallery('teclado-1')">
-                    <img src="https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Teclado+RGB" alt="Teclado Gamer" class="main-prod-img">
-                    <div class="img-overlay">
-                        <i class="fa-solid fa-images"></i>
-                        <span>Ver galería</span>
-                    </div>
-                </div>
-
-                <h3>Teclado Mecánico RGB</h3>
-                <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-keyboard" style="width: 25px; color: #00F0FF;"></i> Tipo: Mecánico (Switches Red)</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-palette" style="width: 25px; color: #00F0FF;"></i> Iluminación: RGB Personalizable</li>
-                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-globe" style="width: 25px; color: #00F0FF;"></i> Distribución: Español (con Ñ)</li>
-                    <li><i class="fa-solid fa-gamepad" style="width: 25px; color: #00F0FF;"></i> Ideal para: Gaming / Programación</li>
-                </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    Consultar <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
-                <a href="#" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Stock
-                </a>
-            </div>
-
         </div>
     </section>
 
-    <footer class="footer">
-        <p>&copy; 2026 Computadoras Lei. Soluciones de Software y Mantenimiento Tecnológico Profesional. Lugano, CABA, Argentina.</p>
-    </footer>
+    <footer class="footer"><p>&copy; 2026 Computadoras Lei. Lugano, CABA, Argentina.</p></footer>
 
     <div id="gallery-modal" class="modal">
         <span class="close-modal" onclick="closeGallery()">&times;</span>
         <div class="modal-content">
-            <img id="modal-img" src="" alt="Imagen ampliada">
+            <img id="modal-img" src="" alt="Imagen">
             <button class="gallery-btn prev-btn" onclick="changeImage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
             <button class="gallery-btn next-btn" onclick="changeImage(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
@@ -121,10 +79,7 @@
     </div>
 
     <script src="js/script.js"></script>
-    
-    <!-- Whatsapp Flotante -->|
-     <a href="https://wa.me/5491100000000?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+
+    <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i></a>
 </body>
 </html>
