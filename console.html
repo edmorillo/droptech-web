@@ -235,32 +235,46 @@
                 <form id="form-memorias">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Título del Componente</label>
-                            <input type="text" id="mem-titulo" placeholder="Ej: Kingston Fury Beast DDR4" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio (ARS) - Solo números</label>
-                            <input type="number" id="mem-precio" placeholder="Ej: 35000" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Tipo de Componente</label>
-                            <select id="mem-tipo" required>
-                                <option value="" disabled selected>Seleccioná...</option>
+                            <label>1. Tipo de Componente</label>
+                            <select id="mem-tipo" onchange="adaptarFormularioMemoria()" required>
+                                <option value="" disabled selected>Primero seleccioná el tipo...</option>
                                 <option value="Memoria RAM">Memoria RAM</option>
                                 <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Capacidad / Frecuencia</label>
-                            <input type="text" id="mem-capacidad" placeholder="Ej: 8GB 3200MHz / 480GB SSD" required>
+                            <label>2. Título del Componente</label>
+                            <input type="text" id="mem-titulo" placeholder="Ej: Kingston Fury Beast DDR4" required>
                         </div>
                     </div>
+                    
+                    <div id="campos-dinamicos-memoria" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lbl-mem-capacidad">Capacidad</label>
+                                <input type="text" id="mem-capacidad" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lbl-mem-detalle-1">Detalle 1</label>
+                                <input type="text" id="mem-detalle-1" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lbl-mem-detalle-2">Detalle 2</label>
+                                <input type="text" id="mem-detalle-2" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lbl-mem-estado">Estado / Instalación</label>
+                                <input type="text" id="mem-estado" required>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Estado</label>
-                            <input type="text" id="mem-estado" placeholder="Ej: Nuevo / Usado Premium" required>
+                            <label>Precio (ARS) - Solo números</label>
+                            <input type="number" id="mem-precio" placeholder="Ej: 35000" required>
                         </div>
                         <div class="form-group">
                             <label>Subir Fotos (Se puede múltiple)</label>
@@ -598,14 +612,47 @@
             });
         }
 
+        // MAGIA VISUAL: Cambia los textos del formulario según si es RAM o SSD
+        function adaptarFormularioMemoria() {
+            const tipo = document.getElementById('mem-tipo').value;
+            const contenedor = document.getElementById('campos-dinamicos-memoria');
+            contenedor.style.display = 'block'; // Mostramos la cajita
+            
+            if (tipo === 'Memoria RAM') {
+                document.getElementById('lbl-mem-capacidad').innerText = 'Capacidad (Ej: 8GB, 16GB)';
+                document.getElementById('mem-capacidad').placeholder = 'Ej: 16GB';
+                document.getElementById('lbl-mem-detalle-1').innerText = 'Frecuencia (Ej: 3200MHz)';
+                document.getElementById('mem-detalle-1').placeholder = 'Ej: 3200MHz';
+                document.getElementById('lbl-mem-detalle-2').innerText = 'Formato (Ej: DIMM o SODIMM)';
+                document.getElementById('mem-detalle-2').placeholder = 'Ej: DIMM (Para PC)';
+                document.getElementById('lbl-mem-estado').innerText = 'Estado (Ej: Nuevo / Sellado)';
+                document.getElementById('mem-estado').placeholder = 'Ej: Nuevo / Sellado';
+            } else {
+                document.getElementById('lbl-mem-capacidad').innerText = 'Capacidad (Ej: 240GB, 1TB)';
+                document.getElementById('mem-capacidad').placeholder = 'Ej: 500GB';
+                document.getElementById('lbl-mem-detalle-1').innerText = 'Tipo (Ej: SATA, M.2 NVMe)';
+                document.getElementById('mem-detalle-1').placeholder = 'Ej: M.2 NVMe';
+                document.getElementById('lbl-mem-detalle-2').innerText = 'Velocidad (Ej: Ultra Rápida)';
+                document.getElementById('mem-detalle-2').placeholder = 'Ej: Ultra Rápida';
+                document.getElementById('lbl-mem-estado').innerText = 'Instalación (Ej: Opcional en taller)';
+                document.getElementById('mem-estado').placeholder = 'Ej: Opcional en taller';
+            }
+        }
+
         function prepararEdicionMemoria(id) {
             const item = memoriasActuales.find(m => m.id === id);
             if (!item) return;
             editandoMemId = id;
+            
+            // Elegimos el tipo y disparamos la magia para que aparezca la cajita
+            document.getElementById('mem-tipo').value = item.tipo;
+            adaptarFormularioMemoria();
+
             document.getElementById('mem-titulo').value = item.titulo;
             document.getElementById('mem-precio').value = item.precio;
-            document.getElementById('mem-tipo').value = item.tipo;
             document.getElementById('mem-capacidad').value = item.capacidad;
+            document.getElementById('mem-detalle-1').value = item.detalle_1;
+            document.getElementById('mem-detalle-2').value = item.detalle_2;
             document.getElementById('mem-estado').value = item.estado;
 
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
@@ -617,6 +664,8 @@
         function cancelarEdicionMemoria() {
             editandoMemId = null;
             document.getElementById('form-memorias').reset();
+            // Escondemos la cajita mágica al cancelar
+            document.getElementById('campos-dinamicos-memoria').style.display = 'none'; 
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente';
             document.getElementById('btn-submit-mem').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-mem').style.display = 'none';
@@ -655,6 +704,8 @@
                     titulo: document.getElementById('mem-titulo').value,
                     tipo: document.getElementById('mem-tipo').value,
                     capacidad: document.getElementById('mem-capacidad').value,
+                    detalle_1: document.getElementById('mem-detalle-1').value,
+                    detalle_2: document.getElementById('mem-detalle-2').value,
                     estado: document.getElementById('mem-estado').value,
                     precio: parseInt(document.getElementById('mem-precio').value),
                     imagen: stringDeImagenes

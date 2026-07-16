@@ -319,6 +319,24 @@ async function cargarMemoriasDinamicas() {
             // Texto sin emojis ni acentos raros para evitar rombos en el WhatsApp
             const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el componente " + item.titulo + " (" + item.capacidad + ") que publicaste a $" + precioLindo + ". Tenes stock?");
 
+            // ACA HACEMOS LA MAGIA DE LOS ICONOS Y TEXTOS SEGÚN SI ES RAM O SSD
+            let listaCaracteristicas = '';
+            if (item.tipo === 'Memoria RAM') {
+                listaCaracteristicas = `
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> Capacidad: ${item.capacidad}</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-bolt" style="width: 25px; color: #00F0FF;"></i> Frecuencia: ${item.detalle_1}</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-desktop" style="width: 25px; color: #00F0FF;"></i> Formato: ${item.detalle_2}</li>
+                    <li><i class="fa-solid fa-circle-check" style="width: 25px; color: #00F0FF;"></i> Estado: ${item.estado}</li>
+                `;
+            } else {
+                listaCaracteristicas = `
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> Capacidad: ${item.capacidad}</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> Tipo: ${item.detalle_1}</li>
+                    <li style="margin-bottom: 8px;"><i class="fa-solid fa-rocket" style="width: 25px; color: #00F0FF;"></i> Velocidad: ${item.detalle_2}</li>
+                    <li><i class="fa-solid fa-circle-check" style="width: 25px; color: #00F0FF;"></i> Instalación: ${item.estado}</li>
+                `;
+            }
+
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
@@ -331,9 +349,7 @@ async function cargarMemoriasDinamicas() {
                     
                     <h3>${item.titulo}</h3>
                     <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> ${item.tipo}</li>
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> ${item.capacidad}</li>
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-star" style="width: 25px; color: #00F0FF;"></i> ${item.estado}</li>
+                        ${listaCaracteristicas}
                     </ul>
                     <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                         $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
