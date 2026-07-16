@@ -81,13 +81,15 @@
             <li><a onclick="cambiarSeccion('inicio', this)" class="active"><i class="fa-solid fa-chart-line"></i> Inicio</a></li>
             <li><a onclick="cambiarSeccion('precios', this)"><i class="fa-solid fa-tags"></i> Listado de Precios</a></li>
             <li><a onclick="cambiarSeccion('notebooks', this)"><i class="fa-solid fa-laptop"></i> Listado Notebooks</a></li>
-            <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias</a></li>
+            <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias y SSDs</a></li>
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
         </ul>
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
 
+        <!-- INICIO -->
         <section id="sec-inicio" class="dashboard-section active">
             <h1 class="header-title"><i class="fa-solid fa-chart-line"></i> Resumen de tu Sistema</h1>
             <div class="stats-grid">
@@ -100,12 +102,16 @@
                     <div class="number" id="stat-notebooks">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3>Stock Memorias / SSD</h3>
-                    <div class="number" id="stat-memorias">0</div>
+                    <h3>Stock Memoria RAM</h3>
+                    <div class="number" id="stat-ram">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Stock Discos SSD</h3>
+                    <div class="number" id="stat-ssd">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>Stock Accesorios</h3>
-                    <div class="number" style="color: #a0aec0;">Próximamente</div>
+                    <div class="number" id="stat-accesorios">0</div>
                 </div>
             </div>
         </section>
@@ -235,38 +241,115 @@
                 <form id="form-memorias">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>1. Tipo de Componente</label>
+                            <label>Tipo de Componente</label>
                             <select id="mem-tipo" onchange="adaptarFormularioMemoria()" required>
-                                <option value="" disabled selected>Primero seleccioná el tipo...</option>
+                                <option value="" disabled selected>Seleccioná el tipo...</option>
                                 <option value="Memoria RAM">Memoria RAM</option>
                                 <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>2. Título del Componente</label>
-                            <input type="text" id="mem-titulo" placeholder="Ej: Kingston Fury Beast DDR4" required>
+                            <label>Título del Componente</label>
+                            <input type="text" id="mem-titulo" placeholder="Primero seleccioná el tipo..." required>
                         </div>
                     </div>
                     
-                    <div id="campos-dinamicos-memoria" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
+                    <!-- CAJA MÁGICA RAM -->
+                    <div id="campos-ram" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
                         <div class="form-row">
                             <div class="form-group">
-                                <label id="lbl-mem-capacidad">Capacidad</label>
-                                <input type="text" id="mem-capacidad" required>
+                                <label>Capacidad</label>
+                                <select id="ram-capacidad">
+                                    <option value="4GB">4GB</option>
+                                    <option value="8GB" selected>8GB</option>
+                                    <option value="16GB">16GB</option>
+                                    <option value="32GB">32GB</option>
+                                    <option value="64GB">64GB</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label id="lbl-mem-detalle-1">Detalle 1</label>
-                                <input type="text" id="mem-detalle-1" required>
+                                <label>Frecuencia</label>
+                                <select id="ram-frecuencia">
+                                    <option value="2400MHz">2400MHz</option>
+                                    <option value="2666MHz">2666MHz</option>
+                                    <option value="3000MHz">3000MHz</option>
+                                    <option value="3200MHz" selected>3200MHz</option>
+                                    <option value="3600MHz">3600MHz</option>
+                                    <option value="4800MHz">4800MHz</option>
+                                    <option value="5200MHz">5200MHz</option>
+                                    <option value="5600MHz">5600MHz</option>
+                                    <option value="6000MHz">6000MHz</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label id="lbl-mem-detalle-2">Detalle 2</label>
-                                <input type="text" id="mem-detalle-2" required>
+                                <label>Formato</label>
+                                <select id="ram-formato">
+                                    <optgroup label="Para PC (DIMM)">
+                                        <option value="DIMM (Para PC) DDR3">DIMM (Para PC) DDR3</option>
+                                        <option value="DIMM (Para PC) DDR4" selected>DIMM (Para PC) DDR4</option>
+                                        <option value="DIMM (Para PC) DDR5">DIMM (Para PC) DDR5</option>
+                                    </optgroup>
+                                    <optgroup label="Para Notebook (SODIMM)">
+                                        <option value="SODIMM (Notebook) DDR3">SODIMM (Notebook) DDR3</option>
+                                        <option value="SODIMM (Notebook) DDR4">SODIMM (Notebook) DDR4</option>
+                                        <option value="SODIMM (Notebook) DDR5">SODIMM (Notebook) DDR5</option>
+                                    </optgroup>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label id="lbl-mem-estado">Estado / Instalación</label>
-                                <input type="text" id="mem-estado" required>
+                                <label>Estado</label>
+                                <select id="ram-estado">
+                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
+                                    <option value="Usado Premium">Usado Premium</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CAJA MÁGICA SSD -->
+                    <div id="campos-ssd" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Capacidad de Almacenamiento</label>
+                                <select id="ssd-capacidad">
+                                    <option value="120GB">120GB</option>
+                                    <option value="240GB">240GB</option>
+                                    <option value="256GB">256GB</option>
+                                    <option value="480GB">480GB</option>
+                                    <option value="500GB">500GB</option>
+                                    <option value="512GB">512GB</option>
+                                    <option value="1TB">1TB</option>
+                                    <option value="2TB">2TB</option>
+                                    <option value="4TB">4TB</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de Disco</label>
+                                <select id="ssd-tipo">
+                                    <option value="SSD SATA 2.5''">SSD SATA (Solid State Drive) 2.5"</option>
+                                    <option value="M.2 NVMe">M.2 NVMe</option>
+                                    <option value="M.2 SATA">M.2 SATA</option>
+                                    <option value="HDD Mecánico">HDD (Hard Disk Drive) Mecánico</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Instalación</label>
+                                <select id="ssd-instalacion">
+                                    <option value="Opcional en taller">Opcional en taller</option>
+                                    <option value="Instalación sin cargo">Instalación sin cargo</option>
+                                    <option value="Solo componente">Solo componente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Estado del Disco</label>
+                                <select id="ssd-estado">
+                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
+                                    <option value="Usado Premium">Usado Premium</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -570,29 +653,50 @@
         }
 
         // ==========================================
-        // 3. LÓGICA DE MEMORIAS Y SSDs
+        // 3. LÓGICA DE MEMORIAS Y SSDs (Actualizada)
         // ==========================================
         let memoriasActuales = [];
         let editandoMemId = null;
+
+        // MAGIA VISUAL: Muestra la caja correcta según lo elegido
+        function adaptarFormularioMemoria() {
+            const tipo = document.getElementById('mem-tipo').value;
+            const cajaRam = document.getElementById('campos-ram');
+            const cajaSsd = document.getElementById('campos-ssd');
+            const inputTitulo = document.getElementById('mem-titulo');
+            
+            if (tipo === 'Memoria RAM') {
+                cajaRam.style.display = 'block';
+                cajaSsd.style.display = 'none';
+                inputTitulo.placeholder = 'Ej: Kingston Fury Beast 16GB RGB';
+            } else if (tipo === 'Disco SSD / Almacenamiento') {
+                cajaRam.style.display = 'none';
+                cajaSsd.style.display = 'block';
+                inputTitulo.placeholder = 'Ej: Kingston A400 480GB';
+            }
+        }
 
         async function cargarMemorias() {
             const tabla = document.getElementById('tabla-admin-memorias');
             if(!tabla) return;
             const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
-            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
+            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar.</td></tr>'; return; }
 
             memoriasActuales = data || []; 
-            document.getElementById('stat-memorias').innerText = memoriasActuales.length;
+            
+            // SEPARAMOS LAS ESTADÍSTICAS
+            const ramCount = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
+            const ssdCount = memoriasActuales.filter(m => m.tipo === 'Disco SSD / Almacenamiento').length;
+            document.getElementById('stat-ram').innerText = ramCount;
+            document.getElementById('stat-ssd').innerText = ssdCount;
 
-            if (memoriasActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay memorias registradas.</td></tr>'; return; }
+            if (memoriasActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay componentes registrados.</td></tr>'; return; }
 
             tabla.innerHTML = ''; 
             memoriasActuales.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
-                let imgFondo = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Componente';
-                if (item.imagen && item.imagen.trim() !== '') {
-                    imgFondo = item.imagen.split(',')[0]; 
-                }
+                let imgFondo = 'https://via.placeholder.com/50';
+                if (item.imagen && item.imagen.trim() !== '') { imgFondo = item.imagen.split(',')[0]; }
 
                 tabla.innerHTML += `
                     <tr>
@@ -612,48 +716,30 @@
             });
         }
 
-        // MAGIA VISUAL: Cambia los textos del formulario según si es RAM o SSD
-        function adaptarFormularioMemoria() {
-            const tipo = document.getElementById('mem-tipo').value;
-            const contenedor = document.getElementById('campos-dinamicos-memoria');
-            contenedor.style.display = 'block'; // Mostramos la cajita
-            
-            if (tipo === 'Memoria RAM') {
-                document.getElementById('lbl-mem-capacidad').innerText = 'Capacidad (Ej: 8GB, 16GB)';
-                document.getElementById('mem-capacidad').placeholder = 'Ej: 16GB';
-                document.getElementById('lbl-mem-detalle-1').innerText = 'Frecuencia (Ej: 3200MHz)';
-                document.getElementById('mem-detalle-1').placeholder = 'Ej: 3200MHz';
-                document.getElementById('lbl-mem-detalle-2').innerText = 'Formato (Ej: DIMM o SODIMM)';
-                document.getElementById('mem-detalle-2').placeholder = 'Ej: DIMM (Para PC)';
-                document.getElementById('lbl-mem-estado').innerText = 'Estado (Ej: Nuevo / Sellado)';
-                document.getElementById('mem-estado').placeholder = 'Ej: Nuevo / Sellado';
-            } else {
-                document.getElementById('lbl-mem-capacidad').innerText = 'Capacidad (Ej: 240GB, 1TB)';
-                document.getElementById('mem-capacidad').placeholder = 'Ej: 500GB';
-                document.getElementById('lbl-mem-detalle-1').innerText = 'Tipo (Ej: SATA, M.2 NVMe)';
-                document.getElementById('mem-detalle-1').placeholder = 'Ej: M.2 NVMe';
-                document.getElementById('lbl-mem-detalle-2').innerText = 'Velocidad (Ej: Ultra Rápida)';
-                document.getElementById('mem-detalle-2').placeholder = 'Ej: Ultra Rápida';
-                document.getElementById('lbl-mem-estado').innerText = 'Instalación (Ej: Opcional en taller)';
-                document.getElementById('mem-estado').placeholder = 'Ej: Opcional en taller';
-            }
-        }
-
         function prepararEdicionMemoria(id) {
             const item = memoriasActuales.find(m => m.id === id);
             if (!item) return;
             editandoMemId = id;
             
-            // Elegimos el tipo y disparamos la magia para que aparezca la cajita
+            // Elegimos el tipo y disparamos la magia
             document.getElementById('mem-tipo').value = item.tipo;
             adaptarFormularioMemoria();
 
             document.getElementById('mem-titulo').value = item.titulo;
             document.getElementById('mem-precio').value = item.precio;
-            document.getElementById('mem-capacidad').value = item.capacidad;
-            document.getElementById('mem-detalle-1').value = item.detalle_1;
-            document.getElementById('mem-detalle-2').value = item.detalle_2;
-            document.getElementById('mem-estado').value = item.estado;
+
+            // Rellenamos los combos correspondientes
+            if (item.tipo === 'Memoria RAM') {
+                document.getElementById('ram-capacidad').value = item.capacidad;
+                document.getElementById('ram-frecuencia').value = item.detalle_1;
+                document.getElementById('ram-formato').value = item.detalle_2;
+                document.getElementById('ram-estado').value = item.estado;
+            } else {
+                document.getElementById('ssd-capacidad').value = item.capacidad;
+                document.getElementById('ssd-tipo').value = item.detalle_1;
+                document.getElementById('ssd-instalacion').value = item.detalle_2;
+                document.getElementById('ssd-estado').value = item.estado;
+            }
 
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-mem').style.background = '#00ff66';
@@ -664,8 +750,10 @@
         function cancelarEdicionMemoria() {
             editandoMemId = null;
             document.getElementById('form-memorias').reset();
-            // Escondemos la cajita mágica al cancelar
-            document.getElementById('campos-dinamicos-memoria').style.display = 'none'; 
+            document.getElementById('campos-ram').style.display = 'none';
+            document.getElementById('campos-ssd').style.display = 'none';
+            document.getElementById('mem-titulo').placeholder = 'Primero seleccioná el tipo...';
+            
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente';
             document.getElementById('btn-submit-mem').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-mem').style.display = 'none';
@@ -675,13 +763,12 @@
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-mem');
             const textoOriginal = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo fotos...';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
             btnSubmit.style.pointerEvents = 'none';
 
             try {
                 let stringDeImagenes = "";
                 const inputArchivos = document.getElementById('mem-imagenes');
-                
                 if (inputArchivos.files.length > 0) {
                     let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
@@ -693,20 +780,32 @@
                         urlsSubidas.push(urlData.publicUrl);
                     }
                     stringDeImagenes = urlsSubidas.join(',');
+                } else if (editandoMemId) {
+                    stringDeImagenes = memoriasActuales.find(m => m.id === editandoMemId).imagen || "";
+                }
+
+                // Agarramos los datos de la caja correcta
+                let cap = '', det1 = '', det2 = '', est = '';
+                const tipoSel = document.getElementById('mem-tipo').value;
+                if(tipoSel === 'Memoria RAM') {
+                    cap = document.getElementById('ram-capacidad').value;
+                    det1 = document.getElementById('ram-frecuencia').value;
+                    det2 = document.getElementById('ram-formato').value;
+                    est = document.getElementById('ram-estado').value;
                 } else {
-                    if (editandoMemId) {
-                        const itemViejo = memoriasActuales.find(m => m.id === editandoMemId);
-                        stringDeImagenes = itemViejo.imagen || "";
-                    }
+                    cap = document.getElementById('ssd-capacidad').value;
+                    det1 = document.getElementById('ssd-tipo').value;
+                    det2 = document.getElementById('ssd-instalacion').value;
+                    est = document.getElementById('ssd-estado').value;
                 }
 
                 const payload = {
                     titulo: document.getElementById('mem-titulo').value,
-                    tipo: document.getElementById('mem-tipo').value,
-                    capacidad: document.getElementById('mem-capacidad').value,
-                    detalle_1: document.getElementById('mem-detalle-1').value,
-                    detalle_2: document.getElementById('mem-detalle-2').value,
-                    estado: document.getElementById('mem-estado').value,
+                    tipo: tipoSel,
+                    capacidad: cap,
+                    detalle_1: det1,
+                    detalle_2: det2,
+                    estado: est,
                     precio: parseInt(document.getElementById('mem-precio').value),
                     imagen: stringDeImagenes
                 };
@@ -723,7 +822,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Error al guardar: " + err.message);
+                alert("Error: " + err.message);
             } finally {
                 btnSubmit.innerHTML = textoOriginal;
                 btnSubmit.style.pointerEvents = 'auto';
@@ -733,7 +832,7 @@
         async function borrarMemoria(id) {
             if(confirm("¿Seguro que querés borrar este componente?")) {
                 const { error } = await db.from('memorias').delete().eq('id', id);
-                if (error) alert("Error al borrar: " + error.message); else cargarMemorias();
+                if (error) alert("Error: " + error.message); else cargarMemorias();
             }
         }
 
