@@ -150,6 +150,14 @@
                 </form>
             </div>
 
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
+                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                <select id="filtro-precios" onchange="filtrarPrecios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                    <option value="TODOS">Mostrar Todo</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                </select>
+            </div>
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
                 <table>
                     <thead>
@@ -370,6 +378,14 @@
                 </form>
             </div>
 
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
+                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                <select id="filtro-memorias" onchange="filtrarMemorias()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                    <option value="TODOS">Mostrar Todo</option>
+                    <option value="Memoria RAM">Memoria RAM</option>
+                    <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
+                </select>
+            </div>
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
                 <table>
                     <thead>
@@ -389,6 +405,19 @@
 
         <section id="sec-accesorios" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-keyboard"></i> Listado de Accesorios</h1>
+            
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
+                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                <select id="filtro-accesorios" onchange="filtrarAccesorios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                    <option value="TODOS">Mostrar Todo</option>
+                    <option value="Auriculares">Auriculares</option>
+                    <option value="Cargadores">Cargadores</option>
+                    <option value="Motherboards">Motherboards</option>
+                    <option value="Pendrives">Pendrives</option>
+                    <option value="Otros">Otros</option>
+                </select>
+            </div>
+
             <div class="panel-card" style="text-align: center; padding: 60px;">
                 <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #00F0FF; margin-bottom: 20px;"></i>
                 <h3 style="color: #fff; margin-bottom: 10px;">Sección en construcción</h3>
@@ -399,6 +428,10 @@
     </main>
 
     <script>
+        // =========================================================================
+        // 1. NAVEGACIÓN Y UTILIDADES GENERALES
+        // =========================================================================
+        /* --- 1. Función maestra para alternar la visualización entre secciones del panel --- */
         function cambiarSeccion(idSeccion, elementoBoton) {
             document.querySelectorAll('.dashboard-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('sec-' + idSeccion).classList.add('active');
@@ -406,22 +439,25 @@
             elementoBoton.classList.add('active');
         }
 
+        /* --- 2. Cliente de Supabase para comunicación con la base de datos --- */
         const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        /* --- 3. Muestra una alerta flotante temporal en pantalla cuando la acción es exitosa --- */
         function mostrarToast() {
             const toast = document.getElementById('toast');
             toast.style.display = 'block';
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // ==========================================
-        // 1. LÓGICA DE PRECIOS
-        // ==========================================
+        // =========================================================================
+        // 2. LÓGICA DE LISTADO DE PRECIOS
+        // =========================================================================
         let preciosActuales = [];
         let editandoId = null;
 
+        /* --- 1. Trae los precios desde la base de datos Supabase --- */
         async function cargarPrecios() {
             const tabla = document.getElementById('tabla-admin');
             const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
@@ -430,10 +466,28 @@
             preciosActuales = data || []; 
             document.getElementById('stat-precios').innerText = preciosActuales.length;
 
-            if (preciosActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay precios registrados.</td></tr>'; return; }
+            renderizarTablaPrecios();
+        }
+
+        /* --- 2. Dibuja la tabla de precios en pantalla aplicando el filtro seleccionado --- */
+        function renderizarTablaPrecios() {
+            const tabla = document.getElementById('tabla-admin');
+            const filtro = document.getElementById('filtro-precios').value;
+
+            // Filtramos en memoria de manera instantánea
+            const datosFiltrados = preciosActuales.filter(item => {
+                if (filtro === 'TODOS') return true;
+                // Comparamos sin importar mayúsculas/minúsculas ('hardware' vs 'Hardware')
+                return item.categoria.toLowerCase() === filtro.toLowerCase();
+            });
+
+            if (datosFiltrados.length === 0) { 
+                tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No hay precios cargados para esta categoría.</td></tr>'; 
+                return; 
+            }
 
             tabla.innerHTML = ''; 
-            preciosActuales.forEach(item => {
+            datosFiltrados.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
                 const categoriaClase = item.categoria === 'software' || item.categoria === 'hardware' ? item.categoria : 'software';
                 const categoriaTexto = item.categoria === 'hardware' ? 'Hardware' : 'Software';
@@ -454,6 +508,12 @@
             });
         }
 
+        /* --- 3. Ejecuta el redibujado de la tabla al cambiar la opción en el selector --- */
+        function filtrarPrecios() {
+            renderizarTablaPrecios();
+        }
+
+        /* --- 4. Rellena el formulario con los datos de una fila para poder editarla --- */
         function prepararEdicion(id) {
             const item = preciosActuales.find(p => p.id === id);
             if (!item) return;
@@ -465,18 +525,22 @@
 
             document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit').style.background = '#00ff66';
-            document.getElementById('btn-cancelar').style.display = 'block';
+            document.getElementById('btn-cancelar').style.style.display = 'block';
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        /* --- 5. Limpia el formulario y cancela el modo edición regresando los filtros a TODOS --- */
         function cancelarEdicion() {
             editandoId = null;
             document.getElementById('form-precios').reset();
+            document.getElementById('filtro-precios').value = 'TODOS';
             document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Precio';
             document.getElementById('btn-submit').style.background = '#00F0FF';
             document.getElementById('btn-cancelar').style.display = 'none';
+            renderizarTablaPrecios();
         }
 
+        /* --- 6. Escucha el botón Guardar/Actualizar y envía los datos a Supabase --- */
         document.getElementById('form-precios').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -497,6 +561,7 @@
             mostrarToast(); cancelarEdicion(); cargarPrecios(); 
         });
 
+        /* --- 7. Elimina un precio específico del sistema --- */
         async function borrarPrecio(id) {
             if(confirm("¿Seguro que querés borrar este precio?")) {
                 const { error } = await db.from('precios').delete().eq('id', id);
@@ -504,12 +569,13 @@
             }
         }
 
-        // ==========================================
-        // 2. LÓGICA DE NOTEBOOKS CON SUBIDA DE FOTOS
-        // ==========================================
+        // =========================================================================
+        // 3. LÓGICA DE STOCK DE NOTEBOOKS (Sencilla y Directa)
+        // =========================================================================
         let notebooksActuales = [];
         let editandoNbId = null;
 
+        /* --- 1. Trae y dibuja todo el listado de laptops --- */
         async function cargarNotebooks() {
             const tabla = document.getElementById('tabla-admin-notebooks');
             const { data, error } = await db.from('notebooks').select('*').order('id', { ascending: false });
@@ -523,8 +589,6 @@
             tabla.innerHTML = ''; 
             notebooksActuales.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
-                
-                // Si la columna imagen tiene datos, extraemos la primera foto de la lista (separada por comas)
                 let imgFondo = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
                 if (item.imagen && item.imagen.trim() !== '') {
                     imgFondo = item.imagen.split(',')[0]; 
@@ -548,6 +612,7 @@
             });
         }
 
+        /* --- 2. Carga los datos al formulario para editar la notebook seleccionada --- */
         function prepararEdicionNotebook(id) {
             const item = notebooksActuales.find(n => n.id === id);
             if (!item) return;
@@ -558,7 +623,6 @@
             document.getElementById('nb-almacenamiento').value = item.almacenamiento;
             document.getElementById('nb-bateria').value = item.bateria;
             document.getElementById('nb-precio').value = item.precio;
-            // El input file NO se puede rellenar por seguridad de los navegadores, por eso aclaramos en el HTML que se mantienen solas
 
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-nb').style.background = '#00ff66';
@@ -566,6 +630,7 @@
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        /* --- 3. Limpia el formulario de carga de notebooks --- */
         function cancelarEdicionNotebook() {
             editandoNbId = null;
             document.getElementById('form-notebooks').reset();
@@ -574,43 +639,34 @@
             document.getElementById('btn-cancelar-nb').style.display = 'none';
         }
 
+        /* --- 4. Sube las fotos seleccionadas al Storage y luego impacta los datos en Supabase --- */
         document.getElementById('form-notebooks').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const btnSubmit = document.getElementById('btn-submit-nb');
             const textoOriginal = btnSubmit.innerHTML;
             btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo fotos y guardando...';
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                let stringDeImagenes = ""; // Acá guardaremos la lista de URLs separadas por coma
+                let stringDeImagenes = ""; 
                 const inputArchivos = document.getElementById('nb-imagenes');
                 
-                // Si el usuario seleccionó fotos, las subimos a Supabase Storage
                 if (inputArchivos.files.length > 0) {
                     let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
-                        // Inventamos un nombre único para que no se pisen archivos iguales
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
                         
-                        // Sube la foto al disco duro 'imagenes'
                         const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         if (uploadError) throw uploadError;
                         
-                        // Pedimos la URL pública de la foto recién subida
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
-                    stringDeImagenes = urlsSubidas.join(','); // Unimos todas las URLs con una coma (Ej: url1,url2,url3)
+                    stringDeImagenes = urlsSubidas.join(','); 
                 } else {
-                    // Si NO seleccionó fotos y estamos editando, mantenemos las viejas
                     if (editandoNbId) {
-                        const itemViejo = notebooksActuales.find(n => n.id === editandoNbId);
-                        stringDeImagenes = itemViejo.imagen || "";
-                    } else {
-                        // Si es nuevo y no puso foto, no guardamos nada (el front usará la imagen por defecto)
-                        stringDeImagenes = "";
+                        stringDeImagenes = notebooksActuales.find(n => n.id === editandoNbId).imagen || "";
                     }
                 }
 
@@ -632,19 +688,18 @@
                     if (error) throw error;
                 }
 
-                mostrarToast(); 
-                cancelarEdicionNotebook(); 
-                cargarNotebooks();
+                mostrarToast(); cancelarEdicionNotebook(); cargarNotebooks();
 
             } catch (err) {
                 console.error(err);
-                alert("Error al procesar la solicitud: " + err.message);
+                alert("Error al guardar la Notebook: " + err.message);
             } finally {
                 btnSubmit.innerHTML = textoOriginal;
                 btnSubmit.style.pointerEvents = 'auto';
             }
         });
 
+        /* --- 5. Elimina una notebook de la base de datos --- */
         async function borrarNotebook(id) {
             if(confirm("¿Seguro que querés borrar esta Notebook?")) {
                 const { error } = await db.from('notebooks').delete().eq('id', id);
@@ -652,13 +707,13 @@
             }
         }
 
-        // ==========================================
-        // 3. LÓGICA DE MEMORIAS Y SSDs (Actualizada)
-        // ==========================================
+        // =========================================================================
+        // 4. LÓGICA DE MEMORIAS Y SSDs (Súper Formulario Inteligente)
+        // =========================================================================
         let memoriasActuales = [];
         let editandoMemId = null;
 
-        // MAGIA VISUAL: Muestra la caja correcta según lo elegido
+        /* --- 1. Muestra y adapta dinámicamente las opciones del formulario según el tipo --- */
         function adaptarFormularioMemoria() {
             const tipo = document.getElementById('mem-tipo').value;
             const cajaRam = document.getElementById('campos-ram');
@@ -676,6 +731,7 @@
             }
         }
 
+        /* --- 2. Trae todo el inventario de memorias y SSDs de Supabase --- */
         async function cargarMemorias() {
             const tabla = document.getElementById('tabla-admin-memorias');
             if(!tabla) return;
@@ -684,16 +740,32 @@
 
             memoriasActuales = data || []; 
             
-            // SEPARAMOS LAS ESTADÍSTICAS
+            // SEPARAMOS Y RENDERIZAMOS LAS ESTADÍSTICAS DEL INICIO POR SEPARADO
             const ramCount = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
             const ssdCount = memoriasActuales.filter(m => m.tipo === 'Disco SSD / Almacenamiento').length;
             document.getElementById('stat-ram').innerText = ramCount;
             document.getElementById('stat-ssd').innerText = ssdCount;
 
-            if (memoriasActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay componentes registrados.</td></tr>'; return; }
+            renderizarTablaMemorias();
+        }
+
+        /* --- 3. Dibuja la tabla de memorias aplicando el filtro de búsqueda --- */
+        function renderizarTablaMemorias() {
+            const tabla = document.getElementById('tabla-admin-memorias');
+            const filtro = document.getElementById('filtro-memorias').value;
+
+            const datosFiltrados = memoriasActuales.filter(item => {
+                if (filtro === 'TODOS') return true;
+                return item.tipo === filtro; 
+            });
+
+            if (datosFiltrados.length === 0) { 
+                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay componentes cargados para esta categoría.</td></tr>'; 
+                return; 
+            }
 
             tabla.innerHTML = ''; 
-            memoriasActuales.forEach(item => {
+            datosFiltrados.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
                 let imgFondo = 'https://via.placeholder.com/50';
                 if (item.imagen && item.imagen.trim() !== '') { imgFondo = item.imagen.split(',')[0]; }
@@ -716,19 +788,23 @@
             });
         }
 
+        /* --- 4. Redibuja los datos de la tabla cuando cambia el filtro del componente --- */
+        function filtrarMemorias() {
+            renderizarTablaMemorias();
+        }
+
+        /* --- 5. Rellena los datos en el selector de formulario que corresponda al editar --- */
         function prepararEdicionMemoria(id) {
             const item = memoriasActuales.find(m => m.id === id);
             if (!item) return;
             editandoMemId = id;
             
-            // Elegimos el tipo y disparamos la magia
             document.getElementById('mem-tipo').value = item.tipo;
             adaptarFormularioMemoria();
 
             document.getElementById('mem-titulo').value = item.titulo;
             document.getElementById('mem-precio').value = item.precio;
 
-            // Rellenamos los combos correspondientes
             if (item.tipo === 'Memoria RAM') {
                 document.getElementById('ram-capacidad').value = item.capacidad;
                 document.getElementById('ram-frecuencia').value = item.detalle_1;
@@ -747,18 +823,22 @@
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        /* --- 6. Limpia el formulario, oculta las cajas dinámicas y restablece los filtros a TODOS --- */
         function cancelarEdicionMemoria() {
             editandoMemId = null;
             document.getElementById('form-memorias').reset();
             document.getElementById('campos-ram').style.display = 'none';
             document.getElementById('campos-ssd').style.display = 'none';
+            document.getElementById('filtro-memorias').value = 'TODOS';
             document.getElementById('mem-titulo').placeholder = 'Primero seleccioná el tipo...';
             
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente';
             document.getElementById('btn-submit-mem').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-mem').style.display = 'none';
+            renderizarTablaMemorias();
         }
 
+        /* --- 7. Envía la información modificada o nueva de la RAM/SSD a la base de datos --- */
         document.getElementById('form-memorias').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-mem');
@@ -784,7 +864,6 @@
                     stringDeImagenes = memoriasActuales.find(m => m.id === editandoMemId).imagen || "";
                 }
 
-                // Agarramos los datos de la caja correcta
                 let cap = '', det1 = '', det2 = '', est = '';
                 const tipoSel = document.getElementById('mem-tipo').value;
                 if(tipoSel === 'Memoria RAM') {
@@ -822,21 +901,24 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Error: " + err.message);
+                alert("Error al guardar componente: " + err.message);
             } finally {
                 btnSubmit.innerHTML = textoOriginal;
                 btnSubmit.style.pointerEvents = 'auto';
             }
         });
 
+        /* --- 8. Elimina de manera física la memoria/SSD --- */
         async function borrarMemoria(id) {
             if(confirm("¿Seguro que querés borrar este componente?")) {
                 const { error } = await db.from('memorias').delete().eq('id', id);
-                if (error) alert("Error: " + error.message); else cargarMemorias();
+                if (error) alert("Error al borrar: " + error.message); else cargarMemorias();
             }
         }
 
-        // Al iniciar, cargamos todo
+        // =========================================================================
+        // 5. CARGA DE DATOS AL INICIAR LA PANTALLA
+        // =========================================================================
         cargarPrecios();
         cargarNotebooks();
         cargarMemorias();
