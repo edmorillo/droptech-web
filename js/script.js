@@ -145,22 +145,14 @@ if (videoModalSection) {
 // ==========================================
 // 5. ANIMACIONES AL SCROLLEAR Y POSICION
 // ==========================================
-if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+// Le devolvemos el control nativo al navegador para que recuerde el scroll en celulares al deslizar "Atrás"
+if ('scrollRestoration' in history) { history.scrollRestoration = 'auto'; }
 
 window.addEventListener('load', () => {
     if (window.location.hash) {
         const targetSection = document.querySelector(window.location.hash);
         if (targetSection) { setTimeout(() => { targetSection.scrollIntoView({ behavior: 'smooth' }); }, 100); }
-    } else {
-        const pagePath = window.location.pathname;
-        const currentScroll = sessionStorage.getItem('scroll_' + pagePath);
-        if (currentScroll) { window.scrollTo(0, parseInt(currentScroll, 10)); }
     }
-});
-
-window.addEventListener('beforeunload', () => {
-    const pagePath = window.location.pathname;
-    sessionStorage.setItem('scroll_' + pagePath, window.scrollY);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
