@@ -1323,7 +1323,7 @@ h2 {
 }
 
 /* ==========================================
-   PARCHES VISUALES (ZOOM 90%, TEXTOS Y MENÚ MÓVIL)
+   PARCHES VISUALES (ZOOM 90%, MENÚ Y TIENDA MÓVIL)
    ========================================== */
 
 /* 1. EFECTO ZOOM 90% SOLO EN COMPUTADORAS */
@@ -1335,17 +1335,7 @@ h2 {
     }
 }
 
-/* 2. RECORTAR TEXTOS LARGOS CON PUNTITOS (ELLIPSIS) PARA QUE NO ROMPA LA TARJETA */
-.product-card h3,
-.product-card ul li {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    max-width: 100%;
-    display: block; /* Necesario para que el recorte funcione bien en la lista */
-}
-
-/* 3. ALINEAR EL MENÚ MÓVIL CON EL LOGO DE LA PC */
+/* 2. ALINEAR EL MENÚ MÓVIL CON EL LOGO DE LA PC */
 @media (max-width: 768px) {
     .menu {
         padding-left: 20px !important; 
@@ -1355,7 +1345,7 @@ h2 {
     }
 }
 
-/* 4. ARREGLAR LA 'X' DEL MODAL DE FOTOS (Para que se vea perfecta en celular y PC) */
+/* 3. ARREGLAR LA 'X' DEL MODAL DE FOTOS */
 .close-modal {
     position: fixed !important;
     top: 20px !important;
@@ -1364,7 +1354,7 @@ h2 {
     font-size: 24px !important;
     font-weight: bold !important;
     cursor: pointer !important;
-    z-index: 999999 !important; /* Para que quede por encima de TODO */
+    z-index: 999999 !important;
     background: rgba(0, 0, 0, 0.7) !important;
     width: 45px !important;
     height: 45px !important;
@@ -1379,4 +1369,71 @@ h2 {
 .close-modal:hover {
     background: #00F0FF !important;
     color: #000 !important;
+}
+
+/* 4. DISEÑO 2 COLUMNAS (MERCADOLIBRE) *SOLO* PARA LAS TIENDAS DE PRODUCTOS EN CELULAR */
+@media (max-width: 768px) {
+    #grid-notebooks, #grid-memorias, #grid-accesorios {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 5px !important;
+    }
+    
+    #grid-notebooks .product-card,
+    #grid-memorias .product-card,
+    #grid-accesorios .product-card {
+        padding: 12px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Mantiene el botón siempre abajo */
+    }
+    
+    #grid-notebooks .product-card h3,
+    #grid-memorias .product-card h3,
+    #grid-accesorios .product-card h3 {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #grid-notebooks .product-card ul,
+    #grid-memorias .product-card ul,
+    #grid-accesorios .product-card ul {
+        font-size: 10px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    #grid-notebooks .product-card ul li,
+    #grid-memorias .product-card ul li,
+    #grid-accesorios .product-card ul li {
+        margin-bottom: 5px !important;
+    }
+    
+    #grid-notebooks .product-card div[style*="font-size: 1.5rem"],
+    #grid-memorias .product-card div[style*="font-size: 1.5rem"],
+    #grid-accesorios .product-card div[style*="font-size: 1.5rem"] {
+        font-size: 1.1rem !important;
+        margin-bottom: 15px !important;
+    }
+    
+    #grid-notebooks .product-card .btn-primary,
+    #grid-memorias .product-card .btn-primary,
+    #grid-accesorios .product-card .btn-primary {
+        font-size: 11px !important;
+        padding: 8px !important;
+        margin-top: auto; /* Empuja el botón hacia el final de la tarjeta */
+    }
+}
+
+/* 5. RECORTAR TEXTOS LARGOS (PUNTITOS) SOLO EN LOS PRODUCTOS */
+#grid-notebooks .product-card h3,
+#grid-memorias .product-card h3,
+#grid-accesorios .product-card h3,
+#grid-notebooks .product-card ul li,
+#grid-memorias .product-card ul li,
+#grid-accesorios .product-card ul li {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100%;
+    display: block; 
 }
