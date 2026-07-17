@@ -67,8 +67,12 @@
             padding-top: 30px; 
             border-top: 1px solid rgba(255,255,255,0.05); 
         }
-        .product-description-box h3 { font-size: 20px; color: #fff; margin-bottom: 15px; font-weight: 600; }
-        .product-description-box p { color: #94A3B8; font-size: 14px; line-height: 1.8; white-space: pre-wrap; font-weight: 300; }
+        .product-description-box h3 { font-size: 20px; color: #fff; margin-bottom: 20px; font-weight: 600; }
+        
+        /* ESTILO PARA LA LISTA AUTOMÁTICA DE MERCADOLIBRE */
+        .description-list { list-style-type: disc; padding-left: 20px; color: #94A3B8; font-size: 14px; line-height: 1.8; font-weight: 300; margin: 0; }
+        .description-list li { margin-bottom: 10px; }
+        .description-list li::marker { color: #00F0FF; /* El punto de color cyan */ font-size: 18px; }
 
         /* AJUSTES PERFECTOS PARA EL CELULAR */
         @media (max-width: 768px) {
@@ -188,13 +192,39 @@
                     `;
                 }
 
-                // Armar bloque de descripción si es que tiene texto cargado
+                // Armar bloque de descripción inteligente (Títulos, Negritas y Viñetas)
                 let descripcionHTML = '';
                 if (data.descripcion && data.descripcion.trim() !== '') {
+                    
+                    let lineas = data.descripcion.split('\n');
+                    let listaHTML = '';
+                    let enLista = false;
+                    
+                    lineas.forEach(linea => {
+                        let texto = linea.trim();
+                        if (texto !== '') {
+                            // 1. Convertir negritas estilo WhatsApp (*texto*)
+                            texto = texto.replace(/\*(.*?)\*/g, '<strong style="color: #fff; font-weight: 600;">$1</strong>');
+                            
+                            // 2. Detectar si es un Título (empieza con "# ")
+                            if (texto.startsWith('# ')) {
+                                if (enLista) { listaHTML += '</ul>'; enLista = false; }
+                                let tituloTexto = texto.substring(2).trim();
+                                listaHTML += `<h5 style="color: #fff; margin-top: 25px; margin-bottom: 12px; font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${tituloTexto}</h5>`;
+                            } else {
+                                // 3. Es un ítem de lista normal
+                                if (!enLista) { listaHTML += '<ul class="description-list">'; enLista = true; }
+                                texto = texto.replace(/^[-•]\s*/, ''); // Limpiar si puso guion a mano
+                                listaHTML += `<li>${texto}</li>`;
+                            }
+                        }
+                    });
+                    if (enLista) { listaHTML += '</ul>'; }
+
                     descripcionHTML = `
                         <div class="product-description-box">
-                            <h3>Descripción del producto</h3>
-                            <p>${data.descripcion}</p>
+                            <h3>Lo que tenés que saber de este producto</h3>
+                            ${listaHTML}
                         </div>
                     `;
                 }
