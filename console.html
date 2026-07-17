@@ -224,10 +224,15 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA CAJA DE DESCRIPCIÓN -->
+                    <!-- NUEVA CAJA DE DESCRIPCIÓN CON TIPS -->
                     <div class="form-group">
-                        <label>Descripción y Detalles (Ideal para viñetas y texto largo)</label>
-                        <textarea id="nb-descripcion" rows="5" placeholder="Ej: Equipo en excelentes condiciones...&#10;- Pantalla táctil de 15.6'&#10;- Teclado retroiluminado" style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                            <label style="margin-bottom: 0;">Descripción y Detalles</label>
+                            <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
+                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                            </span>
+                        </div>
+                        <textarea id="nb-descripcion" rows="7" placeholder="Ej:&#10;# Estado de la Batería&#10;Batería original en excelente estado.&#10;Rinde *4 horas* de uso continuo.&#10;&#10;# Detalles Extra&#10;Teclado retroiluminado.&#10;Cargador original incluido." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
                     </div>
                     
                     <div class="form-group">
