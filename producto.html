@@ -26,21 +26,24 @@
         .thumbnail.active { border-color: #00F0FF; opacity: 1; }
         .thumbnail:hover { opacity: 1; }
 
+        /* CAJA DERECHA (Pegajosa en PC) */
         .product-details { 
             background: #111622; 
             padding: 30px; 
             border-radius: 12px; 
             border: 1px solid rgba(0, 240, 255, 0.1);
-            /* LA MAGIA DEL SCROLL ESTÁ ACÁ */
             position: sticky;
-            top: 100px; /* Se queda pegada dejando espacio para el menú navbar */
-            align-self: start; /* Clave para que funcione en un Grid */
+            top: 100px;
+            align-self: start; 
+            /* MAGIA PARA PC: Lo clavamos a la derecha y le dejamos que baje */
+            grid-column: 2; 
+            grid-row: 1 / span 2; 
         }
+        
         .product-tag { font-size: 12px; color: #00F0FF; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
         .product-title { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 20px; line-height: 1.2; }
         .product-price { font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 10px; }
         .product-price span { font-size: 16px; color: #00ff66; font-weight: 500; }
-        
         .discount-info { color: #00ff66; font-size: 14px; font-weight: 500; margin-bottom: 30px; display: flex; align-items: center; gap: 8px; }
 
         .specs-list { list-style: none; padding: 0; margin-bottom: 30px; }
@@ -55,15 +58,28 @@
         .safe-buy { text-align: center; color: #94A3B8; font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
         .safe-buy i { color: #00F0FF; }
 
-        /* NUEVA CAJA DE DESCRIPCIÓN TIPO MERCADOLIBRE */
-        .product-description-box { margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+        /* CAJA DE DESCRIPCIÓN TIPO MERCADOLIBRE */
+        .product-description-box { 
+            /* MAGIA PARA PC: Lo clavamos a la izquierda, justo debajo de la galería */
+            grid-column: 1; 
+            grid-row: 2; 
+            margin-top: 20px; 
+            padding-top: 30px; 
+            border-top: 1px solid rgba(255,255,255,0.05); 
+        }
         .product-description-box h3 { font-size: 20px; color: #fff; margin-bottom: 15px; font-weight: 600; }
         .product-description-box p { color: #94A3B8; font-size: 14px; line-height: 1.8; white-space: pre-wrap; font-weight: 300; }
 
+        /* AJUSTES PERFECTOS PARA EL CELULAR */
         @media (max-width: 768px) {
             .product-container { grid-template-columns: 1fr; margin-top: 100px; gap: 20px; }
             .product-title { font-size: 22px; }
             .main-image { height: 300px; }
+            
+            /* ORDENAMIENTO ESTILO MERCADOLIBRE (MÓVIL) */
+            .product-gallery { grid-column: 1; grid-row: 1; } /* 1ro: Fotos */
+            .product-details { grid-column: 1; grid-row: 2; position: relative; top: 0; } /* 2do: Precio y Botón (y desactivamos el sticky) */
+            .product-description-box { grid-column: 1; grid-row: 3; margin-top: 10px; } /* 3ro: Descripción al fondo */
         }
     </style>
 </head>
@@ -185,16 +201,15 @@
 
                 // Inyectar HTML
                 contenedor.innerHTML = `
+                    <!-- 1. CAJA DE GALERÍA -->
                     <div class="product-gallery">
                         <img src="${arrayImagenes[0]}" class="main-image" id="img-principal" onclick="openGalleryDinamic('${data.imagen || ''}')">
                         <div class="thumbnail-container">
                             ${miniaturasHTML}
                         </div>
-                        
-                        <!-- ACÁ MUDAMOS LA DESCRIPCIÓN: Rellena el vacío debajo de las fotos -->
-                        ${descripcionHTML}
                     </div>
                     
+                    <!-- 2. CAJA DE COMPRA (PRECIO Y BOTÓN) -->
                     <div class="product-details">
                         <span class="product-tag">${tagTexto}</span>
                         <h1 class="product-title">${data.titulo}</h1>
@@ -215,6 +230,9 @@
                             <span><i class="fa-solid fa-truck-fast"></i> Envíos o retiros a coordinar en Lugano (CABA)</span>
                         </div>
                     </div>
+
+                    <!-- 3. CAJA DE DESCRIPCIÓN (El CSS decide dónde la dibuja según la pantalla) -->
+                    ${descripcionHTML}
                 `;
 
             } catch (err) {
