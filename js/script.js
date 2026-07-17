@@ -243,15 +243,13 @@ async function cargarNotebooksDinamicas() {
 
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
-                    <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
-                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
-                        <div class="img-overlay">
-                            <i class="fa-solid fa-expand"></i>
-                            <span>Ver galería</span>
+                    <a href="producto.html?id=${item.id}&cat=notebooks" style="text-decoration: none; color: inherit;">
+                        <div class="prod-image-container">
+                            <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                            <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                         </div>
-                    </div>
-                    
-                    <h3>${item.titulo}</h3>
+                        <h3>${item.titulo}</h3>
+                    </a>
                     <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                         <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> ${item.procesador}</li>
                         <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> ${item.ram}</li>
@@ -261,8 +259,8 @@ async function cargarNotebooksDinamicas() {
                     <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                         $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
                     </div>
-                    <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                        <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                    <a href="producto.html?id=${item.id}&cat=notebooks" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                        Ver Detalles
                     </a>
                 </div>
             `;
@@ -348,19 +346,21 @@ function renderizarMemoriasPublicas(filtro) {
 
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
-                <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
-                    <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
-                    <div class="img-overlay"><i class="fa-solid fa-expand"></i><span>Ver galeria</span></div>
-                </div>
-                <h3>${item.titulo}</h3>
+                <a href="producto.html?id=${item.id}&cat=memorias" style="text-decoration: none; color: inherit;">
+                    <div class="prod-image-container">
+                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                        <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
+                    </div>
+                    <h3>${item.titulo}</h3>
+                </a>
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     ${listaCaracteristicas}
                 </ul>
                 <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                     $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
                 </div>
-                <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                <a href="producto.html?id=${item.id}&cat=memorias" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    Ver Detalles
                 </a>
             </div>
         `;
@@ -426,19 +426,21 @@ function renderizarAccesoriosPublicos(filtro) {
 
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
-                <div class="prod-image-container" onclick="openGalleryDinamic('${item.imagen || ''}')">
-                    <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
-                    <div class="img-overlay"><i class="fa-solid fa-expand"></i><span>Ver galeria</span></div>
-                </div>
-                <h3>${item.titulo}</h3>
+                <a href="producto.html?id=${item.id}&cat=accesorios" style="text-decoration: none; color: inherit;">
+                    <div class="prod-image-container">
+                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                        <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
+                    </div>
+                    <h3>${item.titulo}</h3>
+                </a>
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     ${listaCaracteristicas}
                 </ul>
                 <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
                     $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
                 </div>
-                <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
-                    <i class="fa-brands fa-whatsapp"></i> Consultar Disponibilidad
+                <a href="producto.html?id=${item.id}&cat=accesorios" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
+                    Ver Detalles
                 </a>
             </div>
         `;
