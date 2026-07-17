@@ -46,6 +46,11 @@
         .safe-buy { text-align: center; color: #94A3B8; font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
         .safe-buy i { color: #00F0FF; }
 
+        /* NUEVA CAJA DE DESCRIPCIÓN TIPO MERCADOLIBRE */
+        .product-description-box { margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .product-description-box h3 { font-size: 20px; color: #fff; margin-bottom: 15px; font-weight: 600; }
+        .product-description-box p { color: #94A3B8; font-size: 14px; line-height: 1.8; white-space: pre-wrap; font-weight: 300; }
+
         @media (max-width: 768px) {
             .product-container { grid-template-columns: 1fr; margin-top: 100px; gap: 20px; }
             .product-title { font-size: 22px; }
@@ -158,6 +163,17 @@
                     `;
                 }
 
+                // Armar bloque de descripción si es que tiene texto cargado
+                let descripcionHTML = '';
+                if (data.descripcion && data.descripcion.trim() !== '') {
+                    descripcionHTML = `
+                        <div class="product-description-box">
+                            <h3>Descripción del producto</h3>
+                            <p>${data.descripcion}</p>
+                        </div>
+                    `;
+                }
+
                 // Inyectar HTML
                 contenedor.innerHTML = `
                     <div class="product-gallery">
@@ -185,6 +201,8 @@
                             <span><i class="fa-solid fa-shield-halved"></i> Compra Protegida y Garantizada</span>
                             <span><i class="fa-solid fa-truck-fast"></i> Envíos o retiros a coordinar en Lugano (CABA)</span>
                         </div>
+
+                        ${descripcionHTML}
                     </div>
                 `;
 

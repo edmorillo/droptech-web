@@ -223,6 +223,12 @@
                             <input type="text" id="nb-bateria" placeholder="Ej: Batería en excelente estado" required>
                         </div>
                     </div>
+
+                    <!-- NUEVA CAJA DE DESCRIPCIÓN -->
+                    <div class="form-group">
+                        <label>Descripción y Detalles (Ideal para viñetas y texto largo)</label>
+                        <textarea id="nb-descripcion" rows="5" placeholder="Ej: Equipo en excelentes condiciones...&#10;- Pantalla táctil de 15.6'&#10;- Teclado retroiluminado" style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
+                    </div>
                     
                     <div class="form-group">
                         <label>Subir Fotos del Equipo (Podés seleccionar varias a la vez)</label>
@@ -706,6 +712,7 @@
             document.getElementById('nb-ram').value = item.ram;
             document.getElementById('nb-almacenamiento').value = item.almacenamiento;
             document.getElementById('nb-bateria').value = item.bateria;
+            document.getElementById('nb-descripcion').value = item.descripcion || '';
             document.getElementById('nb-precio').value = item.precio;
 
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
@@ -760,6 +767,7 @@
                     ram: document.getElementById('nb-ram').value,
                     almacenamiento: document.getElementById('nb-almacenamiento').value,
                     bateria: document.getElementById('nb-bateria').value,
+                    descripcion: document.getElementById('nb-descripcion').value,
                     precio: parseInt(document.getElementById('nb-precio').value),
                     imagen: stringDeImagenes
                 };
