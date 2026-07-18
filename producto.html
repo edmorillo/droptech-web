@@ -69,7 +69,8 @@
         }
         .maximus-price-green .header { color: #166534; font-size: 13px; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
         .maximus-price-green .amount { color: #16a34a; font-size: 32px; font-weight: 800; }
-        .maximus-price-green .tag { position: absolute; top: 15px; right: 15px; background: #22c55e; color: white; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; }
+        .maximus-price-green .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .maximus-price-green .tag { background: #22c55e; color: white; font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 4px; }
         
         .maximus-price-white {
             background-color: #fff;
@@ -288,8 +289,10 @@
                         <!-- CAJAS DE PRECIO ESTILO MAXIMUS -->
                         <div class="maximus-price-green">
                             <div class="header"><i class="fa-solid fa-money-bill-wave"></i> Efectivo / Transferencia / Dinero en MP</div>
-                            <div class="amount">$${precioFormateado}</div>
-                            <div class="tag">MEJOR PRECIO</div>
+                            <div class="price-row">
+                                <div class="amount">$${precioFormateado}</div>
+                                <div class="tag">MEJOR PRECIO</div>
+                            </div>
                         </div>
 
                         <div class="maximus-price-white">
