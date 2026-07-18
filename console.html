@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Computadoras Lei</title>
+    <title>Console | Computadoras Lei</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -36,10 +36,9 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: #94A3B8; font-size: 13px; font-weight: 600; text-transform: uppercase; }
-        input, select { width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: #00F0FF; }
+        input, select, textarea { width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: #00F0FF; }
         
-        /* Estilo especial para el input de archivos */
         input[type="file"] { padding: 10px; background: #070A0F; color: #94A3B8; cursor: pointer; }
         input[type="file"]::-webkit-file-upload-button { background: #00F0FF; color: #000; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; margin-right: 15px; transition: 0.3s; }
         input[type="file"]::-webkit-file-upload-button:hover { background: #00B8CC; }
@@ -64,7 +63,7 @@
         .badge.software { background: rgba(0, 240, 255, 0.1); color: #00F0FF; border: 1px solid #00F0FF; }
         .badge.hardware { background: rgba(240, 180, 0, 0.1); color: #f0b400; border: 1px solid #f0b400; }
         
-        .toast { position: fixed; bottom: 30px; right: 30px; background: #00ff66; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: 700; display: none; z-index: 999; box-shadow: 0 5px 15px rgba(0, 255, 102, 0.3); }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #00ff66; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: 700; display: none; z-index: 999999; box-shadow: 0 5px 15px rgba(0, 255, 102, 0.3); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -72,6 +71,21 @@
 <body>
 
     <div class="toast" id="toast"><i class="fa-solid fa-check"></i> Operación exitosa</div>
+
+    <!-- MODAL DE ELIMINACIÓN CENTRADO -->
+    <div id="modal-eliminar" class="modal" style="display: none; position: fixed; z-index: 999999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #111622; padding: 35px; border-radius: 12px; border: 1px solid rgba(255, 74, 74, 0.3); text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(255, 74, 74, 0.1);">
+            <div style="width: 70px; height: 70px; background: rgba(255, 74, 74, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 35px; color: #ff4a4a;"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 20px; margin-bottom: 10px;">¿Estás seguro?</h3>
+            <p style="color: #94A3B8; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Esta acción no se puede deshacer. El elemento se borrará de forma permanente de tu base de datos.</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="cerrarModalEliminar()" style="flex: 1; background: transparent; color: #fff; padding: 12px 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s;">Cancelar</button>
+                <button id="btn-confirmar-eliminar" style="flex: 1; background: #ff4a4a; color: #fff; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 74, 74, 0.3);">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
 
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -128,6 +142,7 @@
             </div>
         </section>
 
+        <!-- SECCIÓN PRECIOS -->
         <section id="sec-precios" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-tags"></i> Listado de Precios</h1>
             
@@ -162,20 +177,28 @@
                 </form>
             </div>
 
-            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
-                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
-                <select id="filtro-precios" onchange="filtrarPrecios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
-                    <option value="TODOS">Mostrar Todo</option>
-                    <option value="Hardware">Hardware</option>
-                    <option value="Software">Software</option>
-                </select>
+            <!-- FILTRO Y BUSCADOR -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                    <select id="filtro-precios" onchange="filtrarPrecios()" style="width: auto; min-width: 180px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                        <option value="TODOS">Mostrar Todo</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Software">Software</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00F0FF;"></i>
+                    <input type="text" id="busqueda-precios" oninput="filtrarPrecios()" placeholder="Buscar por nombre del servicio o compatibilidad..." style="width: 100%; padding: 10px 15px 10px 40px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; outline: none; transition: 0.3s;">
+                </div>
             </div>
+
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
                 <table>
                     <thead>
                         <tr>
                             <th>Categoría</th>
-                            <th>Servicio</th>
+                            <th>Servicio (A-Z)</th>
                             <th>Compatibilidad</th>
                             <th>Precio</th>
                             <th>Acciones</th>
@@ -188,6 +211,7 @@
             </div>
         </section>
 
+        <!-- SECCIÓN NOTEBOOKS -->
         <section id="sec-notebooks" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-laptop"></i> Listado de Notebooks</h1>
             
@@ -224,7 +248,6 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA CAJA DE DESCRIPCIÓN CON TIPS -->
                     <div class="form-group">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                             <label style="margin-bottom: 0;">Descripción y Detalles</label>
@@ -232,20 +255,26 @@
                                 <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
                             </span>
                         </div>
-                        <textarea id="nb-descripcion" rows="7" placeholder="Ej:&#10;# Estado de la Batería&#10;Batería original en excelente estado.&#10;Rinde *4 horas* de uso continuo.&#10;&#10;# Detalles Extra&#10;Teclado retroiluminado.&#10;Cargador original incluido." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
+                        <textarea id="nb-descripcion" rows="7" placeholder="Ej:&#10;# Estado de la Batería&#10;Batería original en excelente estado.&#10;Rinde *4 horas* de uso continuo." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label>Subir Fotos del Equipo (Podés seleccionar varias a la vez)</label>
+                        <label>Subir Fotos del Equipo</label>
                         <input type="file" id="nb-imagenes" accept="image/*" multiple>
-                        <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;">
-                            <i class="fa-solid fa-circle-info"></i> Mantené presionado 'Ctrl' al seleccionar para subir varias. La primera será la portada. Si editás el equipo y no subís fotos nuevas, se mantienen las anteriores.
-                        </small>
+                        <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionado 'Ctrl' al seleccionar para subir varias.</small>
                     </div>
                     
                     <button type="submit" id="btn-submit-nb" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook</button>
                     <button type="button" id="btn-cancelar-nb" onclick="cancelarEdicionNotebook()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
                 </form>
+            </div>
+
+            <!-- BUSCADOR -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; margin-left: 5px;">
+                <div style="flex: 1; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00F0FF;"></i>
+                    <input type="text" id="busqueda-notebooks" oninput="filtrarNotebooks()" placeholder="Buscar por modelo o procesador..." style="width: 100%; padding: 10px 15px 10px 40px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; outline: none; transition: 0.3s;">
+                </div>
             </div>
 
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
@@ -265,6 +294,7 @@
             </div>
         </section>
 
+        <!-- SECCIÓN MEMORIAS -->
         <section id="sec-memorias" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-memory"></i> Listado de Memorias y SSDs</h1>
             
@@ -285,104 +315,38 @@
                         </div>
                     </div>
                     
-                    <!-- CAJA MÁGICA RAM -->
+                    <!-- CAJAS MÁGICAS (IGUALES A ANTES) -->
                     <div id="campos-ram" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Capacidad</label>
-                                <select id="ram-capacidad">
-                                    <option value="4GB">4GB</option>
-                                    <option value="8GB" selected>8GB</option>
-                                    <option value="16GB">16GB</option>
-                                    <option value="32GB">32GB</option>
-                                    <option value="64GB">64GB</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Frecuencia</label>
-                                <select id="ram-frecuencia">
-                                    <option value="2400MHz">2400MHz</option>
-                                    <option value="2666MHz">2666MHz</option>
-                                    <option value="3000MHz">3000MHz</option>
-                                    <option value="3200MHz" selected>3200MHz</option>
-                                    <option value="3600MHz">3600MHz</option>
-                                    <option value="4800MHz">4800MHz</option>
-                                    <option value="5200MHz">5200MHz</option>
-                                    <option value="5600MHz">5600MHz</option>
-                                    <option value="6000MHz">6000MHz</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Capacidad</label><select id="ram-capacidad"><option value="4GB">4GB</option><option value="8GB" selected>8GB</option><option value="16GB">16GB</option><option value="32GB">32GB</option><option value="64GB">64GB</option></select></div>
+                            <div class="form-group"><label>Frecuencia</label><select id="ram-frecuencia"><option value="2400MHz">2400MHz</option><option value="2666MHz">2666MHz</option><option value="3000MHz">3000MHz</option><option value="3200MHz" selected>3200MHz</option><option value="3600MHz">3600MHz</option><option value="4800MHz">4800MHz</option><option value="5200MHz">5200MHz</option><option value="5600MHz">5600MHz</option><option value="6000MHz">6000MHz</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Formato</label>
-                                <select id="ram-formato">
-                                    <optgroup label="Para PC (DIMM)">
-                                        <option value="DIMM (Para PC) DDR3">DIMM (Para PC) DDR3</option>
-                                        <option value="DIMM (Para PC) DDR4" selected>DIMM (Para PC) DDR4</option>
-                                        <option value="DIMM (Para PC) DDR5">DIMM (Para PC) DDR5</option>
-                                    </optgroup>
-                                    <optgroup label="Para Notebook (SODIMM)">
-                                        <option value="SODIMM (Notebook) DDR3">SODIMM (Notebook) DDR3</option>
-                                        <option value="SODIMM (Notebook) DDR4">SODIMM (Notebook) DDR4</option>
-                                        <option value="SODIMM (Notebook) DDR5">SODIMM (Notebook) DDR5</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Estado</label>
-                                <select id="ram-estado">
-                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
-                                    <option value="Usado Premium">Usado Premium</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Formato</label><select id="ram-formato"><optgroup label="Para PC (DIMM)"><option value="DIMM (Para PC) DDR3">DIMM (Para PC) DDR3</option><option value="DIMM (Para PC) DDR4" selected>DIMM (Para PC) DDR4</option><option value="DIMM (Para PC) DDR5">DIMM (Para PC) DDR5</option></optgroup><optgroup label="Para Notebook (SODIMM)"><option value="SODIMM (Notebook) DDR3">SODIMM (Notebook) DDR3</option><option value="SODIMM (Notebook) DDR4">SODIMM (Notebook) DDR4</option><option value="SODIMM (Notebook) DDR5">SODIMM (Notebook) DDR5</option></optgroup></select></div>
+                            <div class="form-group"><label>Estado</label><select id="ram-estado"><option value="Nuevo / Sellado">Nuevo / Sellado</option><option value="Usado Premium">Usado Premium</option></select></div>
                         </div>
                     </div>
 
-                    <!-- CAJA MÁGICA SSD -->
                     <div id="campos-ssd" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Capacidad de Almacenamiento</label>
-                                <select id="ssd-capacidad">
-                                    <option value="120GB">120GB</option>
-                                    <option value="240GB">240GB</option>
-                                    <option value="256GB">256GB</option>
-                                    <option value="480GB">480GB</option>
-                                    <option value="500GB">500GB</option>
-                                    <option value="512GB">512GB</option>
-                                    <option value="1TB">1TB</option>
-                                    <option value="2TB">2TB</option>
-                                    <option value="4TB">4TB</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo de Disco</label>
-                                <select id="ssd-tipo">
-                                    <option value="SSD SATA 2.5''">SSD SATA (Solid State Drive) 2.5"</option>
-                                    <option value="M.2 NVMe">M.2 NVMe</option>
-                                    <option value="M.2 SATA">M.2 SATA</option>
-                                    <option value="HDD Mecánico">HDD (Hard Disk Drive) Mecánico</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Capacidad de Almacenamiento</label><select id="ssd-capacidad"><option value="120GB">120GB</option><option value="240GB">240GB</option><option value="256GB">256GB</option><option value="480GB">480GB</option><option value="500GB">500GB</option><option value="512GB">512GB</option><option value="1TB">1TB</option><option value="2TB">2TB</option><option value="4TB">4TB</option></select></div>
+                            <div class="form-group"><label>Tipo de Disco</label><select id="ssd-tipo"><option value="SSD SATA 2.5''">SSD SATA (Solid State Drive) 2.5"</option><option value="M.2 NVMe">M.2 NVMe</option><option value="M.2 SATA">M.2 SATA</option><option value="HDD Mecánico">HDD (Hard Disk Drive) Mecánico</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Instalación</label>
-                                <select id="ssd-instalacion">
-                                    <option value="Opcional en taller">Opcional en taller</option>
-                                    <option value="Instalación sin cargo">Instalación sin cargo</option>
-                                    <option value="Solo componente">Solo componente</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Estado del Disco</label>
-                                <select id="ssd-estado">
-                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
-                                    <option value="Usado Premium">Usado Premium</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Instalación</label><select id="ssd-instalacion"><option value="Opcional en taller">Opcional en taller</option><option value="Instalación sin cargo">Instalación sin cargo</option><option value="Solo componente">Solo componente</option></select></div>
+                            <div class="form-group"><label>Estado del Disco</label><select id="ssd-estado"><option value="Nuevo / Sellado">Nuevo / Sellado</option><option value="Usado Premium">Usado Premium</option></select></div>
                         </div>
+                    </div>
+
+                    <!-- NUEVA CAJA DE DESCRIPCIÓN PARA MEMORIAS -->
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                            <label style="margin-bottom: 0;">Descripción y Detalles Adicionales</label>
+                            <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
+                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                            </span>
+                        </div>
+                        <textarea id="mem-descripcion" rows="5" placeholder="Ej:&#10;# Características principales&#10;Totalmente nueva y sellada.&#10;*Compatible con AMD e Intel*." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
                     </div>
 
                     <div class="form-row">
@@ -401,14 +365,22 @@
                 </form>
             </div>
 
-            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
-                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
-                <select id="filtro-memorias" onchange="filtrarMemorias()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
-                    <option value="TODOS">Mostrar Todo</option>
-                    <option value="Memoria RAM">Memoria RAM</option>
-                    <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
-                </select>
+            <!-- FILTRO Y BUSCADOR -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                    <select id="filtro-memorias" onchange="filtrarMemorias()" style="width: auto; min-width: 180px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                        <option value="TODOS">Mostrar Todo</option>
+                        <option value="Memoria RAM">Memoria RAM</option>
+                        <option value="Disco SSD / Almacenamiento">Disco SSD / Almacenamiento</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00F0FF;"></i>
+                    <input type="text" id="busqueda-memorias" oninput="filtrarMemorias()" placeholder="Buscar por título o capacidad..." style="width: 100%; padding: 10px 15px 10px 40px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; outline: none; transition: 0.3s;">
+                </div>
             </div>
+
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
                 <table>
                     <thead>
@@ -426,10 +398,9 @@
             </div>
         </section>
 
+        <!-- SECCIÓN ACCESORIOS -->
         <section id="sec-accesorios" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-keyboard"></i> Listado de Accesorios</h1>
-            
-        
 
             <div class="panel-card">
                 <form id="form-accesorios">
@@ -453,28 +424,24 @@
                     
                     <div id="campos-dinamicos-acc" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
                         <div class="form-row">
-                            <div class="form-group">
-                                <label id="lbl-acc-detalle-1">Detalle 1</label>
-                                <input type="text" id="acc-detalle-1" required>
-                            </div>
-                            <div class="form-group">
-                                <label id="lbl-acc-detalle-2">Detalle 2</label>
-                                <input type="text" id="acc-detalle-2" required>
-                            </div>
+                            <div class="form-group"><label id="lbl-acc-detalle-1">Detalle 1</label><input type="text" id="acc-detalle-1" required></div>
+                            <div class="form-group"><label id="lbl-acc-detalle-2">Detalle 2</label><input type="text" id="acc-detalle-2" required></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Estado</label>
-                                <select id="acc-estado">
-                                    <option value="Nuevo / Sellado">Nuevo / Sellado</option>
-                                    <option value="Usado Premium">Usado Premium</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Subir Fotos (Se puede múltiple)</label>
-                                <input type="file" id="acc-imagenes" accept="image/*" multiple>
-                            </div>
+                            <div class="form-group"><label>Estado</label><select id="acc-estado"><option value="Nuevo / Sellado">Nuevo / Sellado</option><option value="Usado Premium">Usado Premium</option></select></div>
+                            <div class="form-group"><label>Subir Fotos (Se puede múltiple)</label><input type="file" id="acc-imagenes" accept="image/*" multiple></div>
                         </div>
+                    </div>
+
+                    <!-- NUEVA CAJA DE DESCRIPCIÓN PARA ACCESORIOS -->
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                            <label style="margin-bottom: 0;">Descripción y Detalles Adicionales</label>
+                            <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
+                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                            </span>
+                        </div>
+                        <textarea id="acc-descripcion" rows="5" placeholder="Ej:&#10;# Experiencia de uso&#10;Sonido envolvente 7.1 real.&#10;*Almohadillas de memory foam*." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
                     </div>
 
                     <div class="form-row">
@@ -491,16 +458,23 @@
                 </form>
             </div>
 
-            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px;">
-                <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
-                <select id="filtro-accesorios" onchange="filtrarAccesorios()" style="width: auto; min-width: 220px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
-                    <option value="TODOS">Mostrar Todo</option>
-                    <option value="Auriculares">Auriculares</option>
-                    <option value="Cargadores">Cargadores</option>
-                    <option value="Motherboards">Motherboards</option>
-                    <option value="Pendrives">Pendrives</option>
-                    <option value="Otros">Otros</option>
-                </select>
+            <!-- FILTRO Y BUSCADOR -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
+                    <select id="filtro-accesorios" onchange="filtrarAccesorios()" style="width: auto; min-width: 180px; padding: 8px 12px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                        <option value="TODOS">Mostrar Todo</option>
+                        <option value="Auriculares">Auriculares</option>
+                        <option value="Cargadores">Cargadores</option>
+                        <option value="Motherboards">Motherboards</option>
+                        <option value="Pendrives">Pendrives</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00F0FF;"></i>
+                    <input type="text" id="busqueda-accesorios" oninput="filtrarAccesorios()" placeholder="Buscar por título o modelo..." style="width: 100%; padding: 10px 15px 10px 40px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; outline: none; transition: 0.3s;">
+                </div>
             </div>
 
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
@@ -526,7 +500,6 @@
         // =========================================================================
         // 1. NAVEGACIÓN Y UTILIDADES GENERALES
         // =========================================================================
-        /* --- 1. Función maestra para alternar la visualización entre secciones del panel --- */
         function cambiarSeccion(idSeccion, elementoBoton) {
             document.querySelectorAll('.dashboard-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('sec-' + idSeccion).classList.add('active');
@@ -534,17 +507,58 @@
             elementoBoton.classList.add('active');
         }
 
-        /* --- 2. Cliente de Supabase para comunicación con la base de datos --- */
         const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        /* --- 3. Muestra una alerta flotante temporal en pantalla cuando la acción es exitosa --- */
-        function mostrarToast() {
+        function mostrarToast(mensaje = "Operación exitosa") {
             const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fa-solid fa-check"></i> ${mensaje}`;
             toast.style.display = 'block';
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
+
+        /* --- MOTOR DE ELIMINACIÓN CENTRADO --- */
+        let idAEliminar = null;
+        let tablaAEliminar = null;
+
+        function abrirModalEliminar(id, tabla) {
+            idAEliminar = id;
+            tablaAEliminar = tabla;
+            document.getElementById('modal-eliminar').style.display = 'flex';
+        }
+
+        function cerrarModalEliminar() {
+            idAEliminar = null;
+            tablaAEliminar = null;
+            document.getElementById('modal-eliminar').style.display = 'none';
+        }
+
+        document.getElementById('btn-confirmar-eliminar').addEventListener('click', async () => {
+            if(!idAEliminar || !tablaAEliminar) return;
+
+            const btn = document.getElementById('btn-confirmar-eliminar');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Borrando...';
+            btn.style.pointerEvents = 'none';
+
+            const { error } = await db.from(tablaAEliminar).delete().eq('id', idAEliminar);
+            
+            btn.innerHTML = originalText;
+            btn.style.pointerEvents = 'auto';
+
+            if (error) {
+                alert("Error al borrar: " + error.message);
+            } else {
+                mostrarToast("Elemento eliminado correctamente");
+                if(tablaAEliminar === 'precios') cargarPrecios();
+                if(tablaAEliminar === 'notebooks') cargarNotebooks();
+                if(tablaAEliminar === 'memorias') cargarMemorias();
+                if(tablaAEliminar === 'accesorios') cargarAccesorios();
+            }
+            cerrarModalEliminar();
+        });
+
 
         // =========================================================================
         // 2. LÓGICA DE LISTADO DE PRECIOS
@@ -552,32 +566,31 @@
         let preciosActuales = [];
         let editandoId = null;
 
-        /* --- 1. Trae los precios desde la base de datos Supabase --- */
         async function cargarPrecios() {
             const tabla = document.getElementById('tabla-admin');
-            const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
+            // ORDEN ALFABÉTICO AUTOMÁTICO (A-Z por servicio)
+            const { data, error } = await db.from('precios').select('*').order('servicio', { ascending: true });
             if (error) { tabla.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
 
             preciosActuales = data || []; 
             document.getElementById('stat-precios').innerText = preciosActuales.length;
-
             renderizarTablaPrecios();
         }
 
-        /* --- 2. Dibuja la tabla de precios en pantalla aplicando el filtro seleccionado --- */
         function renderizarTablaPrecios() {
             const tabla = document.getElementById('tabla-admin');
-            const filtro = document.getElementById('filtro-precios').value;
+            const filtroCat = document.getElementById('filtro-precios').value;
+            const busqueda = document.getElementById('busqueda-precios').value.toLowerCase();
 
-            // Filtramos en memoria de manera instantánea
+            // Doble filtro: Por Categoría y Por Buscador
             const datosFiltrados = preciosActuales.filter(item => {
-                if (filtro === 'TODOS') return true;
-                // Comparamos sin importar mayúsculas/minúsculas ('hardware' vs 'Hardware')
-                return item.categoria.toLowerCase() === filtro.toLowerCase();
+                const pasaFiltroCat = filtroCat === 'TODOS' || item.categoria.toLowerCase() === filtroCat.toLowerCase();
+                const pasaBusqueda = item.servicio.toLowerCase().includes(busqueda) || item.compatibilidad.toLowerCase().includes(busqueda);
+                return pasaFiltroCat && pasaBusqueda;
             });
 
             if (datosFiltrados.length === 0) { 
-                tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No hay precios cargados para esta categoría.</td></tr>'; 
+                tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No se encontraron resultados.</td></tr>'; 
                 return; 
             }
 
@@ -596,19 +609,15 @@
                         <td>
                             <div class="action-btns">
                                 <button class="btn-edit" onclick="prepararEdicion(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-delete" onclick="borrarPrecio(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'precios')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
             });
         }
 
-        /* --- 3. Ejecuta el redibujado de la tabla al cambiar la opción en el selector --- */
-        function filtrarPrecios() {
-            renderizarTablaPrecios();
-        }
+        function filtrarPrecios() { renderizarTablaPrecios(); }
 
-        /* --- 4. Rellena el formulario con los datos de una fila para poder editarla --- */
         function prepararEdicion(id) {
             const item = preciosActuales.find(p => p.id === id);
             if (!item) return;
@@ -620,74 +629,60 @@
 
             document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit').style.background = '#00ff66';
-            document.getElementById('btn-cancelar').style.style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('btn-cancelar').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
         }
 
-        /* --- 5. Limpia el formulario y cancela el modo edición regresando los filtros a TODOS --- */
         function cancelarEdicion() {
             editandoId = null;
             document.getElementById('form-precios').reset();
             document.getElementById('filtro-precios').value = 'TODOS';
+            document.getElementById('busqueda-precios').value = '';
             document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Precio';
             document.getElementById('btn-submit').style.background = '#00F0FF';
             document.getElementById('btn-cancelar').style.display = 'none';
             renderizarTablaPrecios();
         }
 
-        /* --- 6. Escucha el botón Guardar/Actualizar y envía los datos a Supabase --- */
         document.getElementById('form-precios').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = {
-                categoria: document.getElementById('categoria').value,
-                servicio: document.getElementById('servicio').value,
-                compatibilidad: document.getElementById('compatibilidad').value,
-                precio: parseInt(document.getElementById('precio').value)
-            };
-
-            if (editandoId) {
-                const { error } = await db.from('precios').update(payload).eq('id', editandoId);
-                if (error) { alert("Error al editar: " + error.message); return; }
-            } else {
-                const { error } = await db.from('precios').insert([payload]);
-                if (error) { alert("Error al guardar: " + error.message); return; }
-            }
-
-            mostrarToast(); cancelarEdicion(); cargarPrecios(); 
+            const payload = { categoria: document.getElementById('categoria').value, servicio: document.getElementById('servicio').value, compatibilidad: document.getElementById('compatibilidad').value, precio: parseInt(document.getElementById('precio').value) };
+            if (editandoId) { await db.from('precios').update(payload).eq('id', editandoId); } 
+            else { await db.from('precios').insert([payload]); }
+            mostrarToast("Precio guardado"); cancelarEdicion(); cargarPrecios(); 
         });
 
-        /* --- 7. Elimina un precio específico del sistema --- */
-        async function borrarPrecio(id) {
-            if(confirm("¿Seguro que querés borrar este precio?")) {
-                const { error } = await db.from('precios').delete().eq('id', id);
-                if (error) alert("Error al borrar: " + error.message); else cargarPrecios();
-            }
-        }
 
         // =========================================================================
-        // 3. LÓGICA DE STOCK DE NOTEBOOKS (Sencilla y Directa)
+        // 3. LÓGICA DE NOTEBOOKS
         // =========================================================================
         let notebooksActuales = [];
         let editandoNbId = null;
 
-        /* --- 1. Trae y dibuja todo el listado de laptops --- */
         async function cargarNotebooks() {
             const tabla = document.getElementById('tabla-admin-notebooks');
             const { data, error } = await db.from('notebooks').select('*').order('id', { ascending: false });
             if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
-
             notebooksActuales = data || []; 
             document.getElementById('stat-notebooks').innerText = notebooksActuales.length;
+            renderizarTablaNotebooks();
+        }
 
-            if (notebooksActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay notebooks registradas.</td></tr>'; return; }
+        function renderizarTablaNotebooks() {
+            const tabla = document.getElementById('tabla-admin-notebooks');
+            const busqueda = document.getElementById('busqueda-notebooks').value.toLowerCase();
+
+            const datosFiltrados = notebooksActuales.filter(item => {
+                return item.titulo.toLowerCase().includes(busqueda) || item.procesador.toLowerCase().includes(busqueda);
+            });
+
+            if (datosFiltrados.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center;">No se encontraron resultados.</td></tr>'; return; }
 
             tabla.innerHTML = ''; 
-            notebooksActuales.forEach(item => {
+            datosFiltrados.forEach(item => {
                 const precioFormateado = new Intl.NumberFormat('es-AR').format(item.precio);
                 let imgFondo = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
-                if (item.imagen && item.imagen.trim() !== '') {
-                    imgFondo = item.imagen.split(',')[0]; 
-                }
+                if (item.imagen && item.imagen.trim() !== '') { imgFondo = item.imagen.split(',')[0]; }
 
                 tabla.innerHTML += `
                     <tr>
@@ -700,14 +695,15 @@
                         <td>
                             <div class="action-btns">
                                 <button class="btn-edit" onclick="prepararEdicionNotebook(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-delete" onclick="borrarNotebook(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'notebooks')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
             });
         }
 
-        /* --- 2. Carga los datos al formulario para editar la notebook seleccionada --- */
+        function filtrarNotebooks() { renderizarTablaNotebooks(); }
+
         function prepararEdicionNotebook(id) {
             const item = notebooksActuales.find(n => n.id === id);
             if (!item) return;
@@ -723,143 +719,88 @@
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-nb').style.background = '#00ff66';
             document.getElementById('btn-cancelar-nb').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
         }
 
-        /* --- 3. Limpia el formulario de carga de notebooks --- */
         function cancelarEdicionNotebook() {
             editandoNbId = null;
             document.getElementById('form-notebooks').reset();
+            document.getElementById('busqueda-notebooks').value = '';
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook';
             document.getElementById('btn-submit-nb').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-nb').style.display = 'none';
+            renderizarTablaNotebooks();
         }
 
-        /* --- 4. Sube las fotos seleccionadas al Storage y luego impacta los datos en Supabase --- */
         document.getElementById('form-notebooks').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-nb');
             const textoOriginal = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo fotos y guardando...';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
             btnSubmit.style.pointerEvents = 'none';
 
             try {
                 let stringDeImagenes = ""; 
                 const inputArchivos = document.getElementById('nb-imagenes');
-                
                 if (inputArchivos.files.length > 0) {
                     let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        
-                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        if (uploadError) throw uploadError;
-                        
+                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
                     stringDeImagenes = urlsSubidas.join(','); 
-                } else {
-                    if (editandoNbId) {
-                        stringDeImagenes = notebooksActuales.find(n => n.id === editandoNbId).imagen || "";
-                    }
-                }
+                } else if (editandoNbId) { stringDeImagenes = notebooksActuales.find(n => n.id === editandoNbId).imagen || ""; }
 
-                const payload = {
-                    titulo: document.getElementById('nb-titulo').value,
-                    procesador: document.getElementById('nb-procesador').value,
-                    ram: document.getElementById('nb-ram').value,
-                    almacenamiento: document.getElementById('nb-almacenamiento').value,
-                    bateria: document.getElementById('nb-bateria').value,
-                    descripcion: document.getElementById('nb-descripcion').value,
-                    precio: parseInt(document.getElementById('nb-precio').value),
-                    imagen: stringDeImagenes
-                };
+                const payload = { titulo: document.getElementById('nb-titulo').value, procesador: document.getElementById('nb-procesador').value, ram: document.getElementById('nb-ram').value, almacenamiento: document.getElementById('nb-almacenamiento').value, bateria: document.getElementById('nb-bateria').value, descripcion: document.getElementById('nb-descripcion').value, precio: parseInt(document.getElementById('nb-precio').value), imagen: stringDeImagenes };
 
-                if (editandoNbId) {
-                    const { error } = await db.from('notebooks').update(payload).eq('id', editandoNbId);
-                    if (error) throw error;
-                } else {
-                    const { error } = await db.from('notebooks').insert([payload]);
-                    if (error) throw error;
-                }
-
-                mostrarToast(); cancelarEdicionNotebook(); cargarNotebooks();
-
-            } catch (err) {
-                console.error(err);
-                alert("Error al guardar la Notebook: " + err.message);
-            } finally {
-                btnSubmit.innerHTML = textoOriginal;
-                btnSubmit.style.pointerEvents = 'auto';
-            }
+                if (editandoNbId) { await db.from('notebooks').update(payload).eq('id', editandoNbId); } 
+                else { await db.from('notebooks').insert([payload]); }
+                mostrarToast("Notebook guardada"); cancelarEdicionNotebook(); cargarNotebooks();
+            } catch (err) { alert("Error: " + err.message); } 
+            finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
 
-        /* --- 5. Elimina una notebook de la base de datos --- */
-        async function borrarNotebook(id) {
-            if(confirm("¿Seguro que querés borrar esta Notebook?")) {
-                const { error } = await db.from('notebooks').delete().eq('id', id);
-                if (error) alert("Error al borrar: " + error.message); else cargarNotebooks();
-            }
-        }
 
         // =========================================================================
-        // 4. LÓGICA DE MEMORIAS Y SSDs (Súper Formulario Inteligente)
+        // 4. LÓGICA DE MEMORIAS Y SSDs
         // =========================================================================
         let memoriasActuales = [];
         let editandoMemId = null;
 
-        /* --- 1. Muestra y adapta dinámicamente las opciones del formulario según el tipo --- */
         function adaptarFormularioMemoria() {
             const tipo = document.getElementById('mem-tipo').value;
             const cajaRam = document.getElementById('campos-ram');
             const cajaSsd = document.getElementById('campos-ssd');
             const inputTitulo = document.getElementById('mem-titulo');
-            
-            if (tipo === 'Memoria RAM') {
-                cajaRam.style.display = 'block';
-                cajaSsd.style.display = 'none';
-                inputTitulo.placeholder = 'Ej: Kingston Fury Beast 16GB RGB';
-            } else if (tipo === 'Disco SSD / Almacenamiento') {
-                cajaRam.style.display = 'none';
-                cajaSsd.style.display = 'block';
-                inputTitulo.placeholder = 'Ej: Kingston A400 480GB';
-            }
+            if (tipo === 'Memoria RAM') { cajaRam.style.display = 'block'; cajaSsd.style.display = 'none'; inputTitulo.placeholder = 'Ej: Kingston Fury Beast 16GB RGB'; } 
+            else if (tipo === 'Disco SSD / Almacenamiento') { cajaRam.style.display = 'none'; cajaSsd.style.display = 'block'; inputTitulo.placeholder = 'Ej: Kingston A400 480GB'; }
         }
 
-        /* --- 2. Trae todo el inventario de memorias y SSDs de Supabase --- */
         async function cargarMemorias() {
             const tabla = document.getElementById('tabla-admin-memorias');
-            if(!tabla) return;
             const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
-            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar.</td></tr>'; return; }
-
+            if (error) return;
             memoriasActuales = data || []; 
-            
-            // SEPARAMOS Y RENDERIZAMOS LAS ESTADÍSTICAS DEL INICIO POR SEPARADO
-            const ramCount = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
-            const ssdCount = memoriasActuales.filter(m => m.tipo === 'Disco SSD / Almacenamiento').length;
-            document.getElementById('stat-ram').innerText = ramCount;
-            document.getElementById('stat-ssd').innerText = ssdCount;
-
+            document.getElementById('stat-ram').innerText = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
+            document.getElementById('stat-ssd').innerText = memoriasActuales.filter(m => m.tipo === 'Disco SSD / Almacenamiento').length;
             renderizarTablaMemorias();
         }
 
-        /* --- 3. Dibuja la tabla de memorias aplicando el filtro de búsqueda --- */
         function renderizarTablaMemorias() {
             const tabla = document.getElementById('tabla-admin-memorias');
             const filtro = document.getElementById('filtro-memorias').value;
+            const busqueda = document.getElementById('busqueda-memorias').value.toLowerCase();
 
             const datosFiltrados = memoriasActuales.filter(item => {
-                if (filtro === 'TODOS') return true;
-                return item.tipo === filtro; 
+                const pasaCat = filtro === 'TODOS' || item.tipo === filtro;
+                const pasaBusqueda = item.titulo.toLowerCase().includes(busqueda) || item.capacidad.toLowerCase().includes(busqueda);
+                return pasaCat && pasaBusqueda;
             });
 
-            if (datosFiltrados.length === 0) { 
-                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay componentes cargados para esta categoría.</td></tr>'; 
-                return; 
-            }
+            if (datosFiltrados.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No se encontraron componentes.</td></tr>'; return; }
 
             tabla.innerHTML = ''; 
             datosFiltrados.forEach(item => {
@@ -869,73 +810,57 @@
 
                 tabla.innerHTML += `
                     <tr>
-                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;">
-                            <img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">
-                            ${item.titulo}
-                        </td>
+                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;"><img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">${item.titulo}</td>
                         <td style="font-size: 13px; color: #94A3B8;">${item.tipo} <br> ${item.capacidad} | ${item.estado}</td>
                         <td style="color:#00F0FF; font-weight:600;">$${precioFormateado}</td>
                         <td>
                             <div class="action-btns">
                                 <button class="btn-edit" onclick="prepararEdicionMemoria(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-delete" onclick="borrarMemoria(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'memorias')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
             });
         }
 
-        /* --- 4. Redibuja los datos de la tabla cuando cambia el filtro del componente --- */
-        function filtrarMemorias() {
-            renderizarTablaMemorias();
-        }
+        function filtrarMemorias() { renderizarTablaMemorias(); }
 
-        /* --- 5. Rellena los datos en el selector de formulario que corresponda al editar --- */
         function prepararEdicionMemoria(id) {
             const item = memoriasActuales.find(m => m.id === id);
             if (!item) return;
             editandoMemId = id;
-            
             document.getElementById('mem-tipo').value = item.tipo;
             adaptarFormularioMemoria();
-
             document.getElementById('mem-titulo').value = item.titulo;
             document.getElementById('mem-precio').value = item.precio;
+            document.getElementById('mem-descripcion').value = item.descripcion || ''; // <-- DESCRIPCIÓN ACÁ
 
             if (item.tipo === 'Memoria RAM') {
-                document.getElementById('ram-capacidad').value = item.capacidad;
-                document.getElementById('ram-frecuencia').value = item.detalle_1;
-                document.getElementById('ram-formato').value = item.detalle_2;
-                document.getElementById('ram-estado').value = item.estado;
+                document.getElementById('ram-capacidad').value = item.capacidad; document.getElementById('ram-frecuencia').value = item.detalle_1;
+                document.getElementById('ram-formato').value = item.detalle_2; document.getElementById('ram-estado').value = item.estado;
             } else {
-                document.getElementById('ssd-capacidad').value = item.capacidad;
-                document.getElementById('ssd-tipo').value = item.detalle_1;
-                document.getElementById('ssd-instalacion').value = item.detalle_2;
-                document.getElementById('ssd-estado').value = item.estado;
+                document.getElementById('ssd-capacidad').value = item.capacidad; document.getElementById('ssd-tipo').value = item.detalle_1;
+                document.getElementById('ssd-instalacion').value = item.detalle_2; document.getElementById('ssd-estado').value = item.estado;
             }
 
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-mem').style.background = '#00ff66';
             document.getElementById('btn-cancelar-mem').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
         }
 
-        /* --- 6. Limpia el formulario, oculta las cajas dinámicas y restablece los filtros a TODOS --- */
         function cancelarEdicionMemoria() {
             editandoMemId = null;
             document.getElementById('form-memorias').reset();
-            document.getElementById('campos-ram').style.display = 'none';
-            document.getElementById('campos-ssd').style.display = 'none';
-            document.getElementById('filtro-memorias').value = 'TODOS';
+            document.getElementById('campos-ram').style.display = 'none'; document.getElementById('campos-ssd').style.display = 'none';
+            document.getElementById('filtro-memorias').value = 'TODOS'; document.getElementById('busqueda-memorias').value = '';
             document.getElementById('mem-titulo').placeholder = 'Primero seleccioná el tipo...';
-            
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Componente';
             document.getElementById('btn-submit-mem').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-mem').style.display = 'none';
             renderizarTablaMemorias();
         }
 
-        /* --- 7. Envía la información modificada o nueva de la RAM/SSD a la base de datos --- */
         document.getElementById('form-memorias').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-mem');
@@ -951,150 +876,73 @@
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        if (uploadError) throw uploadError;
+                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
                     stringDeImagenes = urlsSubidas.join(',');
-                } else if (editandoMemId) {
-                    stringDeImagenes = memoriasActuales.find(m => m.id === editandoMemId).imagen || "";
-                }
+                } else if (editandoMemId) { stringDeImagenes = memoriasActuales.find(m => m.id === editandoMemId).imagen || ""; }
 
                 let cap = '', det1 = '', det2 = '', est = '';
                 const tipoSel = document.getElementById('mem-tipo').value;
-                if(tipoSel === 'Memoria RAM') {
-                    cap = document.getElementById('ram-capacidad').value;
-                    det1 = document.getElementById('ram-frecuencia').value;
-                    det2 = document.getElementById('ram-formato').value;
-                    est = document.getElementById('ram-estado').value;
-                } else {
-                    cap = document.getElementById('ssd-capacidad').value;
-                    det1 = document.getElementById('ssd-tipo').value;
-                    det2 = document.getElementById('ssd-instalacion').value;
-                    est = document.getElementById('ssd-estado').value;
-                }
+                if(tipoSel === 'Memoria RAM') { cap = document.getElementById('ram-capacidad').value; det1 = document.getElementById('ram-frecuencia').value; det2 = document.getElementById('ram-formato').value; est = document.getElementById('ram-estado').value; } 
+                else { cap = document.getElementById('ssd-capacidad').value; det1 = document.getElementById('ssd-tipo').value; det2 = document.getElementById('ssd-instalacion').value; est = document.getElementById('ssd-estado').value; }
 
-                const payload = {
-                    titulo: document.getElementById('mem-titulo').value,
-                    tipo: tipoSel,
-                    capacidad: cap,
-                    detalle_1: det1,
-                    detalle_2: det2,
-                    estado: est,
-                    precio: parseInt(document.getElementById('mem-precio').value),
-                    imagen: stringDeImagenes
-                };
+                const payload = { titulo: document.getElementById('mem-titulo').value, tipo: tipoSel, capacidad: cap, detalle_1: det1, detalle_2: det2, estado: est, precio: parseInt(document.getElementById('mem-precio').value), descripcion: document.getElementById('mem-descripcion').value, imagen: stringDeImagenes };
 
-                if (editandoMemId) {
-                    const { error } = await db.from('memorias').update(payload).eq('id', editandoMemId);
-                    if (error) throw error;
-                } else {
-                    const { error } = await db.from('memorias').insert([payload]);
-                    if (error) throw error;
-                }
-
-                mostrarToast(); cancelarEdicionMemoria(); cargarMemorias();
-
-            } catch (err) {
-                console.error(err);
-                alert("Error al guardar componente: " + err.message);
-            } finally {
-                btnSubmit.innerHTML = textoOriginal;
-                btnSubmit.style.pointerEvents = 'auto';
-            }
+                if (editandoMemId) { await db.from('memorias').update(payload).eq('id', editandoMemId); } 
+                else { await db.from('memorias').insert([payload]); }
+                mostrarToast("Componente guardado"); cancelarEdicionMemoria(); cargarMemorias();
+            } catch (err) { alert("Error: " + err.message); } 
+            finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
 
-        /* --- 8. Elimina de manera física la memoria/SSD --- */
-        async function borrarMemoria(id) {
-            if(confirm("¿Seguro que querés borrar este componente?")) {
-                const { error } = await db.from('memorias').delete().eq('id', id);
-                if (error) alert("Error al borrar: " + error.message); else cargarMemorias();
-            }
-        }
 
         // =========================================================================
-        // 5. LÓGICA DE ACCESORIOS (Súper Formulario Inteligente)
+        // 5. LÓGICA DE ACCESORIOS
         // =========================================================================
         let accesoriosActuales = [];
         let editandoAccId = null;
 
-        /* --- 1. Muestra y adapta los labels del formulario según el accesorio --- */
         function adaptarFormularioAccesorio() {
             const tipo = document.getElementById('acc-tipo').value;
             const caja = document.getElementById('campos-dinamicos-acc');
-            const lbl1 = document.getElementById('lbl-acc-detalle-1');
-            const in1 = document.getElementById('acc-detalle-1');
-            const lbl2 = document.getElementById('lbl-acc-detalle-2');
-            const in2 = document.getElementById('acc-detalle-2');
+            const lbl1 = document.getElementById('lbl-acc-detalle-1'); const in1 = document.getElementById('acc-detalle-1');
+            const lbl2 = document.getElementById('lbl-acc-detalle-2'); const in2 = document.getElementById('acc-detalle-2');
             const titulo = document.getElementById('acc-titulo');
-            
             caja.style.display = 'block';
 
-            if (tipo === 'Auriculares') {
-                titulo.placeholder = 'Ej: Auriculares Redragon Zeus';
-                lbl1.innerText = 'Conectividad (Ej: Bluetooth, Cable 3.5mm)';
-                in1.placeholder = 'Ej: Cableado USB / 3.5mm';
-                lbl2.innerText = 'Diseño / Extra (Ej: In-Ear, Micrófono extraíble)';
-                in2.placeholder = 'Ej: Over-Ear con Micrófono';
-            } else if (tipo === 'Cargadores') {
-                titulo.placeholder = 'Ej: Cargador Original Lenovo';
-                lbl1.innerText = 'Voltaje y Amperaje (Ej: 20V 3.25A - 65W)';
-                in1.placeholder = 'Ej: 20V 3.25A (65W)';
-                lbl2.innerText = 'Ficha / Pin (Ej: Tipo C, Punta fina)';
-                in2.placeholder = 'Ej: Pin rectangular amarillo';
-            } else if (tipo === 'Motherboards') {
-                titulo.placeholder = 'Ej: Motherboard Gigabyte H310M';
-                lbl1.innerText = 'Socket (Ej: LGA 1151, AM4)';
-                in1.placeholder = 'Ej: Intel LGA 1151';
-                lbl2.innerText = 'Chipset y Memoria (Ej: H310 DDR4)';
-                in2.placeholder = 'Ej: Chipset H310 - Soporta DDR4';
-            } else if (tipo === 'Pendrives') {
-                titulo.placeholder = 'Ej: Pendrive Kingston DataTraveler';
-                lbl1.innerText = 'Capacidad (Ej: 32GB, 64GB)';
-                in1.placeholder = 'Ej: 64GB';
-                lbl2.innerText = 'Velocidad / Versión (Ej: USB 3.0)';
-                in2.placeholder = 'Ej: USB 3.2 Gen 1';
-            } else {
-                titulo.placeholder = 'Ej: Pad Mouse Redragon XL';
-                lbl1.innerText = 'Característica Principal';
-                in1.placeholder = 'Ej: Tamaño 80x30cm';
-                lbl2.innerText = 'Característica Secundaria';
-                in2.placeholder = 'Ej: Base antideslizante';
-            }
+            if (tipo === 'Auriculares') { titulo.placeholder = 'Ej: Auriculares Redragon'; lbl1.innerText = 'Conectividad'; in1.placeholder = 'Ej: Bluetooth'; lbl2.innerText = 'Diseño'; in2.placeholder = 'Ej: Over-Ear'; } 
+            else if (tipo === 'Cargadores') { titulo.placeholder = 'Ej: Cargador Lenovo'; lbl1.innerText = 'Voltaje y Amperaje'; in1.placeholder = 'Ej: 20V 3.25A'; lbl2.innerText = 'Ficha / Pin'; in2.placeholder = 'Ej: Tipo C'; } 
+            else if (tipo === 'Motherboards') { titulo.placeholder = 'Ej: Motherboard Gigabyte'; lbl1.innerText = 'Socket'; in1.placeholder = 'Ej: AM4'; lbl2.innerText = 'Chipset'; in2.placeholder = 'Ej: B450'; } 
+            else if (tipo === 'Pendrives') { titulo.placeholder = 'Ej: Pendrive Kingston'; lbl1.innerText = 'Capacidad'; in1.placeholder = 'Ej: 64GB'; lbl2.innerText = 'Versión'; in2.placeholder = 'Ej: USB 3.0'; } 
+            else { titulo.placeholder = 'Ej: Mouse Pad XL'; lbl1.innerText = 'Característica Principal'; in1.placeholder = 'Ej: 80x30cm'; lbl2.innerText = 'Característica Secundaria'; in2.placeholder = 'Ej: Antideslizante'; }
         }
 
-        /* --- 2. Trae el inventario y calcula estadísticas desglosadas --- */
         async function cargarAccesorios() {
             const tabla = document.getElementById('tabla-admin-accesorios');
-            if(!tabla) return;
             const { data, error } = await db.from('accesorios').select('*').order('id', { ascending: false });
-            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar.</td></tr>'; return; }
-
+            if (error) return;
             accesoriosActuales = data || []; 
-            
             document.getElementById('stat-auriculares').innerText = accesoriosActuales.filter(a => a.tipo === 'Auriculares').length;
             document.getElementById('stat-cargadores').innerText = accesoriosActuales.filter(a => a.tipo === 'Cargadores').length;
             document.getElementById('stat-motherboards').innerText = accesoriosActuales.filter(a => a.tipo === 'Motherboards').length;
             document.getElementById('stat-pendrives').innerText = accesoriosActuales.filter(a => a.tipo === 'Pendrives').length;
-
             renderizarTablaAccesorios();
         }
 
-        /* --- 3. Dibuja la tabla aplicando el filtro de búsqueda --- */
         function renderizarTablaAccesorios() {
             const tabla = document.getElementById('tabla-admin-accesorios');
             const filtro = document.getElementById('filtro-accesorios').value;
+            const busqueda = document.getElementById('busqueda-accesorios').value.toLowerCase();
 
             const datosFiltrados = accesoriosActuales.filter(item => {
-                if (filtro === 'TODOS') return true;
-                return item.tipo === filtro; 
+                const pasaCat = filtro === 'TODOS' || item.tipo === filtro;
+                const pasaBusqueda = item.titulo.toLowerCase().includes(busqueda);
+                return pasaCat && pasaBusqueda;
             });
 
-            if (datosFiltrados.length === 0) { 
-                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay accesorios para este filtro.</td></tr>'; 
-                return; 
-            }
+            if (datosFiltrados.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No se encontraron accesorios.</td></tr>'; return; }
 
             tabla.innerHTML = ''; 
             datosFiltrados.forEach(item => {
@@ -1104,16 +952,13 @@
 
                 tabla.innerHTML += `
                     <tr>
-                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;">
-                            <img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">
-                            ${item.titulo}
-                        </td>
+                        <td style="color:#fff; font-weight:500; display:flex; align-items:center; gap:10px;"><img src="${imgFondo}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;">${item.titulo}</td>
                         <td style="font-size: 13px; color: #94A3B8;">${item.tipo} <br> ${item.detalle_1} | ${item.detalle_2}</td>
                         <td style="color:#00F0FF; font-weight:600;">$${precioFormateado}</td>
                         <td>
                             <div class="action-btns">
                                 <button class="btn-edit" onclick="prepararEdicionAccesorio(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-delete" onclick="borrarAccesorio(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'accesorios')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
@@ -1122,42 +967,37 @@
 
         function filtrarAccesorios() { renderizarTablaAccesorios(); }
 
-        /* --- 4. Rellena el formulario para editar --- */
         function prepararEdicionAccesorio(id) {
             const item = accesoriosActuales.find(a => a.id === id);
             if (!item) return;
             editandoAccId = id;
-            
             document.getElementById('acc-tipo').value = item.tipo;
             adaptarFormularioAccesorio();
-
             document.getElementById('acc-titulo').value = item.titulo;
             document.getElementById('acc-precio').value = item.precio;
             document.getElementById('acc-detalle-1').value = item.detalle_1;
             document.getElementById('acc-detalle-2').value = item.detalle_2;
             document.getElementById('acc-estado').value = item.estado;
+            document.getElementById('acc-descripcion').value = item.descripcion || ''; // <-- DESCRIPCIÓN ACÁ
 
             document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-acc').style.background = '#00ff66';
             document.getElementById('btn-cancelar-acc').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
         }
 
-        /* --- 5. Cancela la edición y limpia --- */
         function cancelarEdicionAccesorio() {
             editandoAccId = null;
             document.getElementById('form-accesorios').reset();
             document.getElementById('campos-dinamicos-acc').style.display = 'none';
-            document.getElementById('filtro-accesorios').value = 'TODOS';
+            document.getElementById('filtro-accesorios').value = 'TODOS'; document.getElementById('busqueda-accesorios').value = '';
             document.getElementById('acc-titulo').placeholder = 'Primero seleccioná el tipo...';
-            
             document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Accesorio';
             document.getElementById('btn-submit-acc').style.background = '#00F0FF';
             document.getElementById('btn-cancelar-acc').style.display = 'none';
             renderizarTablaAccesorios();
         }
 
-        /* --- 6. Sube fotos y guarda datos --- */
         document.getElementById('form-accesorios').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-acc');
@@ -1173,55 +1013,24 @@
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        const { error: uploadError } = await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        if (uploadError) throw uploadError;
+                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
                     stringDeImagenes = urlsSubidas.join(',');
-                } else if (editandoAccId) {
-                    stringDeImagenes = accesoriosActuales.find(a => a.id === editandoAccId).imagen || "";
-                }
+                } else if (editandoAccId) { stringDeImagenes = accesoriosActuales.find(a => a.id === editandoAccId).imagen || ""; }
 
-                const payload = {
-                    titulo: document.getElementById('acc-titulo').value,
-                    tipo: document.getElementById('acc-tipo').value,
-                    detalle_1: document.getElementById('acc-detalle-1').value,
-                    detalle_2: document.getElementById('acc-detalle-2').value,
-                    estado: document.getElementById('acc-estado').value,
-                    precio: parseInt(document.getElementById('acc-precio').value),
-                    imagen: stringDeImagenes
-                };
+                const payload = { titulo: document.getElementById('acc-titulo').value, tipo: document.getElementById('acc-tipo').value, detalle_1: document.getElementById('acc-detalle-1').value, detalle_2: document.getElementById('acc-detalle-2').value, estado: document.getElementById('acc-estado').value, precio: parseInt(document.getElementById('acc-precio').value), descripcion: document.getElementById('acc-descripcion').value, imagen: stringDeImagenes };
 
-                if (editandoAccId) {
-                    const { error } = await db.from('accesorios').update(payload).eq('id', editandoAccId);
-                    if (error) throw error;
-                } else {
-                    const { error } = await db.from('accesorios').insert([payload]);
-                    if (error) throw error;
-                }
-
-                mostrarToast(); cancelarEdicionAccesorio(); cargarAccesorios();
-
-            } catch (err) {
-                console.error(err);
-                alert("Error al guardar: " + err.message);
-            } finally {
-                btnSubmit.innerHTML = textoOriginal;
-                btnSubmit.style.pointerEvents = 'auto';
-            }
+                if (editandoAccId) { await db.from('accesorios').update(payload).eq('id', editandoAccId); } 
+                else { await db.from('accesorios').insert([payload]); }
+                mostrarToast("Accesorio guardado"); cancelarEdicionAccesorio(); cargarAccesorios();
+            } catch (err) { alert("Error: " + err.message); } 
+            finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
 
-        /* --- 7. Borra un accesorio --- */
-        async function borrarAccesorio(id) {
-            if(confirm("¿Seguro que querés borrar este accesorio?")) {
-                const { error } = await db.from('accesorios').delete().eq('id', id);
-                if (error) alert("Error al borrar: " + error.message); else cargarAccesorios();
-            }
-        }
-
         // =========================================================================
-        // 6. CARGA DE DATOS AL INICIAR LA PANTALLA
+        // 6. CARGA DE DATOS
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
