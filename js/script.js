@@ -101,44 +101,26 @@ window.addEventListener('keydown', function(event) {
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS (CAMALEÓN: MP4 + YOUTUBE)
+// 4. MODAL DE VIDEOS 
 // ==========================================
-function openVideoModal(url, isYouTube, ytId) {
+function openVideoModal(videoSrc) {
     const modal = document.getElementById('video-modal');
-    const videoMp4 = document.getElementById('modal-video-player');
-    const videoYt = document.getElementById('modal-youtube-player');
-    
-    if (modal) modal.style.display = 'flex';
-
-    if (isYouTube) {
-        // Escondemos MP4 y mostramos YouTube
-        if (videoMp4) { videoMp4.style.display = 'none'; videoMp4.pause(); }
-        if (videoYt) {
-            videoYt.style.display = 'block';
-            videoYt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
-        }
-    } else {
-        // Escondemos YouTube y mostramos MP4
-        if (videoYt) { videoYt.style.display = 'none'; videoYt.src = ''; }
-        if (videoMp4) {
-            videoMp4.style.display = 'block';
-            videoMp4.src = url;
-            videoMp4.play().catch(e => console.log("Auto-reproducción asistida", e));
-        }
+    const player = document.getElementById('modal-video-player');
+    if (modal && player) {
+        player.src = videoSrc;
+        modal.style.display = 'flex';
+        player.play().catch(e => console.log("Auto-reproducción asistida", e));
     }
 }
 
 function closeVideoModal() {
     const modal = document.getElementById('video-modal');
-    const videoMp4 = document.getElementById('modal-video-player');
-    const videoYt = document.getElementById('modal-youtube-player');
-    
-    if (modal) modal.style.display = 'none';
-    if (videoMp4) { videoMp4.pause(); videoMp4.src = ''; }
-    if (videoYt) { videoYt.src = ''; } // Corta el video de YouTube
+    const player = document.getElementById('modal-video-player');
+    if (modal && player) {
+        player.pause(); player.src = ''; modal.style.display = 'none';
+    }
 }
 
-// --- EVENTOS EXTRA DE UX (Se mantienen perfectos) ---
 window.addEventListener('keydown', function(event) {
     const videoModal = document.getElementById('video-modal');
     if (event.key === 'Escape' && videoModal && videoModal.style.display === 'flex') { closeVideoModal(); }
