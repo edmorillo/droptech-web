@@ -196,8 +196,17 @@ async function cargarPreciosDinamicos() {
         let htmlSoftware = ''; let htmlHardware = '';
 
         data.forEach(item => {
-            const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
-            const fila = `<tr><td>${item.servicio}</td><td>${item.compatibilidad}</td><td class="price-cell">$${precioLindo}</td></tr>`;
+            const precioEfectivo = new Intl.NumberFormat('es-AR').format(item.precio);
+            const precioTarjeta = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
+            
+            const fila = `
+                <tr>
+                    <td>${item.servicio}</td>
+                    <td>${item.compatibilidad}</td>
+                    <td style="color: #22c55e; font-weight: 600;">$${precioEfectivo}</td>
+                    <td style="color: #facc15; font-weight: 600;">$${precioTarjeta}</td>
+                </tr>
+            `;
             
             if (item.categoria === 'hardware') htmlHardware += fila;
             else htmlSoftware += fila;
@@ -468,8 +477,18 @@ async function generarPDF(event) {
         const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
         if (error) throw error;
 
-        const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
-        const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => [item.servicio, item.compatibilidad, '$' + new Intl.NumberFormat('es-AR').format(item.precio)]);
+        const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [
+            item.servicio, 
+            item.compatibilidad, 
+            '$' + new Intl.NumberFormat('es-AR').format(item.precio),
+            '$' + new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15))
+        ]);
+        const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => [
+            item.servicio, 
+            item.compatibilidad, 
+            '$' + new Intl.NumberFormat('es-AR').format(item.precio),
+            '$' + new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15))
+        ]);
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -505,9 +524,10 @@ async function generarPDF(event) {
 
         let posicionY = 34; 
         const columnasDiseño = {
-            0: { halign: 'left', cellWidth: 90 },
-            1: { halign: 'left', cellWidth: 55 },
-            2: { halign: 'center', cellWidth: 37, fontStyle: 'bold', textColor: [0, 130, 150] }
+            0: { halign: 'left', cellWidth: 80 },
+            1: { halign: 'left', cellWidth: 42 },
+            2: { halign: 'center', cellWidth: 30, fontStyle: 'bold', textColor: [34, 197, 94] },
+            3: { halign: 'center', cellWidth: 30, fontStyle: 'bold', textColor: [200, 160, 0] }
         };
 
         if (softwareData.length > 0) {
@@ -518,7 +538,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3, 
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO (ARS)']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'EFECTIVO', 'TARJETA (+15%)']],
                 body: softwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
@@ -567,3 +587,24 @@ async function generarPDF(event) {
         }, 2500);
     }
 }
+
+// ==========================================
+// 8. MODAL DE MEDIOS DE PAGO
+// ==========================================
+function abrirModalPagos() {
+    const modal = document.getElementById('modal-pagos');
+    if(modal) modal.style.display = 'flex';
+}
+
+function cerrarModalPagos() {
+    const modal = document.getElementById('modal-pagos');
+    if(modal) modal.style.display = 'none';
+}
+
+// Cerrar el modal tocando afuera
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('modal-pagos');
+    if (event.target === modal) {
+        cerrarModalPagos();
+    }
+});

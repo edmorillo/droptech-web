@@ -94,11 +94,16 @@
         <h2 class="reveal">Lista de Precios</h2>
         <p class="prices-subtitle">Valores referenciales para soluciones en taller y soporte programado.</p>
         
-        <div class="pdf-container reveal">
-    <a href="#" onclick="generarPDF(event)" class="btn-pdf">
-        <i class="fa-solid fa-file-pdf"></i> Descargar Lista Completa en PDF
-    </a>
-</div>
+        
+
+        <div class="pdf-container reveal" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px;">
+         <a href="#" onclick="generarPDF(event)" class="btn-pdf">
+             <i class="fa-solid fa-file-pdf"></i> Descargar Lista en PDF
+         </a>
+         <button onclick="abrirModalPagos()" style="background: rgba(0, 240, 255, 0.05); color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.2); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif; font-size: 15px; transition: 0.3s;">
+             <i class="fa-solid fa-circle-info"></i> Info de Pagos y Cuotas
+         </button>
+     </div>
 
         <div class="tabs-container reveal">
             <button class="tab-btn active" onclick="switchTab('software')">Software y Sistemas</button>
@@ -109,12 +114,13 @@
             <div class="table-responsive">
                 <table class="prices-table">
                     <thead>
-                        <tr>
-                            <th>Servicio / Solución Técnica</th>
-                            <th>Compatibilidad</th>
-                            <th>Precio (ARS)</th>
-                        </tr>
-                    </thead>
+                     <tr>
+                         <th>Servicio / Solución Técnica</th>
+                         <th>Compatibilidad</th>
+                         <th>Efectivo</th>
+                         <th>Tarjeta (+15%) <i class="fa-solid fa-circle-info" style="color: #00F0FF; cursor: pointer; margin-left: 5px;" onclick="abrirModalPagos()" title="Ver info de pagos"></i></th>
+                     </tr>
+                 </thead>
                     <tbody id="tabla-software-dinamica">
                         <tr><td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...</td></tr>
                     </tbody>
@@ -126,12 +132,13 @@
             <div class="table-responsive">
                 <table class="prices-table">
                     <thead>
-                        <tr>
-                            <th>Servicio / Solución Técnica</th>
-                            <th>Compatibilidad</th>
-                            <th>Precio (ARS)</th>
-                        </tr>
-                    </thead>
+                     <tr>
+                         <th>Servicio / Solución Técnica</th>
+                         <th>Compatibilidad</th>
+                         <th>Efectivo</th>
+                         <th>Tarjeta (+15%) <i class="fa-solid fa-circle-info" style="color: #00F0FF; cursor: pointer; margin-left: 5px;" onclick="abrirModalPagos()" title="Ver info de pagos"></i></th>
+                     </tr>
+                 </thead>
                     <tbody id="tabla-hardware-dinamica">
                         <tr><td colspan="3" style="text-align: center; color: #00F0FF; padding: 30px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando precios actualizados...</td></tr>
                     </tbody>
@@ -286,6 +293,40 @@
         <div class="modal-content video-modal-content">
             <span class="close-modal video-close" onclick="closeVideoModal()">&times;</span>
             <video id="modal-video-player" src="" controls autoplay muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+
+<!-- MODAL DE MEDIOS DE PAGO Y FINANCIACIÓN -->
+    <div id="modal-pagos" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999999;">
+        <div class="modal-content" style="background: #111622; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; text-align: left; border: 1px solid rgba(0, 240, 255, 0.2); position: relative; max-height: 90vh; overflow-y: auto;">
+            <span class="close-modal" onclick="cerrarModalPagos()" style="position: absolute !important; top: 15px !important; right: 15px !important; background: rgba(255,255,255,0.1) !important; border: none !important; color: #fff !important; font-size: 20px !important; width: 35px !important; height: 35px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important;">&times;</span>
+            <h3 style="color: #fff; font-size: 22px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">Información de Pagos y Cuotas</h3>
+            
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #22c55e; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-money-bill-wave"></i> Precio Especial (Más Bajo)</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">Aplica únicamente para pagos al contado, sin intermediarios financieros:</p>
+                <ul style="color: #94A3B8; font-size: 14.5px; list-style: none; padding: 0; line-height: 1.8;">
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Efectivo billete (ARS o USD)</li>
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Transferencia Bancaria (CBU/CVU)</li>
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Dinero en cuenta de MercadoPago</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #facc15; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-credit-card"></i> Precio de Lista (1 Pago)</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">Tiene un <b>recargo del 15%</b> para cubrir los impuestos y retenciones de la plataforma:</p>
+                <ul style="color: #94A3B8; font-size: 14.5px; list-style: none; padding: 0; line-height: 1.8;">
+                    <li><i class="fa-regular fa-credit-card" style="color: #facc15; margin-right: 8px;"></i> Tarjeta de Débito (1 Pago)</li>
+                    <li><i class="fa-regular fa-credit-card" style="color: #facc15; margin-right: 8px;"></i> Tarjeta de Crédito (1 Pago)</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="color: #00F0FF; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-chart-pie"></i> Financiación en Cuotas</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">
+                    Si deseás abonar en 3, 6, 9 o 12 cuotas con Tarjeta de Crédito, el sistema tomará el <b>Precio de Lista</b> y MercadoPago aplicará su propia <b>tasa de interés</b> según la cantidad de meses que elijas al momento de pasar la tarjeta.
+                </p>
+            </div>
         </div>
     </div>
 
