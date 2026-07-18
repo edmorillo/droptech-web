@@ -1496,6 +1496,7 @@ h2 {
     }
 
     /* Textos a la izquierda */
-    .prices-table td:nth-child(3)::before { content: 'Efectivo'; font-size: 13px; color: #22c55e; font-weight: 600; }
+    /* Textos a la izquierda */
+    .prices-table td:nth-child(3)::before { content: 'Efectivo / Transf.'; font-size: 13px; color: #22c55e; font-weight: 600; }
     .prices-table td:nth-child(4)::before { content: 'Tarjeta (+15%)'; font-size: 13px; color: #facc15; font-weight: 600; }
 }
