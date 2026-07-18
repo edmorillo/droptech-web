@@ -127,6 +127,25 @@
             .product-details { grid-column: 1; grid-row: 2; position: relative; top: 0; } /* 2do: Precio y Botón (y desactivamos el sticky) */
             .product-description-box { grid-column: 1; grid-row: 3; margin-top: 10px; } /* 3ro: Descripción al fondo */
         }
+
+        /* ANIMACIÓN DE SCROLL (Para la gente sin experiencia) */
+        .scroll-down-hint { text-align: center; color: #94A3B8; font-size: 13px; margin-top: 15px; animation: bounce 2s infinite; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .scroll-down-hint i { font-size: 18px; color: #00F0FF; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(5px); }
+            60% { transform: translateY(3px); }
+        }
+
+        /* TABLA ESTILO MERCADOLIBRE */
+        .ml-table-container { border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; margin-top: 15px; }
+        .ml-table-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .ml-table-row:last-child { border-bottom: none; }
+        .ml-table-row:nth-child(even) { background: rgba(255,255,255,0.02); } /* Fila gris oscura */
+        .ml-table-row:nth-child(odd) { background: rgba(0,0,0,0.2); } /* Fila negra */
+        .ml-table-key { width: 40%; padding: 15px; font-weight: 600; color: #fff; font-size: 14px; background: rgba(0, 240, 255, 0.05); }
+        .ml-table-val { width: 60%; padding: 15px; color: #94A3B8; font-size: 14px; }
+        .ml-table-full { width: 100%; padding: 15px; color: #94A3B8; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -268,13 +287,13 @@
                     `;
                 }
 
-                // Armar bloque de descripción inteligente (Títulos, Negritas y Viñetas)
+                // Armar bloque de descripción inteligente (Títulos y Tablas ML)
                 let descripcionHTML = '';
                 if (data.descripcion && data.descripcion.trim() !== '') {
                     
                     let lineas = data.descripcion.split('\n');
                     let listaHTML = '';
-                    let enLista = false;
+                    let enTabla = false;
                     
                     lineas.forEach(linea => {
                         let texto = linea.trim();
@@ -284,22 +303,39 @@
                             
                             // 2. Detectar si es un Título (empieza con "# ")
                             if (texto.startsWith('# ')) {
-                                if (enLista) { listaHTML += '</ul>'; enLista = false; }
+                                if (enTabla) { listaHTML += '</div>'; enTabla = false; } // Cerramos tabla anterior si había
                                 let tituloTexto = texto.substring(2).trim();
-                                listaHTML += `<h5 style="color: #fff; margin-top: 25px; margin-bottom: 12px; font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${tituloTexto}</h5>`;
+                                listaHTML += `<h4 style="color: #00F0FF; margin-top: 30px; margin-bottom: 10px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${tituloTexto}</h4>`;
                             } else {
-                                // 3. Es un ítem de lista normal
-                                if (!enLista) { listaHTML += '<ul class="description-list">'; enLista = true; }
-                                texto = texto.replace(/^[-•]\s*/, ''); // Limpiar si puso guion a mano
-                                listaHTML += `<li>${texto}</li>`;
+                                // 3. Es un ítem (Lo metemos en la tabla)
+                                if (!enTabla) { listaHTML += '<div class="ml-table-container">'; enTabla = true; }
+                                texto = texto.replace(/^[-•]\s*/, ''); // Limpiar si pusiste guion a mano
+                                
+                                // MAGIA: Si el texto tiene dos puntos (:), hacemos la columna doble de MercadoLibre
+                                if(texto.includes(':')) {
+                                    let partes = texto.split(':');
+                                    let key = partes[0].trim();
+                                    let val = partes.slice(1).join(':').trim();
+                                    listaHTML += `
+                                        <div class="ml-table-row">
+                                            <div class="ml-table-key">${key}</div>
+                                            <div class="ml-table-val">${val}</div>
+                                        </div>`;
+                                } else {
+                                    // Si no tiene dos puntos, ocupa toda la fila
+                                    listaHTML += `
+                                        <div class="ml-table-row">
+                                            <div class="ml-table-full">${texto}</div>
+                                        </div>`;
+                                }
                             }
                         }
                     });
-                    if (enLista) { listaHTML += '</ul>'; }
+                    if (enTabla) { listaHTML += '</div>'; } // Cerrar última tabla
 
                     descripcionHTML = `
                         <div class="product-description-box">
-                            <h3>Lo que tenés que saber de este producto</h3>
+                            <h3 style="font-size: 22px; color: #fff; margin-bottom: 5px; font-weight: 700;">Lo que tenés que saber de este producto</h3>
                             ${listaHTML}
                         </div>
                     `;
@@ -312,6 +348,12 @@
                         <img src="${arrayImagenes[0]}" class="main-image" id="img-principal" onclick="openGalleryDinamic('${data.imagen || ''}')">
                         <div class="thumbnail-container">
                             ${miniaturasHTML}
+                        </div>
+                        
+                        <!-- NUEVA FLECHITA ANIMADA -->
+                        <div class="scroll-down-hint">
+                            <span>Deslizá para ver las características</span>
+                            <i class="fa-solid fa-chevron-down"></i>
                         </div>
                     </div>
                     
