@@ -350,10 +350,10 @@
                             ${miniaturasHTML}
                         </div>
                         
-                        <!-- NUEVA FLECHITA ANIMADA -->
-                        <div class="scroll-down-hint">
-                            <span>Deslizá para ver las características</span>
-                            <i class="fa-solid fa-chevron-down"></i>
+                        <!-- NUEVA FLECHITA ANIMADA Y CLICKEABLE -->
+                        <div class="scroll-down-hint" onclick="document.querySelector('.product-description-box').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;">
+                            <span style="font-weight: 600; color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.3); padding: 6px 15px; border-radius: 20px; background: rgba(0, 240, 255, 0.05);">Tocar para ver características</span>
+                            <i class="fa-solid fa-chevron-down" style="margin-top: 5px;"></i>
                         </div>
                     </div>
                     
