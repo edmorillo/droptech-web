@@ -58,6 +58,47 @@
         .safe-buy { text-align: center; color: #94A3B8; font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
         .safe-buy i { color: #00F0FF; }
 
+        /* DISEÑO DE PRECIOS ESTILO MAXIMUS */
+        .maximus-price-green {
+            background-color: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .maximus-price-green .header { color: #166534; font-size: 13px; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .maximus-price-green .amount { color: #16a34a; font-size: 32px; font-weight: 800; }
+        .maximus-price-green .tag { position: absolute; top: 15px; right: 15px; background: #22c55e; color: white; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; }
+        
+        .maximus-price-white {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .maximus-price-white .text { color: #475569; font-size: 13px; font-weight: 600; }
+        .maximus-price-white .amount { color: #0f172a; font-size: 20px; font-weight: 800; }
+
+        .maximus-installments {
+            background: linear-gradient(90deg, #facc15 0%, #eab308 100%);
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+        .maximus-installments:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3); }
+        .maximus-installments .text { color: #000; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .maximus-installments .btn-ver { background: #000; color: #fff; font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 4px; }
+
         /* CAJA DE DESCRIPCIÓN TIPO MERCADOLIBRE */
         .product-description-box { 
             /* MAGIA PARA PC: Lo clavamos a la izquierda, justo debajo de la galería */
@@ -244,12 +285,22 @@
                         <span class="product-tag">${tagTexto}</span>
                         <h1 class="product-title">${data.titulo}</h1>
                         
-                        <div class="product-price">$${precioFormateado} <span>ARS</span></div>
-                        <div class="discount-info"><i class="fa-solid fa-bolt"></i> Descuento especial abonando en Efectivo / Transferencia</div>
+                        <!-- CAJAS DE PRECIO ESTILO MAXIMUS -->
+                        <div class="maximus-price-green">
+                            <div class="header"><i class="fa-solid fa-money-bill-wave"></i> Efectivo / Transferencia / Dinero en MP</div>
+                            <div class="amount">$${precioFormateado}</div>
+                            <div class="tag">MEJOR PRECIO</div>
+                        </div>
 
-                        <ul class="specs-list">
-                            ${caracteristicasHTML}
-                        </ul>
+                        <div class="maximus-price-white">
+                            <div class="text">Con tarjeta débito / crédito</div>
+                            <div class="amount">$${new Intl.NumberFormat('es-AR').format(Math.round(data.precio * 1.15))}</div>
+                        </div>
+
+                        <div class="maximus-installments" onclick="alert('Acá abriremos el cartel de MercadoPago con las cuotas en breve!')">
+                            <div class="text"><i class="fa-solid fa-handshake-angle"></i> VER MEDIOS DE PAGO</div>
+                            <div class="btn-ver">Ver opciones ></div>
+                        </div>
 
                         <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-buy btn-whatsapp">
                             <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i> Consultar Disponibilidad
