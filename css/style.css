@@ -1439,34 +1439,63 @@ h2 {
 }
 
 /*==================================================*/
-/* MAGIA PARA CELULARES: Convertir Tabla en Tarjetas */
+/* MAGIA PARA CELULARES: Tarjetas Estilo App (Corregido) */
 /*==================================================*/
 @media (max-width: 768px) {
+    /* MATAMOS EL SCROLL LATERAL */
+    .prices-table { min-width: 100% !important; } 
     .prices-table thead { display: none; } 
-    .prices-table, .prices-table tbody, .prices-table tr, .prices-table td { display: block; width: 100%; }
+    .prices-table, .prices-table tbody, .prices-table tr, .prices-table td { display: block; width: 100%; box-sizing: border-box; }
     
+    /* El contenedor principal de cada servicio */
     .prices-table tr { 
         background: #111622; 
         margin-bottom: 15px; 
-        border-radius: 10px; 
+        border-radius: 12px; 
         border: 1px solid rgba(0, 240, 255, 0.1); 
-        padding: 15px; 
+        padding: 16px; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .prices-table td { padding: 5px 0; border: none; text-align: left !important; }
+    .prices-table td { padding: 0; border: none; text-align: left !important; }
     
-    .prices-table td:nth-child(1) { font-size: 16px; font-weight: 700; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; margin-bottom: 10px; }
-    .prices-table td:nth-child(2)::before { content: '💻 Para: '; color: #64748b; font-size: 13px; font-weight: 600; }
-    
-    .prices-table td:nth-child(3), .prices-table td:nth-child(4) { 
-        display: inline-block; 
-        width: 48%; 
-        margin-top: 15px; 
-        background: rgba(255,255,255,0.02);
-        padding: 10px 5px;
-        border-radius: 6px;
-        text-align: center !important;
+    /* 1. Título del Servicio */
+    .prices-table td:nth-child(1) { 
+        font-size: 15px; 
+        font-weight: 700; 
+        color: #fff; 
+        margin-bottom: 6px; 
+        line-height: 1.4;
+        white-space: normal !important; /* Deja que el texto baje de renglón si es largo */
     }
-    .prices-table td:nth-child(3)::before { content: 'EFECTIVO'; display: block; font-size: 11px; color: #22c55e; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.5px; }
-    .prices-table td:nth-child(4)::before { content: 'TARJETA'; display: block; font-size: 11px; color: #facc15; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.5px; }
+    
+    /* 2. Compatibilidad (Sin emoji) */
+    .prices-table td:nth-child(2) {
+        font-size: 13px;
+        color: #a0aec0;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding-bottom: 12px;
+    }
+    .prices-table td:nth-child(2)::before { 
+        content: 'Para: '; 
+        font-weight: 600; 
+        color: #64748b;
+    }
+    
+    /* 3. Filas de Precios (Estilo Recibo) */
+    .prices-table td:nth-child(3), .prices-table td:nth-child(4) { 
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center;
+        background: rgba(0,0,0,0.2);
+        padding: 10px 12px;
+        border-radius: 6px;
+        margin-top: 6px;
+        width: 100%;
+        font-size: 15px;
+    }
+
+    /* Textos a la izquierda */
+    .prices-table td:nth-child(3)::before { content: 'Efectivo'; font-size: 13px; color: #22c55e; font-weight: 600; }
+    .prices-table td:nth-child(4)::before { content: 'Tarjeta (+15%)'; font-size: 13px; color: #facc15; font-weight: 600; }
 }

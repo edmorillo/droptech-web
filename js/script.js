@@ -463,7 +463,7 @@ function filtrarAccesoriosPublicos() {
 }
 
 // =========================================================================
-// 7. GENERADOR AUTOMÁTICO DE PDF
+// 7. GENERADOR AUTOMÁTICO DE PDF (CORREGIDO - 4 COLUMNAS)
 // =========================================================================
 async function generarPDF(event) {
     event.preventDefault(); 
@@ -477,6 +477,7 @@ async function generarPDF(event) {
         const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
         if (error) throw error;
 
+        // Armamos la data con las 4 columnas ya calculadas
         const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [
             item.servicio, 
             item.compatibilidad, 
@@ -495,6 +496,7 @@ async function generarPDF(event) {
 
         doc.setProperties({ title: 'Listado_Precios_Computadoras_Lei.pdf', author: 'Computadoras Lei' });
 
+        // Dibujo del Logo
         doc.setDrawColor(0, 180, 200); 
         doc.setLineWidth(0.8);
         doc.roundedRect(14, 12, 16, 11, 1.5, 1.5, 'S'); 
@@ -508,6 +510,7 @@ async function generarPDF(event) {
         doc.line(19, 17.5, 25, 17.5);
         doc.line(22, 14.5, 22, 20.5);
 
+        // Textos del Cabezal
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(22);
         doc.setFont("helvetica", "bold");
@@ -523,6 +526,8 @@ async function generarPDF(event) {
         doc.text(`Actualizado el: ${fechaHoy}`, 196, 20, { align: "right" });
 
         let posicionY = 34; 
+        
+        // Estructura de anchos y colores de las 4 columnas
         const columnasDiseño = {
             0: { halign: 'left', cellWidth: 80 },
             1: { halign: 'left', cellWidth: 42 },
@@ -557,7 +562,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3,
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO (ARS)']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'EFECTIVO', 'TARJETA (+15%)']],
                 body: hardwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
