@@ -101,26 +101,44 @@ window.addEventListener('keydown', function(event) {
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS 
+// 4. MODAL DE VIDEOS (CAMALEÓN: MP4 + YOUTUBE)
 // ==========================================
-function openVideoModal(videoSrc) {
+function openVideoModal(url, isYouTube, ytId) {
     const modal = document.getElementById('video-modal');
-    const player = document.getElementById('modal-video-player');
-    if (modal && player) {
-        player.src = videoSrc;
-        modal.style.display = 'flex';
-        player.play().catch(e => console.log("Auto-reproducción asistida", e));
+    const videoMp4 = document.getElementById('modal-video-player');
+    const videoYt = document.getElementById('modal-youtube-player');
+    
+    if (modal) modal.style.display = 'flex';
+
+    if (isYouTube) {
+        // Escondemos MP4 y mostramos YouTube
+        if (videoMp4) { videoMp4.style.display = 'none'; videoMp4.pause(); }
+        if (videoYt) {
+            videoYt.style.display = 'block';
+            videoYt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+        }
+    } else {
+        // Escondemos YouTube y mostramos MP4
+        if (videoYt) { videoYt.style.display = 'none'; videoYt.src = ''; }
+        if (videoMp4) {
+            videoMp4.style.display = 'block';
+            videoMp4.src = url;
+            videoMp4.play().catch(e => console.log("Auto-reproducción asistida", e));
+        }
     }
 }
 
 function closeVideoModal() {
     const modal = document.getElementById('video-modal');
-    const player = document.getElementById('modal-video-player');
-    if (modal && player) {
-        player.pause(); player.src = ''; modal.style.display = 'none';
-    }
+    const videoMp4 = document.getElementById('modal-video-player');
+    const videoYt = document.getElementById('modal-youtube-player');
+    
+    if (modal) modal.style.display = 'none';
+    if (videoMp4) { videoMp4.pause(); videoMp4.src = ''; }
+    if (videoYt) { videoYt.src = ''; } // Corta el video de YouTube
 }
 
+// --- EVENTOS EXTRA DE UX (Se mantienen perfectos) ---
 window.addEventListener('keydown', function(event) {
     const videoModal = document.getElementById('video-modal');
     if (event.key === 'Escape' && videoModal && videoModal.style.display === 'flex') { closeVideoModal(); }
@@ -288,6 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cargarNotebooksDinamicas();
         cargarMemoriasDinamicas();
         cargarAccesoriosDinamicos();
+        cargarVideosDinamicos();
     }
 });
 
@@ -460,6 +479,81 @@ function renderizarAccesoriosPublicos(filtro) {
 function filtrarAccesoriosPublicos() {
     const filtro = document.getElementById('filtro-accesorios-publico').value;
     renderizarAccesoriosPublicos(filtro);
+}
+
+// =========================================================================
+// E) CARGAR VIDEOS EN EL INDEX (MOTOR YOUTUBE BLINDADO)
+// =========================================================================
+async function cargarVideosDinamicos() {
+    const grid = document.getElementById('grid-videos');
+    if (!grid) return; 
+
+    try {
+        const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (data.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #a0aec0; padding: 40px; font-size: 18px;">Próximamente nuevos trabajos en video.</div>';
+            return;
+        }
+
+        grid.innerHTML = ''; 
+
+        data.forEach((item, index) => {
+            // Limpiamos espacios invisibles si se copió mal el link
+            const urlStr = item.url_video ? item.url_video.trim() : '';
+            const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
+
+            let videoId = null;
+            
+            // Extraemos EXACTAMENTE los 11 caracteres del código de YouTube, ignorando basura extra
+            if (!esMp4 && urlStr !== '') {
+                const match = urlStr.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+                if (match && match[1]) {
+                    videoId = match[1];
+                }
+            }
+
+            let fondoVideo = '';
+            let accionClick = '';
+            let overlay = `<div class="img-overlay"><i class="fa-solid fa-play"></i><span>Ver completo</span></div>`;
+
+            if (esMp4) {
+                fondoVideo = `<video src="${urlStr}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></video>`;
+                accionClick = `onclick="openVideoModal('${urlStr}')"`;
+                
+            } else if (videoId) {
+                // Inyectamos el reproductor con las políticas de seguridad estrictas oficiales de YouTube
+                fondoVideo = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; z-index: 5;"></iframe>`;
+                accionClick = ''; 
+                overlay = '';     
+                
+            } else {
+                // Botón genérico por si alguien pega un link de Instagram o una web normal
+                fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i></div>`;
+                accionClick = `onclick="window.open('${urlStr}', '_blank')"`;
+                overlay = `<div class="img-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Abrir enlace</span></div>`;
+            }
+
+            const card = `
+                <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
+                    <div class="video-wrapper" ${accionClick} style="position: relative;">
+                        ${fondoVideo}
+                        ${overlay}
+                    </div>
+                    <div class="video-info">
+                        <h4>${item.titulo}</h4>
+                        <p>${item.descripcion}</p>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += card;
+        });
+
+    } catch (err) {
+        console.error("Error al traer videos:", err);
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #ff4a4a; padding: 40px;">Hubo un error de conexión al cargar los videos.</div>';
+    }
 }
 
 // =========================================================================
