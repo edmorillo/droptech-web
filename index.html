@@ -267,11 +267,16 @@
      </div>
     </section>
 
-    <!-- MODAL DE VIDEOS -->
+    <!-- MODAL DE VIDEO CAMALEÓN (Soporta MP4 y YouTube) -->
     <div id="video-modal" class="modal">
-        <div class="modal-content video-modal-content">
-            <span class="close-modal video-close" onclick="closeVideoModal()">&times;</span>
-            <video id="modal-video-player" src="" controls autoplay playsinline webkit-playsinline></video>
+        <div class="modal-content video-modal-content" style="background: #000; padding: 0; position: relative; border-radius: 8px; overflow: hidden;">
+            <span class="close-modal video-close" onclick="closeVideoModal()" style="position: absolute; top: 10px; right: 15px; z-index: 10; color: #fff; text-shadow: 0 0 5px #000; cursor: pointer;">&times;</span>
+            
+            <!-- Reproductor 1: Archivos MP4 -->
+            <video id="modal-video-player" src="" controls autoplay playsinline style="display: none; width: 100%; max-height: 80vh; outline: none;"></video>
+            
+            <!-- Reproductor 2: Links de YouTube -->
+            <iframe id="modal-youtube-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display: none; width: 100%; aspect-ratio: 16/9; max-height: 80vh; outline: none;"></iframe>
         </div>
     </div>
 

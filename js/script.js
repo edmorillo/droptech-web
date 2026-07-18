@@ -101,36 +101,49 @@ window.addEventListener('keydown', function(event) {
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS (VERSIÓN LIMPIA MP4)
+// 4. MODAL DE VIDEOS (CAMALEÓN: MP4 + YOUTUBE)
 // ==========================================
-function openVideoModal(videoSrc) {
+function openVideoModal(url, isYouTube, ytId) {
     const modal = document.getElementById('video-modal');
-    const player = document.getElementById('modal-video-player');
-    if (modal && player) {
-        player.src = videoSrc;
-        modal.style.display = 'flex';
-        player.play().catch(e => console.log("Auto-reproducción asistida", e));
+    const videoMp4 = document.getElementById('modal-video-player');
+    const videoYt = document.getElementById('modal-youtube-player');
+    
+    if (modal) modal.style.display = 'flex';
+
+    if (isYouTube) {
+        if (videoMp4) { videoMp4.style.display = 'none'; videoMp4.pause(); }
+        if (videoYt) {
+            videoYt.style.display = 'block';
+            videoYt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+        }
+    } else {
+        if (videoYt) { videoYt.style.display = 'none'; videoYt.src = ''; }
+        if (videoMp4) {
+            videoMp4.style.display = 'block';
+            videoMp4.src = url;
+            videoMp4.play().catch(e => console.log("Auto-reproducción asistida", e));
+        }
     }
 }
 
 function closeVideoModal() {
     const modal = document.getElementById('video-modal');
-    const player = document.getElementById('modal-video-player');
-    if (modal && player) {
-        player.pause(); 
-        player.src = ''; 
-        modal.style.display = 'none';
-    }
+    const videoMp4 = document.getElementById('modal-video-player');
+    const videoYt = document.getElementById('modal-youtube-player');
+    
+    if (modal) modal.style.display = 'none';
+    if (videoMp4) { videoMp4.pause(); videoMp4.src = ''; }
+    if (videoYt) { videoYt.src = ''; }
 }
 
 window.addEventListener('keydown', function(event) {
-    const videoModal = document.getElementById('video-modal');
-    if (event.key === 'Escape' && videoModal && videoModal.style.display === 'flex') { closeVideoModal(); }
+    const modal = document.getElementById('video-modal');
+    if (event.key === 'Escape' && modal && modal.style.display === 'flex') { closeVideoModal(); }
 });
 
 window.addEventListener('click', function(event) {
-    const videoModal = document.getElementById('video-modal');
-    if (videoModal && event.target === videoModal) { closeVideoModal(); }
+    const modal = document.getElementById('video-modal');
+    if (modal && event.target === modal) { closeVideoModal(); }
 });
 
 const videoModalSection = document.getElementById('video-modal');
@@ -139,8 +152,7 @@ let touchStartPointY = 0;
 if (videoModalSection) {
     videoModalSection.addEventListener('touchstart', (e) => { touchStartPointY = e.touches[0].clientY; }, { passive: true });
     videoModalSection.addEventListener('touchmove', (e) => {
-        let currentY = e.touches[0].clientY;
-        if (currentY - touchStartPointY > 70) { closeVideoModal(); }
+        if (e.touches[0].clientY - touchStartPointY > 70) { closeVideoModal(); }
     }, { passive: true });
 }
 
@@ -466,7 +478,7 @@ function filtrarAccesoriosPublicos() {
 }
 
 // =========================================================================
-// E) CARGAR VIDEOS EN EL INDEX (VERSIÓN LIMPIA MP4)
+// E) CARGAR VIDEOS Y CONTROL DEL MODAL CAMALEÓN
 // =========================================================================
 async function cargarVideosDinamicos() {
     const grid = document.getElementById('grid-videos');
@@ -484,13 +496,63 @@ async function cargarVideosDinamicos() {
         grid.innerHTML = ''; 
 
         data.forEach((item, index) => {
+            const urlStr = item.url_video ? item.url_video.trim() : '';
+            const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
+            let esInstagram = urlStr.includes('instagram.com');
+            let videoId = null;
+            
+            // Extractor infalible de YouTube
+            if (!esMp4 && urlStr !== '') {
+                try {
+                    const urlObj = new URL(urlStr);
+                    if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
+                        if (urlObj.searchParams.has('v')) {
+                            videoId = urlObj.searchParams.get('v');
+                        } else if (urlObj.pathname.includes('/shorts/')) {
+                            videoId = urlObj.pathname.split('/shorts/')[1];
+                        } else if (urlObj.pathname.includes('/embed/')) {
+                            videoId = urlObj.pathname.split('/embed/')[1];
+                        } else if (urlObj.hostname === 'youtu.be') {
+                            videoId = urlObj.pathname.substring(1);
+                        }
+                        if (videoId) videoId = videoId.split('?')[0].split('&')[0].split('/')[0];
+                    }
+                } catch(e) {
+                    console.log("Link no válido o con formato incorrecto:", urlStr);
+                }
+            }
+
+            let fondoVideo = '';
+            let accionClick = '';
+
+            if (esMp4) {
+                // MP4: Se reproduce de fondo
+                fondoVideo = `<video src="${urlStr}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
+                accionClick = `onclick="openVideoModal('${urlStr}', false, '')"`;
+                
+            } else if (videoId) {
+                // YOUTUBE: Foto de portada (miniatura)
+                const miniatura = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                fondoVideo = `<img src="${miniatura}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
+                accionClick = `onclick="openVideoModal('', true, '${videoId}')"`;
+                
+            } else {
+                // INSTAGRAM / DRIVE / OTROS: Logo gigante
+                let iconoRed = esInstagram 
+                    ? '<i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i>' 
+                    : '<i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i>';
+
+                fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;">${iconoRed}</div>`;
+                accionClick = `onclick="window.open('${urlStr}', '_blank')"`;
+            }
+
             const card = `
                 <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
-                    <div class="video-wrapper" onclick="openVideoModal('${item.url_video}')">
-                        <video src="${item.url_video}" autoplay loop muted playsinline></video>
+                    <div class="video-wrapper" ${accionClick} style="position: relative; cursor: pointer;">
+                        ${fondoVideo}
                         <div class="img-overlay">
-                            <i class="fa-solid fa-play"></i>
-                            <span>Ver completo</span>
+                            <i class="fa-solid ${videoId || esMp4 ? 'fa-play' : 'fa-arrow-up-right-from-square'}"></i>
+                            <span>${videoId || esMp4 ? 'Ver completo' : 'Abrir enlace'}</span>
                         </div>
                     </div>
                     <div class="video-info">
@@ -504,7 +566,6 @@ async function cargarVideosDinamicos() {
 
     } catch (err) {
         console.error("Error al traer videos:", err);
-        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #ff4a4a; padding: 40px;">Hubo un error de conexión al cargar los videos.</div>';
     }
 }
 
