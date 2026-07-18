@@ -159,6 +159,40 @@
 
     <footer class="footer"><p>&copy; 2026 Computadoras Lei. Lugano, CABA, Argentina.</p></footer>
 
+    <!-- MODAL DE MEDIOS DE PAGO Y FINANCIACIÓN -->
+    <div id="modal-pagos" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999999;">
+        <div class="modal-content" style="background: #111622; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; text-align: left; border: 1px solid rgba(0, 240, 255, 0.2); position: relative; max-height: 90vh; overflow-y: auto;">
+            <span class="close-modal" onclick="cerrarModalPagos()" style="position: absolute !important; top: 15px !important; right: 15px !important; background: rgba(255,255,255,0.1) !important; border: none !important; color: #fff !important; font-size: 20px !important; width: 35px !important; height: 35px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important;">&times;</span>
+            <h3 style="color: #fff; font-size: 22px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">Información de Pagos y Cuotas</h3>
+            
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #22c55e; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-money-bill-wave"></i> Precio Especial (Más Bajo)</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">Aplica únicamente para pagos al contado, sin intermediarios financieros:</p>
+                <ul style="color: #94A3B8; font-size: 14.5px; list-style: none; padding: 0; line-height: 1.8;">
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Efectivo billete (ARS o USD)</li>
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Transferencia Bancaria (CBU/CVU)</li>
+                    <li><i class="fa-solid fa-check" style="color: #22c55e; margin-right: 8px;"></i> Dinero en cuenta de MercadoPago</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #facc15; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-credit-card"></i> Precio de Lista (1 Pago)</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">Tiene un <b>recargo del 15%</b> para cubrir los impuestos y retenciones de la plataforma:</p>
+                <ul style="color: #94A3B8; font-size: 14.5px; list-style: none; padding: 0; line-height: 1.8;">
+                    <li><i class="fa-regular fa-credit-card" style="color: #facc15; margin-right: 8px;"></i> Tarjeta de Débito (1 Pago)</li>
+                    <li><i class="fa-regular fa-credit-card" style="color: #facc15; margin-right: 8px;"></i> Tarjeta de Crédito (1 Pago)</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="color: #00F0FF; font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-chart-pie"></i> Financiación en Cuotas</h4>
+                <p style="color: #94A3B8; font-size: 13.5px; margin-bottom: 8px;">
+                    Si deseás abonar en 3, 6, 9 o 12 cuotas con Tarjeta de Crédito, el sistema tomará el <b>Precio de Lista</b> y MercadoPago aplicará su propia <b>tasa de interés</b> según la cantidad de meses que elijas al momento de pasar la tarjeta.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- GALERÍA LIGHTBOX -->
     <div id="gallery-modal" class="modal">
         <span class="close-modal" onclick="closeGallery()">&times;</span>
@@ -286,23 +320,26 @@
                         <span class="product-tag">${tagTexto}</span>
                         <h1 class="product-title">${data.titulo}</h1>
                         
-                        <!-- CAJAS DE PRECIO ESTILO MAXIMUS -->
+                        <!-- CAJAS DE PRECIO: ESTRATEGIA DE ESCUDO -->
                         <div class="maximus-price-green">
                             <div class="header"><i class="fa-solid fa-money-bill-wave"></i> Efectivo / Transferencia / Dinero en MP</div>
                             <div class="price-row">
                                 <div class="amount">$${precioFormateado}</div>
-                                <div class="tag">MEJOR PRECIO</div>
+                                <div class="tag">PRECIO ESPECIAL</div>
                             </div>
                         </div>
 
                         <div class="maximus-price-white">
-                            <div class="text">Con tarjeta débito / crédito</div>
+                            <div>
+                                <div class="text" style="color: #0f172a;">Con Tarjeta (Débito o Crédito 1 Pago)</div>
+                                <div style="color: #64748b; font-size: 11px; margin-top: 3px;">Precio de Lista (+15% costos de plataforma)</div>
+                            </div>
                             <div class="amount">$${new Intl.NumberFormat('es-AR').format(Math.round(data.precio * 1.15))}</div>
                         </div>
 
-                        <div class="maximus-installments" onclick="alert('Acá abriremos el cartel de MercadoPago con las cuotas en breve!')">
-                            <div class="text"><i class="fa-solid fa-handshake-angle"></i> VER MEDIOS DE PAGO</div>
-                            <div class="btn-ver">Ver opciones ></div>
+                        <div class="maximus-installments" onclick="abrirModalPagos()">
+                            <div class="text"><i class="fa-solid fa-credit-card"></i> PAGÁ EN CUOTAS CON TARJETA</div>
+                            <div class="btn-ver">Ver tasas ></div>
                         </div>
 
                         <a href="https://wa.me/5491140822356?text=${mensajeWs}" target="_blank" class="btn-buy btn-whatsapp">
@@ -334,6 +371,15 @@
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof db !== 'undefined') { cargarDetalleProducto(); }
         });
+
+        // Funciones para el Modal de Pagos
+        function abrirModalPagos() {
+            document.getElementById('modal-pagos').style.display = 'flex';
+        }
+        function cerrarModalPagos() {
+            document.getElementById('modal-pagos').style.display = 'none';
+        }
     </script>
+    
 </body>
 </html>
