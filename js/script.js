@@ -101,7 +101,7 @@ window.addEventListener('keydown', function(event) {
 });
 
 // ==========================================
-// 4. MODAL DE VIDEOS 
+// 4. MODAL DE VIDEOS (VERSIÓN LIMPIA MP4)
 // ==========================================
 function openVideoModal(videoSrc) {
     const modal = document.getElementById('video-modal');
@@ -117,7 +117,9 @@ function closeVideoModal() {
     const modal = document.getElementById('video-modal');
     const player = document.getElementById('modal-video-player');
     if (modal && player) {
-        player.pause(); player.src = ''; modal.style.display = 'none';
+        player.pause(); 
+        player.src = ''; 
+        modal.style.display = 'none';
     }
 }
 
@@ -464,7 +466,7 @@ function filtrarAccesoriosPublicos() {
 }
 
 // =========================================================================
-// E) CARGAR VIDEOS EN EL INDEX (MOTOR YOUTUBE BLINDADO)
+// E) CARGAR VIDEOS EN EL INDEX (VERSIÓN LIMPIA MP4)
 // =========================================================================
 async function cargarVideosDinamicos() {
     const grid = document.getElementById('grid-videos');
@@ -482,46 +484,14 @@ async function cargarVideosDinamicos() {
         grid.innerHTML = ''; 
 
         data.forEach((item, index) => {
-            // Limpiamos espacios invisibles si se copió mal el link
-            const urlStr = item.url_video ? item.url_video.trim() : '';
-            const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
-
-            let videoId = null;
-            
-            // Extraemos EXACTAMENTE los 11 caracteres del código de YouTube, ignorando basura extra
-            if (!esMp4 && urlStr !== '') {
-                const match = urlStr.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
-                if (match && match[1]) {
-                    videoId = match[1];
-                }
-            }
-
-            let fondoVideo = '';
-            let accionClick = '';
-            let overlay = `<div class="img-overlay"><i class="fa-solid fa-play"></i><span>Ver completo</span></div>`;
-
-            if (esMp4) {
-                fondoVideo = `<video src="${urlStr}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></video>`;
-                accionClick = `onclick="openVideoModal('${urlStr}')"`;
-                
-            } else if (videoId) {
-                // Inyectamos el reproductor con las políticas de seguridad estrictas oficiales de YouTube
-                fondoVideo = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; z-index: 5;"></iframe>`;
-                accionClick = ''; 
-                overlay = '';     
-                
-            } else {
-                // Botón genérico por si alguien pega un link de Instagram o una web normal
-                fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i></div>`;
-                accionClick = `onclick="window.open('${urlStr}', '_blank')"`;
-                overlay = `<div class="img-overlay"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Abrir enlace</span></div>`;
-            }
-
             const card = `
                 <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
-                    <div class="video-wrapper" ${accionClick} style="position: relative;">
-                        ${fondoVideo}
-                        ${overlay}
+                    <div class="video-wrapper" onclick="openVideoModal('${item.url_video}')">
+                        <video src="${item.url_video}" autoplay loop muted playsinline></video>
+                        <div class="img-overlay">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Ver completo</span>
+                        </div>
                     </div>
                     <div class="video-info">
                         <h4>${item.titulo}</h4>
