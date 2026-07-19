@@ -260,7 +260,7 @@ async function cargarPreciosDinamicos() {
     if (!tablaSoftware && !tablaHardware) return; // Si no estoy en el index, no hago nada
 
     try {
-        const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
         if (data.length === 0) {
@@ -306,7 +306,7 @@ async function cargarNotebooksDinamicas() {
     if (!grid) return; // Si no estoy en la página notebooks.html, no hago nada
 
     try {
-        const { data, error } = await db.from('notebooks').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('notebooks').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
         if (data.length === 0) {
@@ -380,7 +380,7 @@ async function cargarMemoriasDinamicas() {
     if (!grid) return; 
 
     try {
-        const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('memorias').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
         memoriasPublicas = data || [];
@@ -470,7 +470,7 @@ async function cargarAccesoriosDinamicos() {
     if (!grid) return; 
 
     try {
-        const { data, error } = await db.from('accesorios').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('accesorios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
         accesoriosPublicos = data || [];
@@ -548,7 +548,7 @@ async function cargarVideosDinamicos() {
     if (!grid) return; 
 
     try {
-        const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('videos').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
         trabajosPublicos = data || [];
 
@@ -647,7 +647,7 @@ async function generarPDF(event) {
     btnPdf.style.pointerEvents = 'none';
 
     try {
-        const { data, error } = await db.from('precios').select('*').order('id', { ascending: false });
+        const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
         // Armamos la data con las 4 columnas ya calculadas

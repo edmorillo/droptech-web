@@ -201,7 +201,7 @@
                     <thead>
                         <tr>
                             <th>Categoría</th>
-                            <th>Servicio (A-Z)</th>
+                            <th>Servicio</th>
                             <th>Compatibilidad</th>
                             <th>Precio</th>
                             <th>Acciones</th>
@@ -552,24 +552,47 @@
 
             const btn = document.getElementById('btn-confirmar-eliminar');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Borrando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ocultando...';
             btn.style.pointerEvents = 'none';
 
-            const { error } = await db.from(tablaAEliminar).delete().eq('id', idAEliminar);
+            const { data: { session } } = await db.auth.getSession();
+            const usuarioEmail = session ? session.user.email : 'Administrador';
+
+            const { error } = await db.from(tablaAEliminar).update({ estado_registro: 'borrado' }).eq('id', idAEliminar);
             
+            if (!error) {
+                await db.from('auditoria_borrados').insert([{
+                    modulo: tablaAEliminar,
+                    registro_id: idAEliminar,
+                    detalle: 'Enviado a papelera desde el panel principal',
+                    usuario: usuarioEmail
+                }]);
+            }
+
             btn.innerHTML = originalText;
             btn.style.pointerEvents = 'auto';
-
+            
             if (error) {
                 alert("Error al borrar: " + error.message);
+                cerrarModalEliminar();
             } else {
-                mostrarToast("Elemento eliminado correctamente");
-                if(tablaAEliminar === 'precios') cargarPrecios();
-                if(tablaAEliminar === 'notebooks') cargarNotebooks();
-                if(tablaAEliminar === 'memorias') cargarMemorias();
-                if(tablaAEliminar === 'accesorios') cargarAccesorios();
+                mostrarToast("Elemento enviado a la papelera");
+                
+                // 1. Guardamos la tabla que hay que recargar antes de borrar las variables
+                const tablaRecargar = tablaAEliminar;
+                
+                // 2. Ahora sí cerramos el modal limpiamente
+                cerrarModalEliminar();
+                
+                // 3. Recargamos la lista correcta sin parpadeos
+                if(tablaRecargar === 'precios') cargarPrecios();
+                if(tablaRecargar === 'notebooks') cargarNotebooks();
+                if(tablaRecargar === 'memorias') cargarMemorias();
+                if(tablaRecargar === 'accesorios') cargarAccesorios();
+
+                // 4. Subimos la pantalla hacia arriba suavemente
+                document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
             }
-            cerrarModalEliminar();
         });
 
 
@@ -581,7 +604,7 @@
 
         async function cargarPrecios() {
             const tabla = document.getElementById('tabla-admin');
-            const { data, error } = await db.from('precios').select('*').order('servicio', { ascending: true });
+            const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('servicio', { ascending: true });
             if (error) { tabla.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
 
             preciosActuales = data || []; 
@@ -672,7 +695,7 @@
 
         async function cargarNotebooks() {
             const tabla = document.getElementById('tabla-admin-notebooks');
-            const { data, error } = await db.from('notebooks').select('*').order('id', { ascending: false });
+            const { data, error } = await db.from('notebooks').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
             if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
             notebooksActuales = data || []; 
             document.getElementById('stat-notebooks').innerText = notebooksActuales.length;
@@ -792,7 +815,7 @@
 
         async function cargarMemorias() {
             const tabla = document.getElementById('tabla-admin-memorias');
-            const { data, error } = await db.from('memorias').select('*').order('id', { ascending: false });
+            const { data, error } = await db.from('memorias').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
             if (error) return;
             memoriasActuales = data || []; 
             document.getElementById('stat-ram').innerText = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
@@ -932,7 +955,7 @@
 
         async function cargarAccesorios() {
             const tabla = document.getElementById('tabla-admin-accesorios');
-            const { data, error } = await db.from('accesorios').select('*').order('id', { ascending: false });
+            const { data, error } = await db.from('accesorios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
             if (error) return;
             accesoriosActuales = data || []; 
             document.getElementById('stat-auriculares').innerText = accesoriosActuales.filter(a => a.tipo === 'Auriculares').length;

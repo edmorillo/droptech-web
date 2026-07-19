@@ -190,13 +190,39 @@
         document.getElementById('btn-confirmar-eliminar').addEventListener('click', async () => {
             if(!idAEliminar) return;
             const btn = document.getElementById('btn-confirmar-eliminar');
-            btn.innerHTML = 'Borrando...'; btn.style.pointerEvents = 'none';
-            const { error } = await db.from('videos').delete().eq('id', idAEliminar);
-            btn.innerHTML = 'Sí, eliminar'; btn.style.pointerEvents = 'auto';
-            if (error) { alert("Error al borrar."); } else { mostrarToast("Trabajo eliminado"); cargarVideos(); }
-            cerrarModalEliminar();
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ocultando...'; 
+            btn.style.pointerEvents = 'none';
+            
+            const { data: { session } } = await db.auth.getSession();
+            const usuarioEmail = session ? session.user.email : 'Administrador';
+
+            const { error } = await db.from('videos').update({ estado_registro: 'borrado' }).eq('id', idAEliminar);
+            
+            if (!error) {
+                await db.from('auditoria_borrados').insert([{
+                    modulo: 'videos',
+                    registro_id: idAEliminar,
+                    detalle: 'Enviado a papelera desde panel trabajos',
+                    usuario: usuarioEmail
+                }]);
+            }
+
+            btn.innerHTML = 'Sí, eliminar'; 
+            btn.style.pointerEvents = 'auto';
+
+            if (error) { 
+                alert("Error al borrar."); 
+                cerrarModalEliminar();
+            } else { 
+                mostrarToast("Trabajo enviado a la papelera"); 
+                cerrarModalEliminar(); // Cerramos el modal primero
+                cargarVideos(); // Recargamos la vista de los videos
+                document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // Subimos arriba
+            }
         });
 
+        let editandoVidId = null;
+        let videosActuales = [];
         let videosMantenidos = [];
         let imagenesMantenidas = [];
 
@@ -272,7 +298,7 @@
         }
 
         async function cargarVideos() {
-            const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
+            const { data, error } = await db.from('videos').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
             if (!error) { videosActuales = data || []; renderizarTablaVideos(); }
         }
 
@@ -365,7 +391,8 @@
                         for (let i = 0; i < fileInputVid.files.length; i++) {
                             const archivoVid = fileInputVid.files[i];
                             const nombreUnicoVid = Date.now() + '_vid_' + Math.random().toString(36).substring(7) + '_' + archivoVid.name;
-                            await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
+                            const { error: errorVid } = await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
+if (errorVid) throw new Error("Fallo al subir: El video es muy pesado o hubo un corte de internet.");
                             const { data } = db.storage.from('videos').getPublicUrl(nombreUnicoVid);
                             nuevosVideosUrl.push(data.publicUrl);
                         }
