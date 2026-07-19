@@ -267,41 +267,64 @@
      </div>
     </section>
 
-    <!-- MODAL MIXTO (VIDEO + FOTOS) REPARADO DEFINITIVO -->
+    <!-- MODAL MIXTO (EXACTO A LA FOTO) -->
     <style>
-        /* El tamaño exacto que marcaste: ocupa el 80% de la pantalla sin tapar la X */
-        #gallery-mixed-modal .modal-content {
-            height: 82vh !important; 
-            max-height: 82vh !important;
-            max-width: 1000px !important;
-            display: flex !important;
-            flex-direction: column !important;
+        #gallery-mixed-modal { 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 9999999; 
         }
         
-        /* El video se adapta SOLAMENTE al espacio sobrante por dentro de la caja */
+        #gallery-mixed-modal .modal-content {
+            background: #111622;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 95%;
+            border: 1px solid rgba(0,240,255,0.2);
+            position: relative;
+        }
+
+        /* La X flotando arriba y afuera de la caja */
+        .btn-cerrar-modal {
+            position: absolute;
+            top: -55px; 
+            right: 0;
+            background: #000;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #00F0FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* El tamaño del video adaptado a la pantalla */
         #mixed-main-view { 
             width: 100%; 
-            flex: 1 1 auto !important; 
-            min-height: 0 !important; 
+            height: 65vh; 
+            max-height: 550px;
             background: #000; 
             border-radius: 8px; 
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
             overflow: hidden; 
-            position: relative; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
         }
 
-        /* Las miniaturas se quedan fijas abajo sin aplastarse */
+        /* Las miniaturas ordenadas abajo */
         #mixed-thumbnails { 
             display: flex; 
             gap: 10px; 
             overflow-x: auto; 
-            padding-bottom: 5px; 
             flex-wrap: nowrap; 
-            -webkit-overflow-scrolling: touch; 
-            flex: 0 0 auto !important; 
         }
         
         .thumb-mix { 
@@ -313,13 +336,20 @@
             cursor: pointer; 
             border: 2px solid transparent; 
             flex-shrink: 0; 
-            position: relative; 
             opacity: 0.5; 
             transition: 0.3s; 
             background: #1e293b; 
         }
         .thumb-mix:hover, .thumb-mix.active { opacity: 1; border-color: #00F0FF !important; }
     </style>
+
+    <div id="gallery-mixed-modal" class="modal">
+        <div class="modal-content">
+            <span class="btn-cerrar-modal" onclick="closeMixedGallery()"><i class="fa-solid fa-xmark"></i></span>
+            <div id="mixed-main-view"></div>
+            <div id="mixed-thumbnails"></div>
+        </div>
+    </div>
     
     <div id="gallery-mixed-modal" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999999;">
         <div class="modal-content">
