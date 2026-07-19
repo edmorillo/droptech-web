@@ -267,18 +267,22 @@
      </div>
     </section>
 
-    <!-- MODAL MIXTO (VIDEO + FOTOS) REPARADO -->
+    <!-- MODAL MIXTO (VIDEO + FOTOS) REPARADO Y ESTABLE -->
     <style>
         #mixed-thumbnails { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-        .thumb-mix { min-width: 90px; height: 60px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; position: relative; opacity: 0.5; transition: 0.3s; }
+        
+        /* Miniaturas fijas para que no se deformen en celular */
+        .thumb-mix { min-width: 80px; width: 80px; height: 60px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; position: relative; opacity: 0.5; transition: 0.3s; background: #1e293b; }
         .thumb-mix:hover, .thumb-mix.active { opacity: 1; border-color: #00F0FF !important; }
-        #mixed-main-view { width: 100%; height: 60vh; min-height: 250px; max-height: 600px; background: #000; border-radius: 8px; margin-bottom: 15px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+        
+        /* Caja principal de video rígida para no tapar la X */
+        #mixed-main-view { width: 100%; height: 60vh; min-height: 250px; max-height: 65vh; background: #000; border-radius: 8px; margin-bottom: 15px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
     </style>
     
     <div id="gallery-mixed-modal" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999999;">
-        <div class="modal-content video-modal-content" style="background: #111622; padding: 15px; border-radius: 12px; max-width: 900px; width: 95%; position: relative; border: 1px solid rgba(0,240,255,0.2);">
+        <!-- Ampliado a 1000px para computadoras -->
+        <div class="modal-content video-modal-content" style="background: #111622; padding: 15px; border-radius: 12px; max-width: 1000px; width: 95%; position: relative; border: 1px solid rgba(0,240,255,0.2);">
             
-            <!-- TU BOTÓN ORIGINAL RESTAURADO -->
             <span class="close-modal video-close" onclick="closeMixedGallery()" style="position: absolute; top: 10px; right: 15px; z-index: 10; color: #fff; text-shadow: 0 0 5px #000; cursor: pointer;">&times;</span>
             
             <div id="mixed-main-view">

@@ -122,7 +122,8 @@ function openMixedGallery(id) {
             
             const esMp4 = url.includes('.mp4') || url.includes('supabase.co');
             if (esMp4) {
-                elementosMixtos.push({ tipo: 'mp4', url: url, thumb: 'https://via.placeholder.com/150x100/1e293b/00F0FF?text=VIDEO' });
+                // Ya no usamos el link que se rompía, mandamos thumb vacío
+                elementosMixtos.push({ tipo: 'mp4', url: url, thumb: '' });
             } else {
                 const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
                 if (match && match[2].length === 11) {
@@ -145,13 +146,28 @@ function openMixedGallery(id) {
     const modal = document.getElementById('gallery-mixed-modal');
     const thumbsDiv = document.getElementById('mixed-thumbnails');
     
+    // 3. Dibujar la tira de miniaturas abajo (¡Sin imágenes rotas!)
     thumbsDiv.innerHTML = '';
     elementosMixtos.forEach((el, index) => {
-        let overlay = el.tipo !== 'img' ? `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>` : '';
+        let contenidoMiniatura = '';
+        
+        if (el.tipo === 'mp4') {
+            // Diseño nativo para MP4 (Cuadro oscuro con ícono de Play, irrompible)
+            contenidoMiniatura = `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #00F0FF; font-size: 20px;"><i class="fa-solid fa-play"></i></div>`;
+        } else if (el.tipo === 'youtube') {
+            // Diseño para YouTube (Foto de portada con Play encima)
+            contenidoMiniatura = `
+                <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>
+            `;
+        } else {
+            // Diseño para Fotos normales
+            contenidoMiniatura = `<img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
+        }
+
         thumbsDiv.innerHTML += `
             <div id="thumb-${index}" class="thumb-mix" onclick="setMixedMainView(${index})">
-                <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover;">
-                ${overlay}
+                ${contenidoMiniatura}
             </div>
         `;
     });
