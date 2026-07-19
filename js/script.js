@@ -122,10 +122,8 @@ function openMixedGallery(id) {
             
             const esMp4 = url.includes('.mp4') || url.includes('supabase.co');
             if (esMp4) {
-                // Cartel genérico de "Video" para las miniaturas de abajo
                 elementosMixtos.push({ tipo: 'mp4', url: url, thumb: 'https://via.placeholder.com/150x100/1e293b/00F0FF?text=VIDEO' });
             } else {
-                // Extractor de YouTube
                 const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
                 if (match && match[2].length === 11) {
                     elementosMixtos.push({ tipo: 'youtube', url: `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`, thumb: `https://img.youtube.com/vi/${match[2]}/default.jpg` });
@@ -147,12 +145,11 @@ function openMixedGallery(id) {
     const modal = document.getElementById('gallery-mixed-modal');
     const thumbsDiv = document.getElementById('mixed-thumbnails');
     
-    // 3. Dibujar la tira de miniaturas abajo
     thumbsDiv.innerHTML = '';
     elementosMixtos.forEach((el, index) => {
         let overlay = el.tipo !== 'img' ? `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>` : '';
         thumbsDiv.innerHTML += `
-            <div id="thumb-${index}" class="thumb-mix" onclick="setMixedMainView(${index})" style="min-width: 120px; height: 80px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; position: relative; flex-shrink: 0;">
+            <div id="thumb-${index}" class="thumb-mix" onclick="setMixedMainView(${index})">
                 <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover;">
                 ${overlay}
             </div>
@@ -160,7 +157,7 @@ function openMixedGallery(id) {
     });
 
     modal.style.display = 'flex';
-    setMixedMainView(0); // El primer elemento siempre es la pantalla principal inicial
+    setMixedMainView(0);
 }
 
 window.setMixedMainView = function(index) {
@@ -175,14 +172,35 @@ window.setMixedMainView = function(index) {
         mainView.innerHTML = `<img src="${el.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
     }
     
-    document.querySelectorAll('.thumb-mix').forEach(t => { t.style.borderColor = 'transparent'; t.style.opacity = '0.5'; });
+    document.querySelectorAll('.thumb-mix').forEach(t => { t.classList.remove('active'); });
     const activeThumb = document.getElementById(`thumb-${index}`);
-    if(activeThumb) { activeThumb.style.borderColor = '#00F0FF'; activeThumb.style.opacity = '1'; }
+    if(activeThumb) { activeThumb.classList.add('active'); }
 };
 
 window.closeMixedGallery = function() {
-    document.getElementById('gallery-mixed-modal').style.display = 'none';
+    const modal = document.getElementById('gallery-mixed-modal');
+    if (modal) modal.style.display = 'none';
     document.getElementById('mixed-main-view').innerHTML = ''; 
+}
+
+// --- RESTAURACIÓN DE EVENTOS DE CIERRE (Escape, Clic afuera, Deslizar) ---
+window.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('gallery-mixed-modal');
+    if (event.key === 'Escape' && modal && modal.style.display === 'flex') { closeMixedGallery(); }
+});
+
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('gallery-mixed-modal');
+    if (modal && event.target === modal) { closeMixedGallery(); }
+});
+
+const mixedModalSection = document.getElementById('gallery-mixed-modal');
+let touchStartPointY = 0;
+if (mixedModalSection) {
+    mixedModalSection.addEventListener('touchstart', (e) => { touchStartPointY = e.touches[0].clientY; }, { passive: true });
+    mixedModalSection.addEventListener('touchmove', (e) => {
+        if (e.touches[0].clientY - touchStartPointY > 70) { closeMixedGallery(); }
+    }, { passive: true });
 }
 
 // ==========================================
@@ -526,13 +544,11 @@ async function cargarVideosDinamicos() {
         grid.innerHTML = ''; 
 
         trabajosPublicos.forEach((item, index) => {
-            // Transformamos los strings separados por comas en listas (Arrays) reales
             const videosArray = item.url_video ? item.url_video.split(',').map(v => v.trim()).filter(v => v !== '') : [];
             const imagenesArray = item.imagenes ? item.imagenes.split(',').map(i => i.trim()).filter(i => i !== '') : [];
             
             const totalContenido = videosArray.length + imagenesArray.length;
             
-            // --- LÓGICA DE PORTADA (El primer elemento de toda la lista) ---
             let fondoVideo = '';
             let videoId = null;
             let esMp4 = false;
@@ -553,7 +569,6 @@ async function cargarVideosDinamicos() {
                     } catch(e) {}
                 }
                 
-                // Generar el fondo visual basado en el primer video
                 if (esMp4) {
                     fondoVideo = `<video src="${primerVideoUrl}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
                 } else if (videoId) {
@@ -564,11 +579,9 @@ async function cargarVideosDinamicos() {
                     fondoVideo = `<div style="width:100%; height:100%; background: #1e293b; display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i></div>`;
                 }
             } else if (imagenesArray.length > 0) {
-                // Si no hay videos, la primera imagen toma el control de la portada
                 fondoVideo = `<img src="${imagenesArray[0]}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
             }
 
-            // --- CONTADORES Y BOTONES ---
             let txtBadge = '';
             if (videosArray.length > 0 && imagenesArray.length > 0) txtBadge = `<i class="fa-solid fa-layer-group"></i> ${totalContenido} ítems`;
             else if (videosArray.length > 1) txtBadge = `<i class="fa-solid fa-video"></i> ${videosArray.length} videos`;
@@ -585,8 +598,8 @@ async function cargarVideosDinamicos() {
             const card = `
                 <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <div class="video-wrapper" ${accionClick} style="position: relative; cursor: pointer;">
-                        ${badgeHTML}
                         ${fondoVideo}
+                        ${badgeHTML}
                         <div class="img-overlay">
                             <i class="fa-solid ${iconBoton}"></i>
                             <span>${txtBoton}</span>
