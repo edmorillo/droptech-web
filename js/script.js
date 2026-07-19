@@ -122,7 +122,7 @@ function openMixedGallery(id) {
             
             const esMp4 = url.includes('.mp4') || url.includes('supabase.co');
             if (esMp4) {
-                // Ya no usamos el link que se rompía, mandamos thumb vacío
+                // Ya no pasamos link roto de placeholder, pasamos vacío para que el JS genere el cuadro
                 elementosMixtos.push({ tipo: 'mp4', url: url, thumb: '' });
             } else {
                 const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
@@ -152,7 +152,7 @@ function openMixedGallery(id) {
         let contenidoMiniatura = '';
         
         if (el.tipo === 'mp4') {
-            // Diseño nativo para MP4 (Cuadro oscuro con ícono de Play, irrompible)
+            // Diseño nativo para MP4 (Cuadro oscuro con ícono de Play cyan, irrompible)
             contenidoMiniatura = `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #00F0FF; font-size: 20px;"><i class="fa-solid fa-play"></i></div>`;
         } else if (el.tipo === 'youtube') {
             // Diseño para YouTube (Foto de portada con Play encima)
