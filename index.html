@@ -269,25 +269,20 @@
 
     <!-- MODAL MIXTO (VIDEO + FOTOS) REPARADO DEFINITIVO -->
     <style>
-        /* Ajuste principal del modal para que no desborde en celular */
+        /* El tamaño exacto que marcaste: ocupa el 80% de la pantalla sin tapar la X */
         #gallery-mixed-modal .modal-content {
-            background: #111622;
-            padding: 15px;
-            border-radius: 12px;
-            max-width: 1000px;
-            width: 95%;
-            max-height: 90vh; /* FRENO en celulares para no tapar la X */
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            border: 1px solid rgba(0,240,255,0.2);
+            height: 82vh !important; 
+            max-height: 82vh !important;
+            max-width: 1000px !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
         
-        /* La caja del video es elástica pero respeta el freno */
+        /* El video se adapta SOLAMENTE al espacio sobrante por dentro de la caja */
         #mixed-main-view { 
             width: 100%; 
-            flex: 1; /* Se estira, pero no rompe el contenedor */
-            min-height: 250px; 
+            flex: 1 1 auto !important; 
+            min-height: 0 !important; 
             background: #000; 
             border-radius: 8px; 
             margin-bottom: 15px; 
@@ -298,13 +293,7 @@
             justify-content: center; 
         }
 
-        /* En computadoras le damos altura gigante para aprovechar espacio */
-        @media (min-width: 768px) {
-            #mixed-main-view {
-                height: 75vh;
-            }
-        }
-
+        /* Las miniaturas se quedan fijas abajo sin aplastarse */
         #mixed-thumbnails { 
             display: flex; 
             gap: 10px; 
@@ -312,10 +301,9 @@
             padding-bottom: 5px; 
             flex-wrap: nowrap; 
             -webkit-overflow-scrolling: touch; 
-            min-height: 65px; 
+            flex: 0 0 auto !important; 
         }
         
-        /* Miniaturas fijas para que no se deformen */
         .thumb-mix { 
             min-width: 80px; 
             width: 80px; 
@@ -331,30 +319,6 @@
             background: #1e293b; 
         }
         .thumb-mix:hover, .thumb-mix.active { opacity: 1; border-color: #00F0FF !important; }
-        
-        /* TU BOTÓN "X" ORIGINAL */
-        .mixed-close-btn {
-            position: absolute; 
-            top: -15px; 
-            right: -15px; 
-            background: #000; 
-            color: #fff; 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            border: 2px solid #00F0FF;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 20px; 
-            cursor: pointer; 
-            z-index: 1000; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        /* Ajuste de la X en celulares para que no se corte por el borde */
-        @media (max-width: 768px) {
-            .mixed-close-btn { top: -10px; right: 0px; border-width: 1.5px; width: 35px; height: 35px; font-size: 18px; }
-        }
     </style>
     
     <div id="gallery-mixed-modal" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999999;">
