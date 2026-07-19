@@ -101,7 +101,7 @@ window.addEventListener('keydown', function(event) {
 });
 
 // =========================================================================
-// 4. MOTOR DE GALERÍA MIXTA (INDEX: VIDEO + FOTOS)
+// 4. MOTOR DE GALERÍA MIXTA (INDEX: MULTIPLES VIDEOS + FOTOS)
 // =========================================================================
 let trabajosPublicos = [];
 let elementosMixtos = [];
@@ -111,22 +111,35 @@ function openMixedGallery(id) {
     if (!item) return;
 
     elementosMixtos = [];
-    const urlStr = item.url_video ? item.url_video.trim() : '';
     
-    if (urlStr !== '' && !urlStr.includes('instagram.com')) {
-        const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
-        if (esMp4) {
-            elementosMixtos.push({ tipo: 'mp4', url: urlStr, thumb: 'https://via.placeholder.com/150x100/1e293b/00F0FF?text=VIDEO' });
-        } else {
-            const match = urlStr.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
-            if (match && match[2].length === 11) {
-                elementosMixtos.push({ tipo: 'youtube', url: `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`, thumb: `https://img.youtube.com/vi/${match[2]}/default.jpg` });
+    // 1. Agregar TODOS los Videos a la lista
+    const videosStr = item.url_video ? item.url_video.trim() : '';
+    if (videosStr !== '') {
+        const videosArray = videosStr.split(',');
+        videosArray.forEach(v => {
+            const url = v.trim();
+            if (url === '' || url.includes('instagram.com')) return; 
+            
+            const esMp4 = url.includes('.mp4') || url.includes('supabase.co');
+            if (esMp4) {
+                // Cartel genérico de "Video" para las miniaturas de abajo
+                elementosMixtos.push({ tipo: 'mp4', url: url, thumb: 'https://via.placeholder.com/150x100/1e293b/00F0FF?text=VIDEO' });
+            } else {
+                // Extractor de YouTube
+                const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
+                if (match && match[2].length === 11) {
+                    elementosMixtos.push({ tipo: 'youtube', url: `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`, thumb: `https://img.youtube.com/vi/${match[2]}/default.jpg` });
+                }
             }
-        }
+        });
     }
 
-    if (item.imagenes && item.imagenes.trim() !== '') {
-        item.imagenes.split(',').forEach(img => { elementosMixtos.push({ tipo: 'img', url: img, thumb: img }); });
+    // 2. Agregar TODAS las Fotos a la lista
+    const imagenesStr = item.imagenes ? item.imagenes.trim() : '';
+    if (imagenesStr !== '') {
+        imagenesStr.split(',').forEach(img => { 
+            if (img.trim() !== '') elementosMixtos.push({ tipo: 'img', url: img.trim(), thumb: img.trim() }); 
+        });
     }
 
     if (elementosMixtos.length === 0) return;
@@ -134,6 +147,7 @@ function openMixedGallery(id) {
     const modal = document.getElementById('gallery-mixed-modal');
     const thumbsDiv = document.getElementById('mixed-thumbnails');
     
+    // 3. Dibujar la tira de miniaturas abajo
     thumbsDiv.innerHTML = '';
     elementosMixtos.forEach((el, index) => {
         let overlay = el.tipo !== 'img' ? `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>` : '';
@@ -146,7 +160,7 @@ function openMixedGallery(id) {
     });
 
     modal.style.display = 'flex';
-    setMixedMainView(0);
+    setMixedMainView(0); // El primer elemento siempre es la pantalla principal inicial
 }
 
 window.setMixedMainView = function(index) {
@@ -493,7 +507,7 @@ function filtrarAccesoriosPublicos() {
 }
 
 // =========================================================================
-// E) CARGAR TRABAJOS EN EL INDEX (VIDEO + FOTOS)
+// E) CARGAR TRABAJOS EN EL INDEX (CON LÓGICA DE PORTADA AUTOMÁTICA)
 // =========================================================================
 async function cargarVideosDinamicos() {
     const grid = document.getElementById('grid-videos');
@@ -512,47 +526,66 @@ async function cargarVideosDinamicos() {
         grid.innerHTML = ''; 
 
         trabajosPublicos.forEach((item, index) => {
-            const urlStr = item.url_video ? item.url_video.trim() : '';
-            const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
-            let esInsta = urlStr.includes('instagram.com');
-            let videoId = null;
-            let cantidadFotos = item.imagenes && item.imagenes.trim() !== '' ? item.imagenes.split(',').length : 0;
+            // Transformamos los strings separados por comas en listas (Arrays) reales
+            const videosArray = item.url_video ? item.url_video.split(',').map(v => v.trim()).filter(v => v !== '') : [];
+            const imagenesArray = item.imagenes ? item.imagenes.split(',').map(i => i.trim()).filter(i => i !== '') : [];
             
-            if (!esMp4 && urlStr !== '') {
-                try {
-                    const urlObj = new URL(urlStr);
-                    if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-                        if (urlObj.searchParams.has('v')) videoId = urlObj.searchParams.get('v');
-                        else if (urlObj.pathname.includes('/shorts/')) videoId = urlObj.pathname.split('/shorts/')[1];
-                        else if (urlObj.pathname.includes('/embed/')) videoId = urlObj.pathname.split('/embed/')[1];
-                        else if (urlObj.hostname === 'youtu.be') videoId = urlObj.pathname.substring(1);
-                        if (videoId) videoId = videoId.split('?')[0].split('&')[0].split('/')[0];
-                    }
-                } catch(e) {}
-            }
-
+            const totalContenido = videosArray.length + imagenesArray.length;
+            
+            // --- LÓGICA DE PORTADA (El primer elemento de toda la lista) ---
             let fondoVideo = '';
-            if (esMp4) {
-                fondoVideo = `<video src="${urlStr}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
-            } else if (videoId) {
-                fondoVideo = `<img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
-            } else if (cantidadFotos > 0) {
-                fondoVideo = `<img src="${item.imagenes.split(',')[0]}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
-            } else {
-                let iconoRed = esInsta ? '<i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i>' : '<i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i>';
-                fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;">${iconoRed}</div>`;
+            let videoId = null;
+            let esMp4 = false;
+            let primerVideoUrl = videosArray.length > 0 ? videosArray[0] : '';
+            
+            if (primerVideoUrl !== '') {
+                esMp4 = primerVideoUrl.includes('.mp4') || primerVideoUrl.includes('supabase.co');
+                if (!esMp4) {
+                    try {
+                        const urlObj = new URL(primerVideoUrl);
+                        if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
+                            if (urlObj.searchParams.has('v')) videoId = urlObj.searchParams.get('v');
+                            else if (urlObj.pathname.includes('/shorts/')) videoId = urlObj.pathname.split('/shorts/')[1];
+                            else if (urlObj.pathname.includes('/embed/')) videoId = urlObj.pathname.split('/embed/')[1];
+                            else if (urlObj.hostname === 'youtu.be') videoId = urlObj.pathname.substring(1);
+                            if (videoId) videoId = videoId.split('?')[0].split('&')[0].split('/')[0];
+                        }
+                    } catch(e) {}
+                }
+                
+                // Generar el fondo visual basado en el primer video
+                if (esMp4) {
+                    fondoVideo = `<video src="${primerVideoUrl}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
+                } else if (videoId) {
+                    fondoVideo = `<img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
+                } else if (primerVideoUrl.includes('instagram.com')) {
+                    fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i></div>`;
+                } else {
+                    fondoVideo = `<div style="width:100%; height:100%; background: #1e293b; display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i></div>`;
+                }
+            } else if (imagenesArray.length > 0) {
+                // Si no hay videos, la primera imagen toma el control de la portada
+                fondoVideo = `<img src="${imagenesArray[0]}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
             }
 
-            let badgeFotos = cantidadFotos > 0 ? `<div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #00F0FF; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 2;"><i class="fa-solid fa-images"></i> +${cantidadFotos}</div>` : '';
-            let esModal = (esMp4 || videoId || cantidadFotos > 0);
-            let accionClick = esModal ? `onclick="openMixedGallery(${item.id})"` : `onclick="window.open('${urlStr}', '_blank')"`;
-            let txtBoton = cantidadFotos > 0 ? 'Ver Galería' : (esModal ? 'Ver Video' : 'Abrir Enlace');
-            let iconBoton = cantidadFotos > 0 ? 'fa-images' : (esModal ? 'fa-play' : 'fa-arrow-up-right-from-square');
+            // --- CONTADORES Y BOTONES ---
+            let txtBadge = '';
+            if (videosArray.length > 0 && imagenesArray.length > 0) txtBadge = `<i class="fa-solid fa-layer-group"></i> ${totalContenido} ítems`;
+            else if (videosArray.length > 1) txtBadge = `<i class="fa-solid fa-video"></i> ${videosArray.length} videos`;
+            else if (imagenesArray.length > 0) txtBadge = `<i class="fa-solid fa-images"></i> ${imagenesArray.length} fotos`;
+
+            let badgeHTML = txtBadge !== '' ? `<div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #00F0FF; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 2;">${txtBadge}</div>` : '';
+            
+            let esModal = (esMp4 || videoId || imagenesArray.length > 0);
+            let accionClick = esModal ? `onclick="openMixedGallery(${item.id})"` : `onclick="window.open('${primerVideoUrl}', '_blank')"`;
+            
+            let txtBoton = totalContenido > 1 ? 'Ver Galería' : (esModal && videosArray.length > 0 ? 'Ver Video' : 'Abrir Enlace');
+            let iconBoton = totalContenido > 1 ? 'fa-images' : (esModal && videosArray.length > 0 ? 'fa-play' : 'fa-arrow-up-right-from-square');
 
             const card = `
                 <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <div class="video-wrapper" ${accionClick} style="position: relative; cursor: pointer;">
-                        ${badgeFotos}
+                        ${badgeHTML}
                         ${fondoVideo}
                         <div class="img-overlay">
                             <i class="fa-solid ${iconBoton}"></i>
