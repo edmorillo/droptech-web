@@ -100,60 +100,75 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-// ==========================================
-// 4. MODAL DE VIDEOS (CAMALEÓN: MP4 + YOUTUBE)
-// ==========================================
-function openVideoModal(url, isYouTube, ytId) {
-    const modal = document.getElementById('video-modal');
-    const videoMp4 = document.getElementById('modal-video-player');
-    const videoYt = document.getElementById('modal-youtube-player');
-    
-    if (modal) modal.style.display = 'flex';
+// =========================================================================
+// 4. MOTOR DE GALERÍA MIXTA (INDEX: VIDEO + FOTOS)
+// =========================================================================
+let trabajosPublicos = [];
+let elementosMixtos = [];
 
-    if (isYouTube) {
-        if (videoMp4) { videoMp4.style.display = 'none'; videoMp4.pause(); }
-        if (videoYt) {
-            videoYt.style.display = 'block';
-            videoYt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
-        }
-    } else {
-        if (videoYt) { videoYt.style.display = 'none'; videoYt.src = ''; }
-        if (videoMp4) {
-            videoMp4.style.display = 'block';
-            videoMp4.src = url;
-            videoMp4.play().catch(e => console.log("Auto-reproducción asistida", e));
+function openMixedGallery(id) {
+    const item = trabajosPublicos.find(t => t.id === id);
+    if (!item) return;
+
+    elementosMixtos = [];
+    const urlStr = item.url_video ? item.url_video.trim() : '';
+    
+    if (urlStr !== '' && !urlStr.includes('instagram.com')) {
+        const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
+        if (esMp4) {
+            elementosMixtos.push({ tipo: 'mp4', url: urlStr, thumb: 'https://via.placeholder.com/150x100/1e293b/00F0FF?text=VIDEO' });
+        } else {
+            const match = urlStr.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
+            if (match && match[2].length === 11) {
+                elementosMixtos.push({ tipo: 'youtube', url: `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`, thumb: `https://img.youtube.com/vi/${match[2]}/default.jpg` });
+            }
         }
     }
-}
 
-function closeVideoModal() {
-    const modal = document.getElementById('video-modal');
-    const videoMp4 = document.getElementById('modal-video-player');
-    const videoYt = document.getElementById('modal-youtube-player');
+    if (item.imagenes && item.imagenes.trim() !== '') {
+        item.imagenes.split(',').forEach(img => { elementosMixtos.push({ tipo: 'img', url: img, thumb: img }); });
+    }
+
+    if (elementosMixtos.length === 0) return;
+
+    const modal = document.getElementById('gallery-mixed-modal');
+    const thumbsDiv = document.getElementById('mixed-thumbnails');
     
-    if (modal) modal.style.display = 'none';
-    if (videoMp4) { videoMp4.pause(); videoMp4.src = ''; }
-    if (videoYt) { videoYt.src = ''; }
+    thumbsDiv.innerHTML = '';
+    elementosMixtos.forEach((el, index) => {
+        let overlay = el.tipo !== 'img' ? `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>` : '';
+        thumbsDiv.innerHTML += `
+            <div id="thumb-${index}" class="thumb-mix" onclick="setMixedMainView(${index})" style="min-width: 120px; height: 80px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; position: relative; flex-shrink: 0;">
+                <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover;">
+                ${overlay}
+            </div>
+        `;
+    });
+
+    modal.style.display = 'flex';
+    setMixedMainView(0);
 }
 
-window.addEventListener('keydown', function(event) {
-    const modal = document.getElementById('video-modal');
-    if (event.key === 'Escape' && modal && modal.style.display === 'flex') { closeVideoModal(); }
-});
+window.setMixedMainView = function(index) {
+    const el = elementosMixtos[index];
+    const mainView = document.getElementById('mixed-main-view');
+    
+    if (el.tipo === 'mp4') {
+        mainView.innerHTML = `<video src="${el.url}" controls autoplay playsinline style="width: 100%; height: 100%; object-fit: contain; outline: none;"></video>`;
+    } else if (el.tipo === 'youtube') {
+        mainView.innerHTML = `<iframe src="${el.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%; outline: none;"></iframe>`;
+    } else {
+        mainView.innerHTML = `<img src="${el.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+    }
+    
+    document.querySelectorAll('.thumb-mix').forEach(t => { t.style.borderColor = 'transparent'; t.style.opacity = '0.5'; });
+    const activeThumb = document.getElementById(`thumb-${index}`);
+    if(activeThumb) { activeThumb.style.borderColor = '#00F0FF'; activeThumb.style.opacity = '1'; }
+};
 
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('video-modal');
-    if (modal && event.target === modal) { closeVideoModal(); }
-});
-
-const videoModalSection = document.getElementById('video-modal');
-let touchStartPointY = 0;
-
-if (videoModalSection) {
-    videoModalSection.addEventListener('touchstart', (e) => { touchStartPointY = e.touches[0].clientY; }, { passive: true });
-    videoModalSection.addEventListener('touchmove', (e) => {
-        if (e.touches[0].clientY - touchStartPointY > 70) { closeVideoModal(); }
-    }, { passive: true });
+window.closeMixedGallery = function() {
+    document.getElementById('gallery-mixed-modal').style.display = 'none';
+    document.getElementById('mixed-main-view').innerHTML = ''; 
 }
 
 // ==========================================
@@ -478,7 +493,7 @@ function filtrarAccesoriosPublicos() {
 }
 
 // =========================================================================
-// E) CARGAR VIDEOS Y CONTROL DEL MODAL CAMALEÓN
+// E) CARGAR TRABAJOS EN EL INDEX (VIDEO + FOTOS)
 // =========================================================================
 async function cargarVideosDinamicos() {
     const grid = document.getElementById('grid-videos');
@@ -487,72 +502,61 @@ async function cargarVideosDinamicos() {
     try {
         const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
         if (error) throw error;
+        trabajosPublicos = data || [];
 
-        if (data.length === 0) {
-            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #a0aec0; padding: 40px; font-size: 18px;">Próximamente nuevos trabajos en video.</div>';
+        if (trabajosPublicos.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #a0aec0; padding: 40px; font-size: 18px;">Próximamente nuevos trabajos.</div>';
             return;
         }
 
         grid.innerHTML = ''; 
 
-        data.forEach((item, index) => {
+        trabajosPublicos.forEach((item, index) => {
             const urlStr = item.url_video ? item.url_video.trim() : '';
             const esMp4 = urlStr.includes('.mp4') || urlStr.includes('supabase.co');
-            let esInstagram = urlStr.includes('instagram.com');
+            let esInsta = urlStr.includes('instagram.com');
             let videoId = null;
+            let cantidadFotos = item.imagenes && item.imagenes.trim() !== '' ? item.imagenes.split(',').length : 0;
             
-            // Extractor infalible de YouTube
             if (!esMp4 && urlStr !== '') {
                 try {
                     const urlObj = new URL(urlStr);
                     if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-                        if (urlObj.searchParams.has('v')) {
-                            videoId = urlObj.searchParams.get('v');
-                        } else if (urlObj.pathname.includes('/shorts/')) {
-                            videoId = urlObj.pathname.split('/shorts/')[1];
-                        } else if (urlObj.pathname.includes('/embed/')) {
-                            videoId = urlObj.pathname.split('/embed/')[1];
-                        } else if (urlObj.hostname === 'youtu.be') {
-                            videoId = urlObj.pathname.substring(1);
-                        }
+                        if (urlObj.searchParams.has('v')) videoId = urlObj.searchParams.get('v');
+                        else if (urlObj.pathname.includes('/shorts/')) videoId = urlObj.pathname.split('/shorts/')[1];
+                        else if (urlObj.pathname.includes('/embed/')) videoId = urlObj.pathname.split('/embed/')[1];
+                        else if (urlObj.hostname === 'youtu.be') videoId = urlObj.pathname.substring(1);
                         if (videoId) videoId = videoId.split('?')[0].split('&')[0].split('/')[0];
                     }
-                } catch(e) {
-                    console.log("Link no válido o con formato incorrecto:", urlStr);
-                }
+                } catch(e) {}
             }
 
             let fondoVideo = '';
-            let accionClick = '';
-
             if (esMp4) {
-                // MP4: Se reproduce de fondo
                 fondoVideo = `<video src="${urlStr}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
-                accionClick = `onclick="openVideoModal('${urlStr}', false, '')"`;
-                
             } else if (videoId) {
-                // YOUTUBE: Foto de portada (miniatura)
-                const miniatura = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                fondoVideo = `<img src="${miniatura}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
-                accionClick = `onclick="openVideoModal('', true, '${videoId}')"`;
-                
+                fondoVideo = `<img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
+            } else if (cantidadFotos > 0) {
+                fondoVideo = `<img src="${item.imagenes.split(',')[0]}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
             } else {
-                // INSTAGRAM / DRIVE / OTROS: Logo gigante
-                let iconoRed = esInstagram 
-                    ? '<i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i>' 
-                    : '<i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i>';
-
+                let iconoRed = esInsta ? '<i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i>' : '<i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i>';
                 fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;">${iconoRed}</div>`;
-                accionClick = `onclick="window.open('${urlStr}', '_blank')"`;
             }
+
+            let badgeFotos = cantidadFotos > 0 ? `<div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #00F0FF; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 2;"><i class="fa-solid fa-images"></i> +${cantidadFotos}</div>` : '';
+            let esModal = (esMp4 || videoId || cantidadFotos > 0);
+            let accionClick = esModal ? `onclick="openMixedGallery(${item.id})"` : `onclick="window.open('${urlStr}', '_blank')"`;
+            let txtBoton = cantidadFotos > 0 ? 'Ver Galería' : (esModal ? 'Ver Video' : 'Abrir Enlace');
+            let iconBoton = cantidadFotos > 0 ? 'fa-images' : (esModal ? 'fa-play' : 'fa-arrow-up-right-from-square');
 
             const card = `
                 <div class="video-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <div class="video-wrapper" ${accionClick} style="position: relative; cursor: pointer;">
+                        ${badgeFotos}
                         ${fondoVideo}
                         <div class="img-overlay">
-                            <i class="fa-solid ${videoId || esMp4 ? 'fa-play' : 'fa-arrow-up-right-from-square'}"></i>
-                            <span>${videoId || esMp4 ? 'Ver completo' : 'Abrir enlace'}</span>
+                            <i class="fa-solid ${iconBoton}"></i>
+                            <span>${txtBoton}</span>
                         </div>
                     </div>
                     <div class="video-info">

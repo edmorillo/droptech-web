@@ -97,11 +97,10 @@
             <li><a onclick="cambiarSeccion('notebooks', this)"><i class="fa-solid fa-laptop"></i> Listado Notebooks</a></li>
             <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias y SSDs</a></li>
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
-            <li><a onclick="cambiarSeccion('videos', this)" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
+            <li><a href="trabajos.html" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
         </ul>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
 
         <!-- INICIO -->
@@ -253,10 +252,10 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                             <label style="margin-bottom: 0;">Descripción y Detalles</label>
                             <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
-                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                                <i class="fa-solid fa-circle-info"></i> <b>Tip:</b> Separá los detalles usando la tecla Enter.
                             </span>
                         </div>
-                        <textarea id="nb-descripcion" rows="7" placeholder="Ej:&#10;# Estado de la Batería&#10;Batería original en excelente estado.&#10;Rinde *4 horas* de uso continuo." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
+                        <textarea id="nb-descripcion" rows="7" placeholder="Ej: -> &#10;# Estado de la Batería&#10;Batería original en excelente estado.&#10;Rinde *4 horas* de uso continuo." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
                     </div>
                     
                     <div class="form-group">
@@ -316,7 +315,6 @@
                         </div>
                     </div>
                     
-                    <!-- CAJAS MÁGICAS (IGUALES A ANTES) -->
                     <div id="campos-ram" style="display: none; padding: 15px; background: rgba(0, 240, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 20px;">
                         <div class="form-row">
                             <div class="form-group"><label>Capacidad</label><select id="ram-capacidad"><option value="4GB">4GB</option><option value="8GB" selected>8GB</option><option value="16GB">16GB</option><option value="32GB">32GB</option><option value="64GB">64GB</option></select></div>
@@ -339,12 +337,11 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA CAJA DE DESCRIPCIÓN PARA MEMORIAS -->
                     <div class="form-group">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                             <label style="margin-bottom: 0;">Descripción y Detalles Adicionales</label>
                             <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
-                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                                <i class="fa-solid fa-circle-info"></i> <b>Tip:</b> Separá los detalles usando la tecla Enter.
                             </span>
                         </div>
                         <textarea id="mem-descripcion" rows="5" placeholder="Ej:&#10;# Características principales&#10;Totalmente nueva y sellada.&#10;*Compatible con AMD e Intel*." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
@@ -366,7 +363,6 @@
                 </form>
             </div>
 
-            <!-- FILTRO Y BUSCADOR -->
             <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
@@ -434,12 +430,11 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA CAJA DE DESCRIPCIÓN PARA ACCESORIOS -->
                     <div class="form-group">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                             <label style="margin-bottom: 0;">Descripción y Detalles Adicionales</label>
                             <span style="font-size: 11px; color: #00F0FF; background: rgba(0, 240, 255, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 500;">
-                                <i class="fa-solid fa-lightbulb"></i> <b>Tips:</b> Escribí <b># Título</b> (con espacio) | <b>*Negrita*</b> | <b>Enter</b> para un nuevo punto
+                                <i class="fa-solid fa-circle-info"></i> <b>Tip:</b> Separá los detalles usando la tecla Enter.
                             </span>
                         </div>
                         <textarea id="acc-descripcion" rows="5" placeholder="Ej:&#10;# Experiencia de uso&#10;Sonido envolvente 7.1 real.&#10;*Almohadillas de memory foam*." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;"></textarea>
@@ -459,7 +454,6 @@
                 </form>
             </div>
 
-            <!-- FILTRO Y BUSCADOR -->
             <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
@@ -489,66 +483,6 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-admin-accesorios">
-                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- SECCIÓN VIDEOS DE TRABAJOS -->
-        <section id="sec-videos" class="dashboard-section">
-            <h1 class="header-title"><i class="fa-solid fa-video" style="color: #facc15;"></i> Trabajos y Videos del Taller</h1>
-
-            <div class="panel-card">
-                <form id="form-videos">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Título del Trabajo / Video</label>
-                            <input type="text" id="vid-titulo" placeholder="Ej: Mantenimiento Avanzado PS4 Pro" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Origen del Video</label>
-                            <select id="vid-origen" onchange="adaptarModoVideo()" required>
-                                <option value="link" selected>Pegar Link (YouTube, Drive, Instagram)</option>
-                                <option value="archivo">Subir archivo desde mi PC (MP4)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- CAJA 1: Para pegar Links -->
-                    <div class="form-group" id="caja-vid-url">
-                        <label>URL del Video</label>
-                        <input type="text" id="vid-url" placeholder="Ej: https://youtube.com/shorts/..." required>
-                    </div>
-
-                    <!-- CAJA 2: Para subir Archivos -->
-                    <div class="form-group" id="caja-vid-archivo" style="display: none;">
-                        <label>Subir Video (Max 50MB recomendado)</label>
-                        <input type="file" id="vid-archivo" accept="video/mp4,video/webm,video/ogg">
-                        <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Si estás editando y no subís nada, se mantiene el video anterior.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripción Corta del Trabajo</label>
-                        <textarea id="vid-descripcion" rows="3" placeholder="Ej: Desarme completo, remoción de polvo estructural y cambio de pasta térmica premium." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;" required></textarea>
-                    </div>
-
-                    <button type="submit" id="btn-submit-vid" class="btn" style="background: #facc15; color: #000;"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar Video</button>
-                    <button type="button" id="btn-cancelar-vid" onclick="cancelarEdicionVideo()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
-                </form>
-            </div>
-
-            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Video / Trabajo</th>
-                            <th>Descripción</th>
-                            <th>Enlace</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-admin-videos">
                         <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
                     </tbody>
                 </table>
@@ -629,7 +563,6 @@
 
         async function cargarPrecios() {
             const tabla = document.getElementById('tabla-admin');
-            // ORDEN ALFABÉTICO AUTOMÁTICO (A-Z por servicio)
             const { data, error } = await db.from('precios').select('*').order('servicio', { ascending: true });
             if (error) { tabla.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar datos.</td></tr>'; return; }
 
@@ -643,7 +576,6 @@
             const filtroCat = document.getElementById('filtro-precios').value;
             const busqueda = document.getElementById('busqueda-precios').value.toLowerCase();
 
-            // Doble filtro: Por Categoría y Por Buscador
             const datosFiltrados = preciosActuales.filter(item => {
                 const pasaFiltroCat = filtroCat === 'TODOS' || item.categoria.toLowerCase() === filtroCat.toLowerCase();
                 const pasaBusqueda = item.servicio.toLowerCase().includes(busqueda) || item.compatibilidad.toLowerCase().includes(busqueda);
@@ -691,7 +623,7 @@
             document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit').style.background = '#00ff66';
             document.getElementById('btn-cancelar').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelarEdicion() {
@@ -780,7 +712,7 @@
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-nb').style.background = '#00ff66';
             document.getElementById('btn-cancelar-nb').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelarEdicionNotebook() {
@@ -894,7 +826,7 @@
             adaptarFormularioMemoria();
             document.getElementById('mem-titulo').value = item.titulo;
             document.getElementById('mem-precio').value = item.precio;
-            document.getElementById('mem-descripcion').value = item.descripcion || ''; // <-- DESCRIPCIÓN ACÁ
+            document.getElementById('mem-descripcion').value = item.descripcion || ''; 
 
             if (item.tipo === 'Memoria RAM') {
                 document.getElementById('ram-capacidad').value = item.capacidad; document.getElementById('ram-frecuencia').value = item.detalle_1;
@@ -907,7 +839,7 @@
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-mem').style.background = '#00ff66';
             document.getElementById('btn-cancelar-mem').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function cancelarEdicionMemoria() {
@@ -1039,12 +971,12 @@
             document.getElementById('acc-detalle-1').value = item.detalle_1;
             document.getElementById('acc-detalle-2').value = item.detalle_2;
             document.getElementById('acc-estado').value = item.estado;
-            document.getElementById('acc-descripcion').value = item.descripcion || ''; // <-- DESCRIPCIÓN ACÁ
+            document.getElementById('acc-descripcion').value = item.descripcion || ''; 
 
             document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-acc').style.background = '#00ff66';
             document.getElementById('btn-cancelar-acc').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL ARRIBA
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
         }
 
         function cancelarEdicionAccesorio() {
@@ -1091,159 +1023,12 @@
         });
 
         // =========================================================================
-        // 6. LÓGICA DE VIDEOS / TRABAJOS (CON SUBIDA DIRECTA)
-        // =========================================================================
-        let videosActuales = [];
-        let editandoVidId = null;
-
-        // Función que muestra u oculta las opciones según lo que elijas
-        function adaptarModoVideo() {
-            const origen = document.getElementById('vid-origen').value;
-            if(origen === 'link') {
-                document.getElementById('caja-vid-url').style.display = 'block';
-                document.getElementById('vid-url').required = true;
-                document.getElementById('caja-vid-archivo').style.display = 'none';
-                document.getElementById('vid-archivo').required = false;
-            } else {
-                document.getElementById('caja-vid-url').style.display = 'none';
-                document.getElementById('vid-url').required = false;
-                document.getElementById('caja-vid-archivo').style.display = 'block';
-                if(!editandoVidId) document.getElementById('vid-archivo').required = true; 
-            }
-        }
-
-        async function cargarVideos() {
-            const tabla = document.getElementById('tabla-admin-videos');
-            if(!tabla) return;
-            const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
-            if (error) { tabla.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar.</td></tr>'; return; }
-            
-            videosActuales = data || []; 
-            renderizarTablaVideos();
-        }
-
-        function renderizarTablaVideos() {
-            const tabla = document.getElementById('tabla-admin-videos');
-            if (videosActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay videos publicados todavía.</td></tr>'; return; }
-
-            tabla.innerHTML = ''; 
-            videosActuales.forEach(item => {
-                // Nuevo diseño minimalista para saber el origen
-                let iconoTipo = item.url_video.includes('supabase.co') 
-                    ? '<i class="fa-solid fa-hard-drive"></i> Archivo en Servidor' 
-                    : '<i class="fa-brands fa-youtube"></i> Enlace Externo';
-
-                tabla.innerHTML += `
-                    <tr>
-                        <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-circle-play" style="color: #facc15; margin-right: 8px;"></i> ${item.titulo}</td>
-                        <td style="font-size: 13px; color: #94A3B8;">${item.descripcion}</td>
-                        <td>
-                            <div style="color: #64748b; font-size: 11px; margin-bottom: 6px;">${iconoTipo}</div>
-                            <a href="${item.url_video}" target="_blank" style="color: #00F0FF; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 240, 255, 0.05); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.15); transition: 0.3s;">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Video
-                            </a>
-                        </td>
-                        <td>
-                            <div class="action-btns">
-                                <button class="btn-edit" onclick="prepararEdicionVideo(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'videos')"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        function prepararEdicionVideo(id) {
-            const item = videosActuales.find(v => v.id === id);
-            if (!item) return;
-            editandoVidId = id;
-            document.getElementById('vid-titulo').value = item.titulo;
-            document.getElementById('vid-descripcion').value = item.descripcion;
-
-            // Detectamos si el video guardado es un archivo de Supabase o un Link
-            if (item.url_video.includes('supabase.co')) {
-                document.getElementById('vid-origen').value = 'archivo';
-                document.getElementById('vid-archivo').required = false; // No obligamos a subir uno nuevo
-            } else {
-                document.getElementById('vid-origen').value = 'link';
-                document.getElementById('vid-url').value = item.url_video;
-            }
-            adaptarModoVideo();
-
-            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Video';
-            document.getElementById('btn-submit-vid').style.background = '#00ff66';
-            document.getElementById('btn-cancelar-vid').style.display = 'block';
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelarEdicionVideo() {
-            editandoVidId = null;
-            document.getElementById('form-videos').reset();
-            document.getElementById('vid-origen').value = 'link';
-            adaptarModoVideo();
-            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Video';
-            document.getElementById('btn-submit-vid').style.background = '#facc15';
-            document.getElementById('btn-cancelar-vid').style.display = 'none';
-        }
-
-        document.getElementById('form-videos').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btnSubmit = document.getElementById('btn-submit-vid');
-            const textoOriginal = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo video...';
-            btnSubmit.style.pointerEvents = 'none';
-
-            try {
-                let urlFinal = "";
-                const origen = document.getElementById('vid-origen').value;
-
-                if (origen === 'archivo') {
-                    const fileInput = document.getElementById('vid-archivo');
-                    if (fileInput.files.length > 0) {
-                        const archivo = fileInput.files[0];
-                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        
-                        // Sube el video al nuevo bucket 'videos'
-                        const { error: uploadError } = await db.storage.from('videos').upload(nombreUnico, archivo);
-                        if (uploadError) throw uploadError;
-                        
-                        // Obtenemos la URL pública
-                        const { data: urlData } = db.storage.from('videos').getPublicUrl(nombreUnico);
-                        urlFinal = urlData.publicUrl;
-                    } else if (editandoVidId) {
-                        // Si edita y no sube video nuevo, mantenemos el viejo
-                        urlFinal = videosActuales.find(v => v.id === editandoVidId).url_video;
-                    } else {
-                        throw new Error("Seleccioná un archivo de video.");
-                    }
-                } else {
-                    urlFinal = document.getElementById('vid-url').value;
-                }
-
-                const payload = { 
-                    titulo: document.getElementById('vid-titulo').value, 
-                    descripcion: document.getElementById('vid-descripcion').value, 
-                    url_video: urlFinal 
-                };
-
-                if (editandoVidId) { await db.from('videos').update(payload).eq('id', editandoVidId); } 
-                else { await db.from('videos').insert([payload]); }
-                
-                mostrarToast("Video publicado con éxito"); 
-                cancelarEdicionVideo(); 
-                cargarVideos();
-            } catch (err) { alert("Error: " + err.message); } 
-            finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
-        });
-
-        // =========================================================================
         // 7 CARGA DE DATOS
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
         cargarMemorias();
         cargarAccesorios();
-        cargarVideos();
     </script>
 </body>
 </html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajos y Videos | Computadoras Lei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #070A0F; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 280px; background: #0b0f17; border-right: 1px solid rgba(0, 240, 255, 0.1); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-header h2 { color: #00F0FF; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sidebar-menu { list-style: none; padding: 20px 0; flex: 1; }
+        .sidebar-menu li { margin-bottom: 5px; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px 30px; color: #94A3B8; text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; border-left: 3px solid transparent; cursor: pointer; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(0, 240, 255, 0.05); color: #fff; border-left-color: #00F0FF; }
+        .sidebar-menu i { width: 20px; text-align: center; color: #00F0FF; }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #101626 0%, #070A0F 100%); }
+        .header-title { font-size: 28px; font-weight: 700; margin-bottom: 30px; color: #fff; display: flex; align-items: center; gap: 12px; }
+        
+        .panel-card { background: #111622; padding: 30px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.1); margin-bottom: 30px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94A3B8; font-size: 13px; font-weight: 600; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: #00F0FF; }
+        
+        input[type="file"] { padding: 10px; background: #070A0F; color: #94A3B8; cursor: pointer; }
+        input[type="file"]::-webkit-file-upload-button { background: #00F0FF; color: #000; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; margin-right: 15px; transition: 0.3s; }
+        
+        .btn { background: #00F0FF; color: #070A0F; padding: 14px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        .btn:hover { background: #00B8CC; transform: translateY(-2px); }
+        
+        .action-btns { display: flex; gap: 8px; }
+        .btn-edit { background: rgba(0, 240, 255, 0.1); color: #00F0FF; padding: 8px 12px; border-radius: 6px; border: 1px solid #00F0FF; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.3s; }
+        .btn-delete { background: rgba(255, 74, 74, 0.1); color: #ff4a4a; padding: 8px 12px; border-radius: 6px; border: 1px solid #ff4a4a; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.3s; }
+        .btn-delete.full-width { width: 100%; margin-top: 10px; padding: 14px; font-size: 14px; display: none; }
+        
+        table { width: 100%; border-collapse: collapse; background: #0b0f17; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        th { color: #fff; background: #171e2c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        td { font-size: 14px; color: #94A3B8; }
+        
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #00ff66; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: 700; display: none; z-index: 999999; }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-check"></i> Operación exitosa</div>
+
+    <!-- MODAL DE ELIMINACIÓN CENTRADO -->
+    <div id="modal-eliminar" style="display: none; position: fixed; z-index: 999999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #111622; padding: 35px; border-radius: 12px; border: 1px solid rgba(255, 74, 74, 0.3); text-align: center; max-width: 400px; width: 90%;">
+            <div style="width: 70px; height: 70px; background: rgba(255, 74, 74, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 35px; color: #ff4a4a;"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 20px; margin-bottom: 10px;">¿Estás seguro?</h3>
+            <p style="color: #94A3B8; font-size: 14px; margin-bottom: 25px;">Esta acción no se puede deshacer. El elemento se borrará de forma permanente de tu base de datos.</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="cerrarModalEliminar()" style="flex: 1; background: transparent; color: #fff; padding: 12px 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer;">Cancelar</button>
+                <button id="btn-confirmar-eliminar" style="flex: 1; background: #ff4a4a; color: #fff; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer;">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-terminal"></i> Console</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="console.html"><i class="fa-solid fa-chart-line"></i> Volver al Console</a></li>
+            <li><a href="trabajos.html" class="active" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1 class="header-title"><i class="fa-solid fa-video" style="color: #facc15;"></i> Trabajos y Videos del Taller</h1>
+
+        <div class="panel-card">
+            <form id="form-videos">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Título del Trabajo</label>
+                        <input type="text" id="vid-titulo" placeholder="Ej: Mantenimiento Avanzado PS4 Pro" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Origen del Video (Opcional si subís fotos)</label>
+                        <select id="vid-origen" onchange="adaptarModoVideo()">
+                            <option value="link" selected>Pegar Link (YouTube, Drive, Instagram)</option>
+                            <option value="archivo">Subir archivo desde mi PC (MP4)</option>
+                            <option value="ninguno">Solo subiré fotos, sin video</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                        <!-- CAJA 1: Videos -->
+                        <div class="form-group" id="caja-vid-url" style="width: 100%;">
+                            <label>URL del Video (Si son varios, separalos con coma)</label>
+                            <input type="text" id="vid-url" placeholder="Ej: https://youtu.be/..., https://youtu.be/...">
+                        </div>
+                        <div class="form-group" id="caja-vid-archivo" style="display: none; width: 100%;">
+                            <label>Subir Videos (Se pueden varios a la vez)</label>
+                            <input type="file" id="vid-archivo" accept="video/mp4,video/webm" multiple>
+                            <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionada la tecla CTRL para elegir varios videos.</small>
+                        </div>
+                        
+                        <!-- CAJA 2: Fotos -->
+                        <div class="form-group" style="width: 100%;">
+                            <label>Galería de Fotos del Proceso</label>
+                            <input type="file" id="vid-imagenes" accept="image/png, image/jpeg, image/webp" multiple>
+                            <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionada la tecla CTRL para elegir varias fotos.</small>
+                        </div>
+                    </div>
+
+                <div class="form-group">
+                    <label>Descripción Corta del Trabajo</label>
+                    <textarea id="vid-descripcion" rows="3" placeholder="Ej: Desarme completo y cambio de pasta térmica." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;" required></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit-vid" class="btn" style="background: #facc15; color: #000;"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar Trabajo</button>
+                <button type="button" id="btn-cancelar-vid" onclick="cancelarEdicionVideo()" class="btn-delete full-width" style="display: none;"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+            </form>
+        </div>
+
+        <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trabajo</th>
+                        <th>Descripción</th>
+                        <th>Contenido</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-admin-videos">
+                    <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fa-solid fa-check"></i> ${mensaje}`;
+            toast.style.display = 'block'; setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        let idAEliminar = null;
+        function abrirModalEliminar(id) { idAEliminar = id; document.getElementById('modal-eliminar').style.display = 'flex'; }
+        function cerrarModalEliminar() { idAEliminar = null; document.getElementById('modal-eliminar').style.display = 'none'; }
+
+        document.getElementById('btn-confirmar-eliminar').addEventListener('click', async () => {
+            if(!idAEliminar) return;
+            const btn = document.getElementById('btn-confirmar-eliminar');
+            btn.innerHTML = 'Borrando...'; btn.style.pointerEvents = 'none';
+            const { error } = await db.from('videos').delete().eq('id', idAEliminar);
+            btn.innerHTML = 'Sí, eliminar'; btn.style.pointerEvents = 'auto';
+            if (error) { alert("Error al borrar."); } else { mostrarToast("Trabajo eliminado"); cargarVideos(); }
+            cerrarModalEliminar();
+        });
+
+        let videosActuales = [];
+        let editandoVidId = null;
+
+        function adaptarModoVideo() {
+            const origen = document.getElementById('vid-origen').value;
+            const urlBox = document.getElementById('caja-vid-url');
+            const fileBox = document.getElementById('caja-vid-archivo');
+            
+            if(origen === 'link') { urlBox.style.display = 'block'; fileBox.style.display = 'none'; } 
+            else if (origen === 'archivo') { urlBox.style.display = 'none'; fileBox.style.display = 'block'; } 
+            else { urlBox.style.display = 'none'; fileBox.style.display = 'none'; }
+        }
+
+        async function cargarVideos() {
+            const { data, error } = await db.from('videos').select('*').order('id', { ascending: false });
+            if (!error) { videosActuales = data || []; renderizarTablaVideos(); }
+        }
+
+        function renderizarTablaVideos() {
+            const tabla = document.getElementById('tabla-admin-videos');
+            if (videosActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay trabajos publicados.</td></tr>'; return; }
+
+            tabla.innerHTML = ''; 
+            videosActuales.forEach(item => {
+                const urlStr = item.url_video || '';
+                let iconoTipo = '<i class="fa-solid fa-camera"></i> Solo Fotos';
+                if (urlStr.includes('supabase.co')) iconoTipo = '<i class="fa-solid fa-hard-drive"></i> MP4 en Nube';
+                else if (urlStr !== '') iconoTipo = '<i class="fa-brands fa-youtube"></i> Link Externo';
+                    
+                let cantidadFotos = item.imagenes && item.imagenes.trim() !== '' ? item.imagenes.split(',').length : 0;
+
+                tabla.innerHTML += `
+                    <tr>
+                        <td style="color:#fff; font-weight:600;">
+                            <i class="fa-solid fa-briefcase" style="color: #facc15; margin-right: 8px;"></i> ${item.titulo}
+                        </td>
+                        <td style="font-size: 13px; color: #94A3B8;">${item.descripcion}</td>
+                        <td>
+                            <div style="color: #64748b; font-size: 11px; font-weight: 600; margin-bottom: 4px;">${iconoTipo}</div>
+                            <div style="font-size: 11px; color: #00F0FF;"><i class="fa-solid fa-images"></i> ${cantidadFotos} fotos</div>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="prepararEdicionVideo(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function prepararEdicionVideo(id) {
+            const item = videosActuales.find(v => v.id === id);
+            if (!item) return;
+            editandoVidId = id;
+            document.getElementById('vid-titulo').value = item.titulo;
+            document.getElementById('vid-descripcion').value = item.descripcion;
+
+            if (!item.url_video || item.url_video === '') { document.getElementById('vid-origen').value = 'ninguno'; } 
+            else if (item.url_video.includes('supabase.co')) { document.getElementById('vid-origen').value = 'archivo'; } 
+            else { document.getElementById('vid-origen').value = 'link'; document.getElementById('vid-url').value = item.url_video; }
+            adaptarModoVideo();
+
+            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar';
+            document.getElementById('btn-submit-vid').style.background = '#00ff66';
+            document.getElementById('btn-cancelar-vid').style.display = 'block';
+        }
+
+        function cancelarEdicionVideo() {
+            editandoVidId = null;
+            document.getElementById('form-videos').reset();
+            document.getElementById('vid-origen').value = 'link';
+            adaptarModoVideo();
+            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Trabajo';
+            document.getElementById('btn-submit-vid').style.background = '#facc15';
+            document.getElementById('btn-cancelar-vid').style.display = 'none';
+        }
+
+        document.getElementById('form-videos').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-vid');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                // 1. PROCESAMOS LOS VIDEOS (MÚLTIPLES)
+                let urlFinalVideo = "";
+                const origen = document.getElementById('vid-origen').value;
+
+                if (origen === 'archivo') {
+                    const fileInputVid = document.getElementById('vid-archivo');
+                    if (fileInputVid.files.length > 0) {
+                        let urlsVidsArray = [];
+                        for (let i = 0; i < fileInputVid.files.length; i++) {
+                            const archivoVid = fileInputVid.files[i];
+                            const nombreUnicoVid = Date.now() + '_vid_' + Math.random().toString(36).substring(7) + '_' + archivoVid.name;
+                            await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
+                            const { data } = db.storage.from('videos').getPublicUrl(nombreUnicoVid);
+                            urlsVidsArray.push(data.publicUrl);
+                        }
+                        // Si está editando, suma los nuevos a los viejos. Si es nuevo, guarda todo junto.
+                        if (editandoVidId && videosActuales.find(v => v.id === editandoVidId).url_video) {
+                            urlFinalVideo = videosActuales.find(v => v.id === editandoVidId).url_video + ',' + urlsVidsArray.join(',');
+                        } else {
+                            urlFinalVideo = urlsVidsArray.join(',');
+                        }
+                    } else if (editandoVidId) { 
+                        urlFinalVideo = videosActuales.find(v => v.id === editandoVidId).url_video || ""; 
+                    }
+                } else if (origen === 'link') { 
+                    urlFinalVideo = document.getElementById('vid-url').value; 
+                }
+
+                // 2. PROCESAMOS LAS IMÁGENES (MÚLTIPLES)
+                const fileInputImg = document.getElementById('vid-imagenes');
+                let urlsImagenesFinal = "";
+
+                if (fileInputImg.files.length > 0) {
+                    let urlsArray = [];
+                    for (let i = 0; i < fileInputImg.files.length; i++) {
+                        const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + fileInputImg.files[i].name;
+                        await db.storage.from('imagenes').upload(nomImg, fileInputImg.files[i]);
+                        const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
+                        urlsArray.push(data.publicUrl);
+                    }
+                    if (editandoVidId && videosActuales.find(v => v.id === editandoVidId).imagenes) {
+                        urlsImagenesFinal = videosActuales.find(v => v.id === editandoVidId).imagenes + ',' + urlsArray.join(',');
+                    } else { urlsImagenesFinal = urlsArray.join(','); }
+                } else if (editandoVidId) { 
+                    urlsImagenesFinal = videosActuales.find(v => v.id === editandoVidId).imagenes || ""; 
+                }
+
+                // 3. GUARDAMOS TODO EN LA BASE DE DATOS
+                const payload = { 
+                    titulo: document.getElementById('vid-titulo').value, 
+                    descripcion: document.getElementById('vid-descripcion').value, 
+                    url_video: urlFinalVideo, 
+                    imagenes: urlsImagenesFinal 
+                };
+
+                if (editandoVidId) { await db.from('videos').update(payload).eq('id', editandoVidId); } 
+                else { await db.from('videos').insert([payload]); }
+                
+                mostrarToast("Trabajo publicado"); 
+                cancelarEdicionVideo(); 
+                cargarVideos();
+            } catch (err) { 
+                alert("Error: " + err.message); 
+            } finally { 
+                btnSubmit.innerHTML = textoOriginal; 
+                btnSubmit.style.pointerEvents = 'auto'; 
+            }
+        });
+
+        cargarVideos();
+    </script>
+</body>
+</html>
