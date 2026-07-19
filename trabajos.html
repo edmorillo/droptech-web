@@ -98,6 +98,14 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- NUEVO: GESTOR VISUAL DE ARCHIVOS GUARDADOS -->
+                <div id="gestor-medios" style="display: none; width: 100%; margin-bottom: 20px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px;">
+                    <h4 style="color: #00F0FF; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-photo-film"></i> Archivos Guardados (Tocá la X para quitar)</h4>
+                    <div id="lista-medios-existentes" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <!-- JS dibuja las miniaturas acá -->
+                    </div>
+                </div>
                 
                 <div class="form-row">
                         <!-- CAJA 1: Videos -->
@@ -171,8 +179,53 @@
             cerrarModalEliminar();
         });
 
-        let videosActuales = [];
-        let editandoVidId = null;
+        let videosMantenidos = [];
+        let imagenesMantenidas = [];
+
+        function renderizarMediosExistentes() {
+            const contenedor = document.getElementById('gestor-medios');
+            const lista = document.getElementById('lista-medios-existentes');
+            lista.innerHTML = '';
+
+            if (videosMantenidos.length === 0 && imagenesMantenidas.length === 0) {
+                contenedor.style.display = 'none';
+                return;
+            }
+
+            contenedor.style.display = 'block';
+
+            // Dibujar Videos guardados
+            videosMantenidos.forEach((vid, index) => {
+                let thumb = '<div style="width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #00F0FF; font-size: 20px;"><i class="fa-solid fa-video"></i></div>';
+                if (vid.includes('youtube.com') || vid.includes('youtu.be')) {
+                    const match = vid.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
+                    if (match && match[2].length === 11) thumb = `<img src="https://img.youtube.com/vi/${match[2]}/default.jpg" style="width: 100%; height: 100%; object-fit: cover;">`;
+                }
+
+                lista.innerHTML += `
+                    <div style="position: relative; width: 80px; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        ${thumb}
+                        <span onclick="quitarMedioExistente('video', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">&times;</span>
+                    </div>
+                `;
+            });
+
+            // Dibujar Fotos guardadas
+            imagenesMantenidas.forEach((img, index) => {
+                lista.innerHTML += `
+                    <div style="position: relative; width: 80px; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        <img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <span onclick="quitarMedioExistente('img', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5);">&times;</span>
+                    </div>
+                `;
+            });
+        }
+
+        function quitarMedioExistente(tipo, index) {
+            if (tipo === 'video') videosMantenidos.splice(index, 1);
+            else imagenesMantenidas.splice(index, 1);
+            renderizarMediosExistentes();
+        }
 
         function adaptarModoVideo() {
             const origen = document.getElementById('vid-origen').value;
@@ -229,19 +282,27 @@
             document.getElementById('vid-titulo').value = item.titulo;
             document.getElementById('vid-descripcion').value = item.descripcion;
 
-            if (!item.url_video || item.url_video === '') { document.getElementById('vid-origen').value = 'ninguno'; } 
-            else if (item.url_video.includes('supabase.co')) { document.getElementById('vid-origen').value = 'archivo'; } 
-            else { document.getElementById('vid-origen').value = 'link'; document.getElementById('vid-url').value = item.url_video; }
+            // Cargar estado de los archivos en el Gestor Visual
+            videosMantenidos = item.url_video ? item.url_video.split(',').map(v=>v.trim()).filter(v=>v!=='') : [];
+            imagenesMantenidas = item.imagenes ? item.imagenes.split(',').map(i=>i.trim()).filter(i=>i!=='') : [];
+            renderizarMediosExistentes();
+
+            // Reseteamos las cajas de subida para evitar que suban dobles por error
+            document.getElementById('vid-origen').value = 'archivo';
+            document.getElementById('vid-url').value = '';
             adaptarModoVideo();
 
-            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar';
+            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Trabajo';
             document.getElementById('btn-submit-vid').style.background = '#00ff66';
             document.getElementById('btn-cancelar-vid').style.display = 'block';
         }
 
         function cancelarEdicionVideo() {
             editandoVidId = null;
+            videosMantenidos = [];
+            imagenesMantenidas = [];
             document.getElementById('form-videos').reset();
+            document.getElementById('gestor-medios').style.display = 'none';
             document.getElementById('vid-origen').value = 'link';
             adaptarModoVideo();
             document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Trabajo';
@@ -257,54 +318,42 @@
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                // 1. PROCESAMOS LOS VIDEOS (MÚLTIPLES)
-                let urlFinalVideo = "";
+                // 1. PROCESAMOS VIDEOS NUEVOS
+                let nuevosVideosUrl = [];
                 const origen = document.getElementById('vid-origen').value;
 
                 if (origen === 'archivo') {
                     const fileInputVid = document.getElementById('vid-archivo');
                     if (fileInputVid.files.length > 0) {
-                        let urlsVidsArray = [];
                         for (let i = 0; i < fileInputVid.files.length; i++) {
                             const archivoVid = fileInputVid.files[i];
                             const nombreUnicoVid = Date.now() + '_vid_' + Math.random().toString(36).substring(7) + '_' + archivoVid.name;
                             await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
                             const { data } = db.storage.from('videos').getPublicUrl(nombreUnicoVid);
-                            urlsVidsArray.push(data.publicUrl);
+                            nuevosVideosUrl.push(data.publicUrl);
                         }
-                        // Si está editando, suma los nuevos a los viejos. Si es nuevo, guarda todo junto.
-                        if (editandoVidId && videosActuales.find(v => v.id === editandoVidId).url_video) {
-                            urlFinalVideo = videosActuales.find(v => v.id === editandoVidId).url_video + ',' + urlsVidsArray.join(',');
-                        } else {
-                            urlFinalVideo = urlsVidsArray.join(',');
-                        }
-                    } else if (editandoVidId) { 
-                        urlFinalVideo = videosActuales.find(v => v.id === editandoVidId).url_video || ""; 
                     }
-                } else if (origen === 'link') { 
-                    urlFinalVideo = document.getElementById('vid-url').value; 
+                } else if (origen === 'link' && document.getElementById('vid-url').value.trim() !== '') { 
+                    nuevosVideosUrl.push(document.getElementById('vid-url').value.trim()); 
                 }
 
-                // 2. PROCESAMOS LAS IMÁGENES (MÚLTIPLES)
+                // 2. PROCESAMOS IMÁGENES NUEVAS
                 const fileInputImg = document.getElementById('vid-imagenes');
-                let urlsImagenesFinal = "";
+                let nuevasImagenesUrl = [];
 
                 if (fileInputImg.files.length > 0) {
-                    let urlsArray = [];
                     for (let i = 0; i < fileInputImg.files.length; i++) {
                         const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + fileInputImg.files[i].name;
                         await db.storage.from('imagenes').upload(nomImg, fileInputImg.files[i]);
                         const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
-                        urlsArray.push(data.publicUrl);
+                        nuevasImagenesUrl.push(data.publicUrl);
                     }
-                    if (editandoVidId && videosActuales.find(v => v.id === editandoVidId).imagenes) {
-                        urlsImagenesFinal = videosActuales.find(v => v.id === editandoVidId).imagenes + ',' + urlsArray.join(',');
-                    } else { urlsImagenesFinal = urlsArray.join(','); }
-                } else if (editandoVidId) { 
-                    urlsImagenesFinal = videosActuales.find(v => v.id === editandoVidId).imagenes || ""; 
                 }
 
-                // 3. GUARDAMOS TODO EN LA BASE DE DATOS
+                // 3. COMBINAMOS LO QUE QUEDÓ (NO BORRADO) + LO NUEVO
+                const urlFinalVideo = [...videosMantenidos, ...nuevosVideosUrl].join(',');
+                const urlsImagenesFinal = [...imagenesMantenidas, ...nuevasImagenesUrl].join(',');
+
                 const payload = { 
                     titulo: document.getElementById('vid-titulo').value, 
                     descripcion: document.getElementById('vid-descripcion').value, 
@@ -315,7 +364,7 @@
                 if (editandoVidId) { await db.from('videos').update(payload).eq('id', editandoVidId); } 
                 else { await db.from('videos').insert([payload]); }
                 
-                mostrarToast("Trabajo publicado"); 
+                mostrarToast("Trabajo guardado correctamente"); 
                 cancelarEdicionVideo(); 
                 cargarVideos();
             } catch (err) { 
