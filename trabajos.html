@@ -392,7 +392,7 @@
                             const archivoVid = fileInputVid.files[i];
                             const nombreUnicoVid = Date.now() + '_vid_' + Math.random().toString(36).substring(7) + '_' + archivoVid.name;
                             const { error: errorVid } = await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
-if (errorVid) throw new Error("Fallo al subir: El video es muy pesado o hubo un corte de internet.");
+if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
                             const { data } = db.storage.from('videos').getPublicUrl(nombreUnicoVid);
                             nuevosVideosUrl.push(data.publicUrl);
                         }
