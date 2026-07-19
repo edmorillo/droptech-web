@@ -76,6 +76,9 @@
         <ul class="sidebar-menu">
             <li><a href="console.html"><i class="fa-solid fa-chart-line"></i> Volver al Console</a></li>
             <li><a href="trabajos.html" class="active" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
+            <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+                <a onclick="cerrarSesion()" style="color: #ff4a4a; cursor: pointer;"><i class="fa-solid fa-right-from-bracket" style="color: #ff4a4a;"></i> Cerrar Sesión</a>
+            </li>
         </ul>
     </aside>
 
@@ -158,6 +161,21 @@
         const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- GUARDIA DE SEGURIDAD Y CIERRE DE SESIÓN ---
+        async function protegerRuta() {
+            const { data: { session } } = await db.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html'; // Si no hay sesión, lo patea al login
+            }
+        }
+        protegerRuta();
+
+        async function cerrarSesion() {
+            await db.auth.signOut();
+            window.location.href = 'login.html';
+        }
+        // -----------------------------------------------
 
         function mostrarToast(mensaje) {
             const toast = document.getElementById('toast');
