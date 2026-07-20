@@ -201,7 +201,6 @@
                 </form>
             </div>
 
-            <!-- FILTRO Y BUSCADOR -->
             <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; margin-left: 5px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="color: #00F0FF; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Filtro:</span>
@@ -286,6 +285,12 @@
                         <label>Subir Fotos del Equipo</label>
                         <input type="file" id="nb-imagenes" accept="image/*" multiple>
                         <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionado 'Ctrl' al seleccionar para subir varias.</small>
+                        
+                        <!-- NUEVO GESTOR VISUAL -->
+                        <div id="gestor-medios-nb" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 8px;">
+                            <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
+                            <div id="contenedor-fotos-nb" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                        </div>
                     </div>
                     
                     <button type="submit" id="btn-submit-nb" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook</button>
@@ -293,7 +298,6 @@
                 </form>
             </div>
 
-            <!-- BUSCADOR -->
             <div style="margin-bottom: 20px; display: flex; align-items: center; margin-left: 5px;">
                 <div style="flex: 1; position: relative;">
                     <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00F0FF;"></i>
@@ -379,6 +383,11 @@
                         <div class="form-group">
                             <label>Subir Fotos (Se puede múltiple)</label>
                             <input type="file" id="mem-imagenes" accept="image/*" multiple>
+                            <!-- NUEVO GESTOR VISUAL MEMORIAS -->
+                            <div id="gestor-medios-mem" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 8px;">
+                                <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
+                                <div id="contenedor-fotos-mem" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -450,7 +459,15 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group"><label>Estado</label><select id="acc-estado"><option value="Nuevo / Sellado">Nuevo / Sellado</option><option value="Usado Premium">Usado Premium</option></select></div>
-                            <div class="form-group"><label>Subir Fotos (Se puede múltiple)</label><input type="file" id="acc-imagenes" accept="image/*" multiple></div>
+                            <div class="form-group">
+                                <label>Subir Fotos (Se puede múltiple)</label>
+                                <input type="file" id="acc-imagenes" accept="image/*" multiple>
+                                <!-- NUEVO GESTOR VISUAL ACCESORIOS -->
+                                <div id="gestor-medios-acc" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 8px;">
+                                    <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
+                                    <div id="contenedor-fotos-acc" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -512,6 +529,29 @@
                 </table>
             </div>
         </section>
+
+
+        <!-- SECCIÓN HISTORIAL DE ACTIVIDAD -->
+        <section id="sec-historial" class="dashboard-section">
+            <h1 class="header-title"><i class="fa-solid fa-clock-rotate-left" style="color: #00F0FF;"></i> Historial de Actividad</h1>
+            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Registro de todos los movimientos, ediciones y eliminaciones realizadas en la base de datos.</p>
+            
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Usuario</th>
+                            <th>Módulo</th>
+                            <th>Acción Realizada</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-historial">
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
         
         <!-- SECCIÓN PAPELERA -->
         <section id="sec-papelera" class="dashboard-section">
@@ -553,28 +593,6 @@
             </div>
         </section>
 
-        <!-- SECCIÓN HISTORIAL DE ACTIVIDAD -->
-        <section id="sec-historial" class="dashboard-section">
-            <h1 class="header-title"><i class="fa-solid fa-clock-rotate-left" style="color: #00F0FF;"></i> Historial de Actividad</h1>
-            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Registro de todos los movimientos, ediciones y eliminaciones realizadas en la base de datos.</p>
-            
-            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha y Hora</th>
-                            <th>Usuario</th>
-                            <th>Módulo</th>
-                            <th>Acción Realizada</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-admin-historial">
-                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
     </main>
 
     <script>
@@ -592,12 +610,9 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- GUARDIA DE SEGURIDAD Y CIERRE DE SESIÓN ---
         async function protegerRuta() {
             const { data: { session } } = await db.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html'; // Si no hay sesión, lo patea al login
-            }
+            if (!session) { window.location.href = 'login.html'; }
         }
         protegerRuta();
 
@@ -605,7 +620,6 @@
             await db.auth.signOut();
             window.location.href = 'login.html';
         }
-        // -----------------------------------------------
 
         function mostrarToast(mensaje = "Operación exitosa") {
             const toast = document.getElementById('toast');
@@ -660,21 +674,17 @@
                 cerrarModalEliminar();
             } else {
                 mostrarToast("Elemento enviado a la papelera");
-                
-                // 1. Guardamos la tabla que hay que recargar antes de borrar las variables
                 const tablaRecargar = tablaAEliminar;
-                
-                // 2. Ahora sí cerramos el modal limpiamente
                 cerrarModalEliminar();
                 
-                // 3. Recargamos la lista correcta sin parpadeos
                 if(tablaRecargar === 'precios') cargarPrecios();
                 if(tablaRecargar === 'notebooks') cargarNotebooks();
                 if(tablaRecargar === 'memorias') cargarMemorias();
                 if(tablaRecargar === 'accesorios') cargarAccesorios();
 
-                // 4. Subimos la pantalla hacia arriba suavemente
                 document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+                cargarHistorial();
+                cargarPapelera();
             }
         });
 
@@ -764,9 +774,17 @@
         document.getElementById('form-precios').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = { categoria: document.getElementById('categoria').value, servicio: document.getElementById('servicio').value, compatibilidad: document.getElementById('compatibilidad').value, precio: parseInt(document.getElementById('precio').value) };
-            if (editandoId) { await db.from('precios').update(payload).eq('id', editandoId); } 
+            
+            const { data: { session } } = await db.auth.getSession();
+            const usuarioEmail = session ? session.user.email : 'Administrador';
+
+            if (editandoId) { 
+                await db.from('precios').update(payload).eq('id', editandoId); 
+                await db.from('auditoria_borrados').insert([{ modulo: 'precios', registro_id: editandoId, detalle: 'Precio editado y actualizado', usuario: usuarioEmail }]);
+            } 
             else { await db.from('precios').insert([payload]); }
-            mostrarToast("Precio guardado"); cancelarEdicion(); cargarPrecios(); 
+            
+            mostrarToast("Precio guardado"); cancelarEdicion(); cargarPrecios(); cargarHistorial();
         });
 
 
@@ -775,6 +793,8 @@
         // =========================================================================
         let notebooksActuales = [];
         let editandoNbId = null;
+        let imagenesMantenidasNb = [];
+        let archivosImagenesABorrarNb = [];
 
         async function cargarNotebooks() {
             const tabla = document.getElementById('tabla-admin-notebooks');
@@ -783,6 +803,30 @@
             notebooksActuales = data || []; 
             document.getElementById('stat-notebooks').innerText = notebooksActuales.length;
             renderizarTablaNotebooks();
+        }
+
+        function renderizarFotosNb() {
+            const cont = document.getElementById('contenedor-fotos-nb');
+            if (imagenesMantenidasNb.length === 0) {
+                document.getElementById('gestor-medios-nb').style.display = 'none';
+                return;
+            }
+            document.getElementById('gestor-medios-nb').style.display = 'block';
+            cont.innerHTML = '';
+            imagenesMantenidasNb.forEach((url, index) => {
+                cont.innerHTML += `
+                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <button type="button" onclick="quitarFotoNb(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+            });
+        }
+
+        function quitarFotoNb(index) {
+            const urlObj = imagenesMantenidasNb[index];
+            if (urlObj.includes('supabase.co')) archivosImagenesABorrarNb.push(urlObj.split('/').pop());
+            imagenesMantenidasNb.splice(index, 1);
+            renderizarFotosNb();
         }
 
         function renderizarTablaNotebooks() {
@@ -833,6 +877,9 @@
             document.getElementById('nb-descripcion').value = item.descripcion || '';
             document.getElementById('nb-precio').value = item.precio;
 
+            imagenesMantenidasNb = (item.imagen && item.imagen.trim() !== '') ? item.imagen.split(',') : [];
+            renderizarFotosNb();
+
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-nb').style.background = '#00ff66';
             document.getElementById('btn-cancelar-nb').style.display = 'block';
@@ -841,6 +888,9 @@
 
         function cancelarEdicionNotebook() {
             editandoNbId = null;
+            imagenesMantenidasNb = [];
+            archivosImagenesABorrarNb = [];
+            document.getElementById('gestor-medios-nb').style.display = 'none';
             document.getElementById('form-notebooks').reset();
             document.getElementById('busqueda-notebooks').value = '';
             document.getElementById('btn-submit-nb').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook';
@@ -857,10 +907,9 @@
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                let stringDeImagenes = ""; 
+                let urlsSubidas = [];
                 const inputArchivos = document.getElementById('nb-imagenes');
                 if (inputArchivos.files.length > 0) {
-                    let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
@@ -868,14 +917,26 @@
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
-                    stringDeImagenes = urlsSubidas.join(','); 
-                } else if (editandoNbId) { stringDeImagenes = notebooksActuales.find(n => n.id === editandoNbId).imagen || ""; }
+                }
+                
+                const stringDeImagenes = [...imagenesMantenidasNb, ...urlsSubidas].join(',');
 
                 const payload = { titulo: document.getElementById('nb-titulo').value, procesador: document.getElementById('nb-procesador').value, ram: document.getElementById('nb-ram').value, almacenamiento: document.getElementById('nb-almacenamiento').value, bateria: document.getElementById('nb-bateria').value, descripcion: document.getElementById('nb-descripcion').value, precio: parseInt(document.getElementById('nb-precio').value), imagen: stringDeImagenes };
 
-                if (editandoNbId) { await db.from('notebooks').update(payload).eq('id', editandoNbId); } 
+                const { data: { session } } = await db.auth.getSession();
+                const usuarioEmail = session ? session.user.email : 'Administrador';
+
+                if (editandoNbId) { 
+                    await db.from('notebooks').update(payload).eq('id', editandoNbId); 
+                    await db.from('auditoria_borrados').insert([{ modulo: 'notebooks', registro_id: editandoNbId, detalle: 'Notebook editada y actualizada', usuario: usuarioEmail }]);
+                } 
                 else { await db.from('notebooks').insert([payload]); }
-                mostrarToast("Notebook guardada"); cancelarEdicionNotebook(); cargarNotebooks();
+
+                // Barredora
+                for (let file of archivosImagenesABorrarNb) { await db.storage.from('imagenes').remove([file]); }
+                archivosImagenesABorrarNb = [];
+
+                mostrarToast("Notebook guardada"); cancelarEdicionNotebook(); cargarNotebooks(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
             finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
@@ -886,6 +947,8 @@
         // =========================================================================
         let memoriasActuales = [];
         let editandoMemId = null;
+        let imagenesMantenidasMem = [];
+        let archivosImagenesABorrarMem = [];
 
         function adaptarFormularioMemoria() {
             const tipo = document.getElementById('mem-tipo').value;
@@ -904,6 +967,30 @@
             document.getElementById('stat-ram').innerText = memoriasActuales.filter(m => m.tipo === 'Memoria RAM').length;
             document.getElementById('stat-ssd').innerText = memoriasActuales.filter(m => m.tipo === 'Disco SSD / Almacenamiento').length;
             renderizarTablaMemorias();
+        }
+
+        function renderizarFotosMem() {
+            const cont = document.getElementById('contenedor-fotos-mem');
+            if (imagenesMantenidasMem.length === 0) {
+                document.getElementById('gestor-medios-mem').style.display = 'none';
+                return;
+            }
+            document.getElementById('gestor-medios-mem').style.display = 'block';
+            cont.innerHTML = '';
+            imagenesMantenidasMem.forEach((url, index) => {
+                cont.innerHTML += `
+                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <button type="button" onclick="quitarFotoMem(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+            });
+        }
+
+        function quitarFotoMem(index) {
+            const urlObj = imagenesMantenidasMem[index];
+            if (urlObj.includes('supabase.co')) archivosImagenesABorrarMem.push(urlObj.split('/').pop());
+            imagenesMantenidasMem.splice(index, 1);
+            renderizarFotosMem();
         }
 
         function renderizarTablaMemorias() {
@@ -960,6 +1047,9 @@
                 document.getElementById('ssd-instalacion').value = item.detalle_2; document.getElementById('ssd-estado').value = item.estado;
             }
 
+            imagenesMantenidasMem = (item.imagen && item.imagen.trim() !== '') ? item.imagen.split(',') : [];
+            renderizarFotosMem();
+
             document.getElementById('btn-submit-mem').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-mem').style.background = '#00ff66';
             document.getElementById('btn-cancelar-mem').style.display = 'block';
@@ -968,6 +1058,9 @@
 
         function cancelarEdicionMemoria() {
             editandoMemId = null;
+            imagenesMantenidasMem = [];
+            archivosImagenesABorrarMem = [];
+            document.getElementById('gestor-medios-mem').style.display = 'none';
             document.getElementById('form-memorias').reset();
             document.getElementById('campos-ram').style.display = 'none'; document.getElementById('campos-ssd').style.display = 'none';
             document.getElementById('filtro-memorias').value = 'TODOS'; document.getElementById('busqueda-memorias').value = '';
@@ -986,10 +1079,9 @@
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                let stringDeImagenes = "";
+                let urlsSubidas = [];
                 const inputArchivos = document.getElementById('mem-imagenes');
                 if (inputArchivos.files.length > 0) {
-                    let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
@@ -997,8 +1089,9 @@
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
-                    stringDeImagenes = urlsSubidas.join(',');
-                } else if (editandoMemId) { stringDeImagenes = memoriasActuales.find(m => m.id === editandoMemId).imagen || ""; }
+                }
+                
+                const stringDeImagenes = [...imagenesMantenidasMem, ...urlsSubidas].join(',');
 
                 let cap = '', det1 = '', det2 = '', est = '';
                 const tipoSel = document.getElementById('mem-tipo').value;
@@ -1007,9 +1100,20 @@
 
                 const payload = { titulo: document.getElementById('mem-titulo').value, tipo: tipoSel, capacidad: cap, detalle_1: det1, detalle_2: det2, estado: est, precio: parseInt(document.getElementById('mem-precio').value), descripcion: document.getElementById('mem-descripcion').value, imagen: stringDeImagenes };
 
-                if (editandoMemId) { await db.from('memorias').update(payload).eq('id', editandoMemId); } 
+                const { data: { session } } = await db.auth.getSession();
+                const usuarioEmail = session ? session.user.email : 'Administrador';
+
+                if (editandoMemId) { 
+                    await db.from('memorias').update(payload).eq('id', editandoMemId); 
+                    await db.from('auditoria_borrados').insert([{ modulo: 'memorias', registro_id: editandoMemId, detalle: 'Componente editado y actualizado', usuario: usuarioEmail }]);
+                } 
                 else { await db.from('memorias').insert([payload]); }
-                mostrarToast("Componente guardado"); cancelarEdicionMemoria(); cargarMemorias();
+
+                // Barredora
+                for (let file of archivosImagenesABorrarMem) { await db.storage.from('imagenes').remove([file]); }
+                archivosImagenesABorrarMem = [];
+
+                mostrarToast("Componente guardado"); cancelarEdicionMemoria(); cargarMemorias(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
             finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
@@ -1020,6 +1124,8 @@
         // =========================================================================
         let accesoriosActuales = [];
         let editandoAccId = null;
+        let imagenesMantenidasAcc = [];
+        let archivosImagenesABorrarAcc = [];
 
         function adaptarFormularioAccesorio() {
             const tipo = document.getElementById('acc-tipo').value;
@@ -1046,6 +1152,30 @@
             document.getElementById('stat-motherboards').innerText = accesoriosActuales.filter(a => a.tipo === 'Motherboards').length;
             document.getElementById('stat-pendrives').innerText = accesoriosActuales.filter(a => a.tipo === 'Pendrives').length;
             renderizarTablaAccesorios();
+        }
+
+        function renderizarFotosAcc() {
+            const cont = document.getElementById('contenedor-fotos-acc');
+            if (imagenesMantenidasAcc.length === 0) {
+                document.getElementById('gestor-medios-acc').style.display = 'none';
+                return;
+            }
+            document.getElementById('gestor-medios-acc').style.display = 'block';
+            cont.innerHTML = '';
+            imagenesMantenidasAcc.forEach((url, index) => {
+                cont.innerHTML += `
+                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <button type="button" onclick="quitarFotoAcc(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+            });
+        }
+
+        function quitarFotoAcc(index) {
+            const urlObj = imagenesMantenidasAcc[index];
+            if (urlObj.includes('supabase.co')) archivosImagenesABorrarAcc.push(urlObj.split('/').pop());
+            imagenesMantenidasAcc.splice(index, 1);
+            renderizarFotosAcc();
         }
 
         function renderizarTablaAccesorios() {
@@ -1097,6 +1227,9 @@
             document.getElementById('acc-estado').value = item.estado;
             document.getElementById('acc-descripcion').value = item.descripcion || ''; 
 
+            imagenesMantenidasAcc = (item.imagen && item.imagen.trim() !== '') ? item.imagen.split(',') : [];
+            renderizarFotosAcc();
+
             document.getElementById('btn-submit-acc').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios';
             document.getElementById('btn-submit-acc').style.background = '#00ff66';
             document.getElementById('btn-cancelar-acc').style.display = 'block';
@@ -1105,6 +1238,9 @@
 
         function cancelarEdicionAccesorio() {
             editandoAccId = null;
+            imagenesMantenidasAcc = [];
+            archivosImagenesABorrarAcc = [];
+            document.getElementById('gestor-medios-acc').style.display = 'none';
             document.getElementById('form-accesorios').reset();
             document.getElementById('campos-dinamicos-acc').style.display = 'none';
             document.getElementById('filtro-accesorios').value = 'TODOS'; document.getElementById('busqueda-accesorios').value = '';
@@ -1123,10 +1259,9 @@
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                let stringDeImagenes = "";
+                let urlsSubidas = [];
                 const inputArchivos = document.getElementById('acc-imagenes');
                 if (inputArchivos.files.length > 0) {
-                    let urlsSubidas = [];
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         const archivo = inputArchivos.files[i];
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
@@ -1134,14 +1269,26 @@
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
                     }
-                    stringDeImagenes = urlsSubidas.join(',');
-                } else if (editandoAccId) { stringDeImagenes = accesoriosActuales.find(a => a.id === editandoAccId).imagen || ""; }
+                }
+                
+                const stringDeImagenes = [...imagenesMantenidasAcc, ...urlsSubidas].join(',');
 
                 const payload = { titulo: document.getElementById('acc-titulo').value, tipo: document.getElementById('acc-tipo').value, detalle_1: document.getElementById('acc-detalle-1').value, detalle_2: document.getElementById('acc-detalle-2').value, estado: document.getElementById('acc-estado').value, precio: parseInt(document.getElementById('acc-precio').value), descripcion: document.getElementById('acc-descripcion').value, imagen: stringDeImagenes };
 
-                if (editandoAccId) { await db.from('accesorios').update(payload).eq('id', editandoAccId); } 
+                const { data: { session } } = await db.auth.getSession();
+                const usuarioEmail = session ? session.user.email : 'Administrador';
+
+                if (editandoAccId) { 
+                    await db.from('accesorios').update(payload).eq('id', editandoAccId); 
+                    await db.from('auditoria_borrados').insert([{ modulo: 'accesorios', registro_id: editandoAccId, detalle: 'Accesorio editado y actualizado', usuario: usuarioEmail }]);
+                } 
                 else { await db.from('accesorios').insert([payload]); }
-                mostrarToast("Accesorio guardado"); cancelarEdicionAccesorio(); cargarAccesorios();
+
+                // Barredora
+                for (let file of archivosImagenesABorrarAcc) { await db.storage.from('imagenes').remove([file]); }
+                archivosImagenesABorrarAcc = [];
+
+                mostrarToast("Accesorio guardado"); cancelarEdicionAccesorio(); cargarAccesorios(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
             finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
         });
@@ -1283,8 +1430,8 @@
         async function cargarHistorial() {
             const tabla = document.getElementById('tabla-admin-historial');
             try {
-                // Traemos los últimos 50 movimientos ordenados por fecha
-                const { data, error } = await db.from('auditoria_borrados').select('*').order('created_at', { ascending: false }).limit(50);
+                // CORRECCIÓN: Ahora buscamos y ordenamos por tu columna 'fecha'
+                const { data, error } = await db.from('auditoria_borrados').select('*').order('fecha', { ascending: false }).limit(50);
                 if (error) throw error;
 
                 if (data.length === 0) {
@@ -1294,7 +1441,8 @@
 
                 tabla.innerHTML = '';
                 data.forEach(item => {
-                    const fecha = new Date(item.created_at).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+                    // CORRECCIÓN: Leemos item.fecha en vez de item.created_at
+                    const fechaObj = new Date(item.fecha).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
                     
                     let colorModulo = '#facc15';
                     if(item.modulo === 'videos') colorModulo = '#00F0FF';
@@ -1303,7 +1451,7 @@
 
                     tabla.innerHTML += `
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <td style="color:#94A3B8; font-size:13px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${fecha}</td>
+                            <td style="color:#94A3B8; font-size:13px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${fechaObj}</td>
                             <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-user-shield" style="color:#94A3B8; margin-right:5px;"></i> ${item.usuario}</td>
                             <td style="text-transform: uppercase; font-size: 12px; font-weight: 700; color: ${colorModulo};">${item.modulo}</td>
                             <td style="color:#94A3B8; font-size: 13px;">${item.detalle} <span style="color:#475569; font-size: 11px;">(ID: ${item.registro_id})</span></td>
