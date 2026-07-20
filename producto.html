@@ -165,7 +165,7 @@
                     <span>Computadoras Lei</span>
                 </a>
             </div>
-            <a href="index.html#productos" id="btn-volver" style="color: #00F0FF; text-decoration: none; font-weight: 600; font-size: 14px;"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+            <a href="javascript:history.back()" style="color: #00F0FF; text-decoration: none; font-weight: 600; font-size: 14px;"><i class="fa-solid fa-arrow-left"></i> Volver</a>
         </nav>
     </header>
 
@@ -227,11 +227,8 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const productoId = urlParams.get('id');
-        // Magia del Botón Volver Inteligente
-        const btnVolver = document.getElementById('btn-volver');
-        if (productoCat) {
-            btnVolver.href = `${productoCat}.html`;
-        }
+        const productoCat = urlParams.get('cat'); // puede ser: notebooks, memorias, accesorios
+        const contenedor = document.getElementById('contenido-producto');
 
         async function cargarDetalleProducto() {
             if (!productoId || !productoCat) {
