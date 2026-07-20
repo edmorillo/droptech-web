@@ -535,7 +535,43 @@
         <section id="sec-historial" class="dashboard-section">
             <h1 class="header-title"><i class="fa-solid fa-clock-rotate-left" style="color: #00F0FF;"></i> Historial de Actividad</h1>
             <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Registro de todos los movimientos, ediciones y eliminaciones realizadas en la base de datos.</p>
-            
+            <!-- FILTROS Y BUSCADOR HISTORIAL -->
+            <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; background: rgba(0, 240, 255, 0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1);">
+                
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: #00F0FF; font-size: 11px; font-weight: 700; margin-bottom: 0;"><i class="fa-solid fa-layer-group"></i> MÓDULO</label>
+                    <select id="filtro-historial-modulo" onchange="renderizarHistorial()" style="padding: 10px; background: #1E293B; border: 1px solid #00F0FF; color: #fff; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; min-width: 140px;">
+                        <option value="TODOS">Todos</option>
+                        <option value="precios">Precios</option>
+                        <option value="notebooks">Notebooks</option>
+                        <option value="memorias">Memorias</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="videos">Videos</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: #00F0FF; font-size: 11px; font-weight: 700; margin-bottom: 0;"><i class="fa-regular fa-calendar"></i> DESDE</label>
+                    <input type="date" id="filtro-historial-desde" onchange="renderizarHistorial()" style="padding: 9px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: #00F0FF; font-size: 11px; font-weight: 700; margin-bottom: 0;"><i class="fa-regular fa-calendar"></i> HASTA</label>
+                    <input type="date" id="filtro-historial-hasta" onchange="renderizarHistorial()" style="padding: 9px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 220px;">
+                    <label style="color: #00F0FF; font-size: 11px; font-weight: 700; margin-bottom: 0;"><i class="fa-solid fa-magnifying-glass"></i> BUSCAR USUARIO O ACCIÓN</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-user-shield" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #00F0FF; font-size: 12px;"></i>
+                        <input type="text" id="busqueda-historial" oninput="renderizarHistorial()" placeholder="Ej: edmorillo@... o 'eliminado'" style="width: 100%; padding: 10px 10px 10px 35px; background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; border-radius: 6px; font-size: 13px; outline: none;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-end; margin-bottom: 1px;">
+                    <button onclick="limpiarFiltrosHistorial()" style="background: rgba(255, 74, 74, 0.1); color: #ff4a4a; border: 1px solid #ff4a4a; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.3s;" onmouseover="this.style.background='#ff4a4a'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255, 74, 74, 0.1)'; this.style.color='#ff4a4a';"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                </div>
+            </div>
             <div class="panel-card" style="padding: 0; background: transparent; border: none;">
                 <table>
                     <thead>
@@ -1427,41 +1463,82 @@
         // =========================================================================
         // 7. HISTORIAL DE AUDITORÍA
         // =========================================================================
+        let historialActual = [];
+
         async function cargarHistorial() {
             const tabla = document.getElementById('tabla-admin-historial');
+            tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>';
             try {
-                // CORRECCIÓN: Ahora buscamos y ordenamos por tu columna 'fecha'
-                const { data, error } = await db.from('auditoria_borrados').select('*').order('fecha', { ascending: false }).limit(50);
+                // Aumentamos a 500 para tener un buen margen de fechas para buscar
+                const { data, error } = await db.from('auditoria_borrados').select('*').order('fecha', { ascending: false }).limit(500);
                 if (error) throw error;
-
-                if (data.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #94A3B8; padding: 20px;">No hay actividad registrada en el sistema.</td></tr>';
-                    return;
-                }
-
-                tabla.innerHTML = '';
-                data.forEach(item => {
-                    // CORRECCIÓN: Leemos item.fecha en vez de item.created_at
-                    const fechaObj = new Date(item.fecha).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-                    
-                    let colorModulo = '#facc15';
-                    if(item.modulo === 'videos') colorModulo = '#00F0FF';
-                    if(item.modulo === 'precios') colorModulo = '#22c55e';
-                    if(item.modulo === 'notebooks') colorModulo = '#ff4a4a';
-
-                    tabla.innerHTML += `
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <td style="color:#94A3B8; font-size:13px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${fechaObj}</td>
-                            <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-user-shield" style="color:#94A3B8; margin-right:5px;"></i> ${item.usuario}</td>
-                            <td style="text-transform: uppercase; font-size: 12px; font-weight: 700; color: ${colorModulo};">${item.modulo}</td>
-                            <td style="color:#94A3B8; font-size: 13px;">${item.detalle} <span style="color:#475569; font-size: 11px;">(ID: ${item.registro_id})</span></td>
-                        </tr>
-                    `;
-                });
+                
+                historialActual = data || [];
+                renderizarHistorial();
             } catch (err) {
                 console.error(err);
                 tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff4a4a; padding: 20px;">Error al cargar el historial.</td></tr>';
             }
+        }
+
+        function renderizarHistorial() {
+            const tabla = document.getElementById('tabla-admin-historial');
+            const filtroModulo = document.getElementById('filtro-historial-modulo').value;
+            const fechaDesde = document.getElementById('filtro-historial-desde').value;
+            const fechaHasta = document.getElementById('filtro-historial-hasta').value;
+            const busqueda = document.getElementById('busqueda-historial').value.toLowerCase();
+
+            const datosFiltrados = historialActual.filter(item => {
+                // 1. Filtro por Módulo
+                const pasaModulo = filtroModulo === 'TODOS' || item.modulo === filtroModulo;
+                
+                // 2. Filtro por Búsqueda de texto (busca en el usuario o en la acción)
+                const textoUsuario = (item.usuario || '').toLowerCase();
+                const textoDetalle = (item.detalle || '').toLowerCase();
+                const pasaBusqueda = textoUsuario.includes(busqueda) || textoDetalle.includes(busqueda);
+                
+                // 3. Filtro por Rango de Fechas
+                let pasaFecha = true;
+                if (fechaDesde || fechaHasta) {
+                    const fechaItemSolo = item.fecha.split('T')[0]; // Extrae solo la parte YYYY-MM-DD
+                    if (fechaDesde && fechaItemSolo < fechaDesde) pasaFecha = false;
+                    if (fechaHasta && fechaItemSolo > fechaHasta) pasaFecha = false;
+                }
+
+                return pasaModulo && pasaBusqueda && pasaFecha;
+            });
+
+            if (datosFiltrados.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #94A3B8; padding: 30px;">No se encontraron registros con esos filtros.</td></tr>';
+                return;
+            }
+
+            tabla.innerHTML = '';
+            datosFiltrados.forEach(item => {
+                const fechaObj = new Date(item.fecha).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+                
+                let colorModulo = '#facc15';
+                if(item.modulo === 'videos') colorModulo = '#00F0FF';
+                if(item.modulo === 'precios') colorModulo = '#22c55e';
+                if(item.modulo === 'notebooks') colorModulo = '#ff4a4a';
+
+                tabla.innerHTML += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;">
+                        <td style="color:#94A3B8; font-size:13px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${fechaObj}</td>
+                        <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-user-shield" style="color:#94A3B8; margin-right:5px;"></i> ${item.usuario}</td>
+                        <td style="text-transform: uppercase; font-size: 12px; font-weight: 700; color: ${colorModulo};">${item.modulo}</td>
+                        <td style="color:#94A3B8; font-size: 13px;">${item.detalle} <span style="color:#475569; font-size: 11px;">(ID: ${item.registro_id})</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function limpiarFiltrosHistorial() {
+            document.getElementById('filtro-historial-modulo').value = 'TODOS';
+            document.getElementById('filtro-historial-desde').value = '';
+            document.getElementById('filtro-historial-hasta').value = '';
+            document.getElementById('busqueda-historial').value = '';
+            renderizarHistorial();
         }
 
         // =========================================================================
