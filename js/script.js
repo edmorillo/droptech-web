@@ -180,12 +180,16 @@ window.setMixedMainView = function(index) {
     const el = elementosMixtos[index];
     const mainView = document.getElementById('mixed-main-view');
     
+    // 1. Forzamos el diseño de la caja para que no se deforme ni quede tapada
+    mainView.style.cssText = "width: 100%; height: 60vh; max-height: 550px; background: #000; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 9999;";
+    
+    // 2. Inyectamos los videos con z-index alto y pointer-events forzado para que reciban los clics sí o sí
     if (el.tipo === 'mp4') {
-        mainView.innerHTML = `<video src="${el.url}" controls autoplay playsinline style="width: 100%; height: 100%; object-fit: contain; outline: none;"></video>`;
+        mainView.innerHTML = `<video src="${el.url}" controls autoplay playsinline style="width: 100%; height: 100%; object-fit: contain; outline: none; pointer-events: all !important; position: relative; z-index: 99999;"></video>`;
     } else if (el.tipo === 'youtube') {
-        mainView.innerHTML = `<iframe src="${el.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%; outline: none;"></iframe>`;
+        mainView.innerHTML = `<iframe src="${el.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width: 100%; height: 100%; outline: none; pointer-events: all !important; position: relative; z-index: 99999;"></iframe>`;
     } else {
-        mainView.innerHTML = `<img src="${el.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+        mainView.innerHTML = `<img src="${el.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px; pointer-events: all !important; position: relative; z-index: 99999;">`;
     }
     
     document.querySelectorAll('.thumb-mix').forEach(t => { t.classList.remove('active'); });
