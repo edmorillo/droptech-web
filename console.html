@@ -116,6 +116,9 @@
             <li style="margin-top: 20px;">
                 <a onclick="cambiarSeccion('papelera', this)" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</a>
             </li>
+            <li style="margin-top: 5px;">
+                <a onclick="cambiarSeccion('historial', this)" style="color: #00F0FF;"><i class="fa-solid fa-clock-rotate-left"></i> Historial de Actividad</a>
+            </li>
             <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
                 <a onclick="cerrarSesion()" style="color: #ff4a4a; cursor: pointer;"><i class="fa-solid fa-right-from-bracket" style="color: #ff4a4a;"></i> Cerrar Sesión</a>
             </li>
@@ -545,6 +548,28 @@
                     </thead>
                     <tbody id="tabla-admin-papelera">
                         <tr><td colspan="3" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando papelera...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN HISTORIAL DE ACTIVIDAD -->
+        <section id="sec-historial" class="dashboard-section" style="display: none;">
+            <h1 class="header-title"><i class="fa-solid fa-clock-rotate-left" style="color: #00F0FF;"></i> Historial de Actividad</h1>
+            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Registro de todos los movimientos, ediciones y eliminaciones realizadas en la base de datos.</p>
+            
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Usuario</th>
+                            <th>Módulo</th>
+                            <th>Acción Realizada</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-historial">
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1253,13 +1278,53 @@
         });
 
         // =========================================================================
-        // 7 CARGA DE DATOS
+        // 7. HISTORIAL DE AUDITORÍA
+        // =========================================================================
+        async function cargarHistorial() {
+            const tabla = document.getElementById('tabla-admin-historial');
+            try {
+                // Traemos los últimos 50 movimientos ordenados por fecha
+                const { data, error } = await db.from('auditoria_borrados').select('*').order('created_at', { ascending: false }).limit(50);
+                if (error) throw error;
+
+                if (data.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #94A3B8; padding: 20px;">No hay actividad registrada en el sistema.</td></tr>';
+                    return;
+                }
+
+                tabla.innerHTML = '';
+                data.forEach(item => {
+                    const fecha = new Date(item.created_at).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+                    
+                    let colorModulo = '#facc15';
+                    if(item.modulo === 'videos') colorModulo = '#00F0FF';
+                    if(item.modulo === 'precios') colorModulo = '#22c55e';
+                    if(item.modulo === 'notebooks') colorModulo = '#ff4a4a';
+
+                    tabla.innerHTML += `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="color:#94A3B8; font-size:13px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${fecha}</td>
+                            <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-user-shield" style="color:#94A3B8; margin-right:5px;"></i> ${item.usuario}</td>
+                            <td style="text-transform: uppercase; font-size: 12px; font-weight: 700; color: ${colorModulo};">${item.modulo}</td>
+                            <td style="color:#94A3B8; font-size: 13px;">${item.detalle} <span style="color:#475569; font-size: 11px;">(ID: ${item.registro_id})</span></td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff4a4a; padding: 20px;">Error al cargar el historial.</td></tr>';
+            }
+        }
+
+        // =========================================================================
+        // 8 CARGA DE DATOS
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
         cargarMemorias();
         cargarAccesorios();
         cargarPapelera();
+        cargarHistorial();
     </script>
 </body>
 </html>
