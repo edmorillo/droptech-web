@@ -225,6 +225,8 @@
         let videosActuales = [];
         let videosMantenidos = [];
         let imagenesMantenidas = [];
+        let archivosVideosABorrar = [];
+        let archivosImagenesABorrar = [];
 
         function renderizarMediosExistentes() {
             const contenedor = document.getElementById('gestor-medios');
@@ -282,8 +284,15 @@
         }
 
         function quitarMedioExistente(tipo, index) {
-            if (tipo === 'video') videosMantenidos.splice(index, 1);
-            else imagenesMantenidas.splice(index, 1);
+            if (tipo === 'video') {
+                const urlObj = videosMantenidos[index];
+                if (urlObj.includes('supabase.co')) archivosVideosABorrar.push(urlObj.split('/').pop()); 
+                videosMantenidos.splice(index, 1);
+            } else {
+                const urlObj = imagenesMantenidas[index];
+                if (urlObj.includes('supabase.co')) archivosImagenesABorrar.push(urlObj.split('/').pop()); 
+                imagenesMantenidas.splice(index, 1);
+            }
             renderizarMediosExistentes();
         }
 
@@ -364,6 +373,8 @@
             editandoVidId = null;
             videosMantenidos = [];
             imagenesMantenidas = [];
+            archivosVideosABorrar = []; 
+            archivosImagenesABorrar = []; 
             document.getElementById('form-videos').reset();
             document.getElementById('gestor-medios').style.display = 'none';
             document.getElementById('vid-origen').value = 'link';
@@ -425,9 +436,32 @@ if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
                     imagenes: urlsImagenesFinal 
                 };
 
-                if (editandoVidId) { await db.from('videos').update(payload).eq('id', editandoVidId); } 
-                else { await db.from('videos').insert([payload]); }
+                // OBTENEMOS EL USUARIO PARA LA AUDITORÍA
+                const { data: { session } } = await db.auth.getSession();
+                const usuarioEmail = session ? session.user.email : 'Administrador';
+
+                if (editandoVidId) { 
+                    await db.from('videos').update(payload).eq('id', editandoVidId); 
+                    
+                    // REGISTRO DE AUDITORÍA (Quién lo editó)
+                    await db.from('auditoria_borrados').insert([{
+                        modulo: 'videos',
+                        registro_id: editandoVidId,
+                        detalle: 'Trabajo editado y actualizado',
+                        usuario: usuarioEmail
+                    }]);
+                } 
+                else { 
+                    await db.from('videos').insert([payload]); 
+                }
                 
+                // --- BARREDORA DE ARCHIVOS HUÉRFANOS ---
+                for (let file of archivosVideosABorrar) { await db.storage.from('videos').remove([file]); }
+                for (let file of archivosImagenesABorrar) { await db.storage.from('imagenes').remove([file]); }
+                archivosVideosABorrar = [];
+                archivosImagenesABorrar = [];
+                // ---------------------------------------
+
                 mostrarToast("Trabajo guardado correctamente"); 
                 cancelarEdicionVideo(); 
                 cargarVideos();
