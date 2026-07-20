@@ -98,6 +98,9 @@
             <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias y SSDs</a></li>
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
             <li><a href="trabajos.html" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
+            <li style="margin-top: 20px;">
+                <a onclick="cambiarSeccion('papelera', this)" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</a>
+            </li>
             <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
                 <a onclick="cerrarSesion()" style="color: #ff4a4a; cursor: pointer;"><i class="fa-solid fa-right-from-bracket" style="color: #ff4a4a;"></i> Cerrar Sesión</a>
             </li>
@@ -487,6 +490,46 @@
                     </thead>
                     <tbody id="tabla-admin-accesorios">
                         <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Conectando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN PAPELERA -->
+        <section id="sec-papelera" class="dashboard-section">
+            <h1 class="header-title" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</h1>
+            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Aquí se encuentran todos los elementos ocultos. Puedes restaurarlos para que vuelvan a la web o eliminarlos definitivamente de la base de datos para liberar espacio.</p>
+            
+            <!-- FILTRO Y BUSCADOR DE PAPELERA -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #ff4a4a; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;"><i class="fa-solid fa-filter"></i> Categoría:</span>
+                    <select id="filtro-papelera" onchange="renderizarPapelera()" style="width: auto; min-width: 180px; padding: 8px 12px; background: #1E293B; border: 1px solid #ff4a4a; color: #fff; border-radius: 6px; font-weight: 500; cursor: pointer;">
+                        <option value="TODOS">Todas las categorías</option>
+                        <option value="precios">Lista de Precios</option>
+                        <option value="notebooks">Notebooks</option>
+                        <option value="memorias">Memorias y SSDs</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="videos">Trabajos / Videos</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #ff4a4a;"></i>
+                    <input type="text" id="busqueda-papelera" oninput="renderizarPapelera()" placeholder="Buscar elemento borrado..." style="width: 100%; padding: 10px 15px 10px 40px; background: #1E293B; border: 1px solid rgba(255, 74, 74, 0.3); color: #fff; border-radius: 6px; outline: none; transition: 0.3s;">
+                </div>
+            </div>
+
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Elemento (A-Z)</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-papelera">
+                        <tr><td colspan="3" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando papelera...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1064,12 +1107,118 @@
         });
 
         // =========================================================================
+        // 6. LÓGICA DE LA PAPELERA DE RECICLAJE
+        // =========================================================================
+        let papeleraActual = [];
+
+        async function cargarPapelera() {
+            const tabla = document.getElementById('tabla-admin-papelera');
+            tabla.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando archivos en papelera...</td></tr>';
+
+            try {
+                // Buscamos simultáneamente en TODAS las tablas (¡ahora sí incluimos videos!)
+                const [precios, notebooks, memorias, accesorios, videos] = await Promise.all([
+                    db.from('precios').select('*').eq('estado_registro', 'borrado'),
+                    db.from('notebooks').select('*').eq('estado_registro', 'borrado'),
+                    db.from('memorias').select('*').eq('estado_registro', 'borrado'),
+                    db.from('accesorios').select('*').eq('estado_registro', 'borrado'),
+                    db.from('videos').select('*').eq('estado_registro', 'borrado')
+                ]);
+
+                papeleraActual = [];
+
+                // Unificamos
+                if (precios.data) precios.data.forEach(i => papeleraActual.push({...i, modulo: 'precios', titulo_mostrar: i.servicio}));
+                if (notebooks.data) notebooks.data.forEach(i => papeleraActual.push({...i, modulo: 'notebooks', titulo_mostrar: i.titulo}));
+                if (memorias.data) memorias.data.forEach(i => papeleraActual.push({...i, modulo: 'memorias', titulo_mostrar: i.titulo}));
+                if (accesorios.data) accesorios.data.forEach(i => papeleraActual.push({...i, modulo: 'accesorios', titulo_mostrar: i.titulo}));
+                if (videos.data) videos.data.forEach(i => papeleraActual.push({...i, modulo: 'videos', titulo_mostrar: i.titulo}));
+
+                // ORDENAMIENTO A-Z automático por el título
+                papeleraActual.sort((a, b) => a.titulo_mostrar.localeCompare(b.titulo_mostrar));
+
+                renderizarPapelera();
+            } catch (err) {
+                console.error(err);
+                tabla.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Error al cargar la papelera.</td></tr>';
+            }
+        }
+
+        function renderizarPapelera() {
+            const tabla = document.getElementById('tabla-admin-papelera');
+            const filtro = document.getElementById('filtro-papelera').value;
+            const busqueda = document.getElementById('busqueda-papelera').value.toLowerCase();
+
+            const datosFiltrados = papeleraActual.filter(item => {
+                const pasaFiltro = filtro === 'TODOS' || item.modulo === filtro;
+                const pasaBusqueda = item.titulo_mostrar.toLowerCase().includes(busqueda);
+                return pasaFiltro && pasaBusqueda;
+            });
+
+            if (datosFiltrados.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 30px;">La papelera está vacía. ¡Todo limpio!</td></tr>';
+                return;
+            }
+
+            tabla.innerHTML = '';
+            datosFiltrados.forEach(item => {
+                let icono = '';
+                if(item.modulo === 'precios') icono = '<i class="fa-solid fa-tags"></i> Precios';
+                if(item.modulo === 'notebooks') icono = '<i class="fa-solid fa-laptop"></i> Notebooks';
+                if(item.modulo === 'memorias') icono = '<i class="fa-solid fa-memory"></i> Memorias';
+                if(item.modulo === 'accesorios') icono = '<i class="fa-solid fa-keyboard"></i> Accesorios';
+                if(item.modulo === 'videos') icono = '<i class="fa-solid fa-video"></i> Videos';
+
+                tabla.innerHTML += `
+                    <tr>
+                        <td><span class="badge" style="background: rgba(255, 74, 74, 0.1); color: #ff4a4a; border: 1px solid #ff4a4a;">${icono}</span></td>
+                        <td style="color:#fff; font-weight:500;">${item.titulo_mostrar}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" style="background: rgba(0, 255, 102, 0.1); color: #00ff66; border-color: #00ff66;" onclick="restaurarElemento(${item.id}, '${item.modulo}')" title="Restaurar a la web"><i class="fa-solid fa-rotate-left"></i> Restaurar</button>
+                                <button class="btn-delete" onclick="eliminarDefinitivo(${item.id}, '${item.modulo}')" title="Eliminar para siempre de la base de datos"><i class="fa-solid fa-skull"></i> Destruir</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function restaurarElemento(id, modulo) {
+            const { error } = await db.from(modulo).update({ estado_registro: 'activo' }).eq('id', id);
+            if (!error) {
+                mostrarToast("Elemento restaurado. Ya vuelve a verse en tu web.");
+                cargarPapelera();
+                // Recargamos en segundo plano la tabla original para que ya figure ahí
+                if(modulo === 'precios') cargarPrecios();
+                if(modulo === 'notebooks') cargarNotebooks();
+                if(modulo === 'memorias') cargarMemorias();
+                if(modulo === 'accesorios') cargarAccesorios();
+            } else {
+                alert("Error al restaurar: " + error.message);
+            }
+        }
+
+        async function eliminarDefinitivo(id, modulo) {
+            if(confirm("⚠️ ATENCIÓN: Estás a punto de borrar este elemento de la base de datos PARA SIEMPRE. Esta acción no se puede deshacer. ¿Querés continuar?")) {
+                const { error } = await db.from(modulo).delete().eq('id', id);
+                if (!error) {
+                    mostrarToast("Elemento destruido permanentemente.");
+                    cargarPapelera();
+                } else {
+                    alert("Error al eliminar: " + error.message);
+                }
+            }
+        }
+
+        // =========================================================================
         // 7 CARGA DE DATOS
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
         cargarMemorias();
         cargarAccesorios();
+        cargarPapelera();
     </script>
 </body>
 </html>
