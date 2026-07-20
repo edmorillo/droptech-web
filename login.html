@@ -182,7 +182,7 @@
 
             // ATENCIÓN: Asegurate que tu URL en Supabase Auth esté configurada correctamente
             const { error } = await db.auth.resetPasswordForEmail(email, {
-                redirectTo: 'https://tu-sitio.vercel.app/reset-password.html', // <--- CAMBIÁ ESTO POR TU URL REAL
+                redirectTo: 'https://computadoras-lei-git-dev-computadoras-lei.vercel.app/reset-password.html', // <--- CAMBIÁ ESTO POR TU URL REAL
             });
 
             if (error) {
