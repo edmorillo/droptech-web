@@ -9,132 +9,215 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
+        /* Reset & Base */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { 
-            background: radial-gradient(circle at center, #101626 0%, #070A0F 100%); 
-            color: #fff; 
-            display: flex; 
-            height: 100vh; 
-            align-items: center; 
-            justify-content: center;
-        }
-        .login-box {
-            background: #111622;
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-        .login-box h2 {
-            color: #00F0FF;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; color: #94A3B8; font-size: 13px; font-weight: 600; text-transform: uppercase; }
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 8px; 
-            background: #070A0F; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            color: #fff; 
-            font-size: 14px; 
-            outline: none; 
-            transition: 0.3s; 
-        }
-        input:focus { border-color: #00F0FF; }
+        body { background: #070A0F; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; background-image: radial-gradient(circle at top right, #101626 0%, #070A0F 100%); }
+
+        /* Contenedor de Marca (Logo y Nombre) */
+        .brand-container { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; }
+        .brand-container i { font-size: 38px; color: #00F0FF; filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.4)); }
+        .brand-container h1 { font-size: 30px; font-weight: 800; letter-spacing: 1px; color: #fff; margin: 0; }
+        .brand-container h1 span { color: #00F0FF; }
+
+        /* Tarjeta de Login */
+        .login-card { background: #111622; padding: 45px 40px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.1); width: 100%; max-width: 420px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .login-card h2 { text-align: center; color: #00F0FF; font-size: 20px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; }
+
+        /* Controles de Formulario */
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; color: #94A3B8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .btn { 
-            background: #00F0FF; 
-            color: #070A0F; 
-            padding: 14px; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            font-size: 15px; 
-            width: 100%; 
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-        .btn:hover { background: #00B8CC; transform: translateY(-2px); }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i.icon-left { position: absolute; left: 16px; color: #94A3B8; font-size: 15px; transition: 0.3s; }
         
-        .error-msg {
-            color: #ff4a4a;
-            font-size: 13px;
-            margin-top: 15px;
-            display: none;
-            background: rgba(255, 74, 74, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 74, 74, 0.2);
-        }
+        input { width: 100%; padding: 15px 15px 15px 48px; background: #1E293B; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #00F0FF; box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); background: #171e2c; }
+        
+        /* El truco para que el ícono cambie de color cuando escribís */
+        input:focus ~ i.icon-left, input:not(:placeholder-shown) ~ i.icon-left { color: #00F0FF; }
+        
+        /* Botón del Ojito */
+        .eye-btn { position: absolute; right: 15px; background: transparent; border: none; color: #94A3B8; cursor: pointer; font-size: 16px; transition: 0.3s; padding: 5px; }
+        .eye-btn:hover { color: #00F0FF; }
+
+        /* Botón Principal con efecto Neón */
+        .btn-login { width: 100%; padding: 15px; background: #00F0FF; color: #070A0F; border: none; border-radius: 8px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2); display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-login:hover { background: #00c4d1; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 240, 255, 0.4); }
+
+        /* Link de Recuperar Contraseña */
+        .forgot-link { display: block; text-align: center; margin-top: 25px; color: #94A3B8; font-size: 13px; text-decoration: none; transition: 0.3s; cursor: pointer; font-weight: 500; }
+        .forgot-link:hover { color: #00F0FF; text-decoration: underline; }
+
+        /* Notificaciones (Toast) */
+        .toast { position: fixed; top: 30px; right: 30px; background: #ff4a4a; color: #fff; padding: 15px 25px; border-radius: 8px; font-weight: 700; display: none; z-index: 999999; box-shadow: 0 5px 15px rgba(255, 74, 74, 0.3); animation: slideIn 0.3s ease; }
+        .toast.success { background: #00ff66; color: #000; box-shadow: 0 5px 15px rgba(0, 255, 102, 0.3); }
+
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-exclamation"></i> Mensaje</div>
+
+    <!-- Marca de la Empresa -->
+    <div class="brand-container">
+        <i class="fa-solid fa-microchip"></i>
+        <h1>Computadoras <span>Lei</span></h1>
+    </div>
+
+    <!-- Tarjeta Principal -->
+    <div class="login-card">
         <h2><i class="fa-solid fa-shield-halved"></i> Acceso Seguro</h2>
-        <form id="login-form">
+        
+        <form id="form-login">
             <div class="form-group">
                 <label>Correo Electrónico</label>
-                <input type="email" id="email" placeholder="admin@computadoraslei.com" required>
+                <div class="input-wrapper">
+                    <input type="email" id="email" placeholder="admin@computadoraslei.com" required autocomplete="email">
+                    <i class="fa-solid fa-envelope icon-left"></i>
+                </div>
             </div>
+
             <div class="form-group">
                 <label>Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••" required>
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                    <i class="fa-solid fa-lock icon-left"></i>
+                    <!-- Botón del ojito -->
+                    <button type="button" class="eye-btn" onclick="togglePassword()" title="Mostrar/Ocultar contraseña">
+                        <i class="fa-solid fa-eye" id="eye-icon"></i>
+                    </button>
+                </div>
             </div>
-            <button type="submit" id="btn-login" class="btn">Iniciar Sesión</button>
-            <div id="error-message" class="error-msg">Credenciales incorrectas. Intentalo de nuevo.</div>
+
+            <button type="submit" id="btn-submit" class="btn-login">
+                Iniciar Sesión <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
         </form>
+
+        <a onclick="recuperarClave()" class="forgot-link">¿Olvidaste tu contraseña?</a>
     </div>
 
     <script>
+        // 1. CONEXIÓN A SUPABASE (Mismas credenciales que console.html)
         const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_CNCfFsHb-yGfE45YhHoFHQ_mS1Cpi7C';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Si ya está logueado, lo mandamos directo al console
-        async function checkSession() {
-            const { data: { session } } = await db.auth.getSession();
-            if (session) { window.location.href = 'console.html'; }
+        // 2. SISTEMA DE NOTIFICACIONES
+        function mostrarToast(mensaje, tipo = 'error') {
+            const toast = document.getElementById('toast');
+            toast.className = 'toast ' + (tipo === 'success' ? 'success' : '');
+            toast.innerHTML = tipo === 'success' ? `<i class="fa-solid fa-check"></i> ${mensaje}` : `<i class="fa-solid fa-triangle-exclamation"></i> ${mensaje}`;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
-        checkSession();
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-login');
-            const errorMsg = document.getElementById('error-message');
+        // 3. FUNCIONALIDAD DEL OJITO (Mostrar/Ocultar Contraseña)
+        function togglePassword() {
+            const inputPass = document.getElementById('password');
+            const iconEye = document.getElementById('eye-icon');
             
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
-            btn.style.pointerEvents = 'none';
-            errorMsg.style.display = 'none';
+            if (inputPass.type === 'password') {
+                inputPass.type = 'text';
+                iconEye.classList.remove('fa-eye');
+                iconEye.classList.add('fa-eye-slash');
+            } else {
+                inputPass.type = 'password';
+                iconEye.classList.remove('fa-eye-slash');
+                iconEye.classList.add('fa-eye');
+            }
+        }
 
+        // 4. MOTOR DE INICIO DE SESIÓN
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const btn = document.getElementById('btn-submit');
+            
+            // Efecto de carga en el botón
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
+            btn.style.pointerEvents = 'none';
 
-            const { data, error } = await db.auth.signInWithPassword({ email: email, password: password });
+            const { data, error } = await db.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
 
             if (error) {
-                errorMsg.innerText = "Error: Credenciales incorrectas.";
-                errorMsg.style.display = 'block';
-                btn.innerHTML = 'Iniciar Sesión';
+                mostrarToast("Correo o contraseña incorrectos.");
+                btn.innerHTML = originalHTML;
                 btn.style.pointerEvents = 'auto';
             } else {
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Acceso Permitido';
-                btn.style.background = '#00ff66';
-                setTimeout(() => { window.location.href = 'console.html'; }, 1000);
+                // Si el login es exitoso, redirigimos a la consola
+                mostrarToast("Acceso concedido. Redirigiendo...", "success");
+                setTimeout(() => {
+                    window.location.href = 'console.html';
+                }, 1000);
             }
         });
+
+        // Función para abrir el modal
+        function recuperarClave() {
+            document.getElementById('modal-recuperar').style.display = 'flex';
+        }
+
+        // Función para cerrar el modal
+        function cerrarModalRecuperar() {
+            document.getElementById('modal-recuperar').style.display = 'none';
+        }
+
+        // Motor de envío
+        async function enviarRecuperacion() {
+            const email = document.getElementById('email-recuperar').value;
+            const btn = document.getElementById('btn-enviar-recu');
+            
+            if(!email) { mostrarToast("Ingresá un correo válido"); return; }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            btn.style.pointerEvents = 'none';
+
+            // ATENCIÓN: Asegurate que tu URL en Supabase Auth esté configurada correctamente
+            const { error } = await db.auth.resetPasswordForEmail(email, {
+                redirectTo: 'https://tu-sitio.vercel.app/reset-password.html', // <--- CAMBIÁ ESTO POR TU URL REAL
+            });
+
+            if (error) {
+                mostrarToast("Error: " + error.message);
+            } else {
+                mostrarToast("Te enviamos un enlace de recuperación a tu correo electrónico.", "success");
+                cerrarModalRecuperar();
+            }
+            btn.innerHTML = 'Enviar enlace';
+            btn.style.pointerEvents = 'auto';
+        }
+
+        // 6. REDIRECCIÓN AUTOMÁTICA SI YA ESTÁ LOGUEADO
+        async function comprobarSesionPrevia() {
+            const { data: { session } } = await db.auth.getSession();
+            if (session) {
+                window.location.href = 'console.html';
+            }
+        }
+        comprobarSesionPrevia();
     </script>
+
+    <!-- MODAL DE RECUPERACIÓN -->
+    <div id="modal-recuperar" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #111622; padding: 35px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.3); text-align: center; max-width: 400px; width: 90%;">
+            <h3 style="color: #fff; margin-bottom: 15px;"><i class="fa-solid fa-key" style="color: #00F0FF;"></i> Recuperar Acceso</h3>
+            <p style="color: #94A3B8; font-size: 14px; margin-bottom: 25px;">Ingresá tu correo electrónico y te enviaremos un enlace mágico para resetear tu contraseña.</p>
+            
+            <input type="email" id="email-recuperar" placeholder="admin@computadoraslei.com" style="margin-bottom: 20px;">
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="cerrarModalRecuperar()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; cursor: pointer;">Cancelar</button>
+                <button onclick="enviarRecuperacion()" id="btn-enviar-recu" style="flex: 1; padding: 12px; background: #00F0FF; color: #070A0F; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Enviar enlace</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
