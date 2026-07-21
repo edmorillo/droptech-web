@@ -148,18 +148,21 @@ function openMixedGallery(id) {
     
     // 3. Dibujar la tira de miniaturas abajo (¡Sin imágenes rotas!)
     thumbsDiv.innerHTML = '';
+    let videoCount = 1; // Contador automático de videos
     elementosMixtos.forEach((el, index) => {
         let contenidoMiniatura = '';
         
         if (el.tipo === 'mp4') {
-            // Diseño nativo para MP4 (Cuadro oscuro con ícono de Play cyan, irrompible)
-            contenidoMiniatura = `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #00F0FF; font-size: 20px;"><i class="fa-solid fa-play"></i></div>`;
+            // Diseño nativo para MP4 (Cuadro oscuro con ícono de Play cyan y Texto)
+            contenidoMiniatura = `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #00F0FF;"><i class="fa-solid fa-play" style="font-size: 16px; margin-bottom: 4px;"></i><span style="font-size: 10px; font-weight: 700;">VIDEO ${videoCount}</span></div>`;
+            videoCount++;
         } else if (el.tipo === 'youtube') {
-            // Diseño para YouTube (Foto de portada con Play encima)
+            // Diseño para YouTube (Foto de portada con Play y Texto encima)
             contenidoMiniatura = `
                 <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px;"><i class="fa-solid fa-play"></i></div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; flex-direction: column; align-items:center; justify-content:center; color:#fff;"><i class="fa-solid fa-play" style="font-size: 18px; margin-bottom: 4px;"></i><span style="font-size: 10px; font-weight: 700; color: #00F0FF;">VIDEO ${videoCount}</span></div>
             `;
+            videoCount++;
         } else {
             // Diseño para Fotos normales
             contenidoMiniatura = `<img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
