@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /console
+Disallow: /login
+Disallow: /trabajos
+
+Sitemap: https://computadoraslei.com.ar/sitemap.xml
