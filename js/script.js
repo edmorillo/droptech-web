@@ -793,3 +793,25 @@ window.addEventListener('click', function(event) {
         cerrarModalPagos();
     }
 });
+
+// ==========================================
+// 9. NAVEGACIÓN LIMPIA (SIN '#' EN LA URL)
+// ==========================================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return; // Evita errores si hay enlaces vacíos
+        
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+            e.preventDefault(); // Bloquea la acción normal que escribe el '#' en la barra
+            
+            // Hace el deslizamiento suave hacia la sección
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+            
+            // Limpia la barra de direcciones para que quede inmaculada
+            history.replaceState(null, null, window.location.pathname);
+        }
+    });
+});
