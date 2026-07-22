@@ -1506,28 +1506,38 @@ h2 {
 }
 
 /* ========================================== */
-/* FIX DEFINITIVO: ALTURA DE TARJETAS (MÓVIL) */
+/* FIX DEFINITIVO: MOLDE RÍGIDO Y TEXTO (...) */
 /* ========================================== */
+@media (max-width: 768px) {
+    
+    /* 1. Obligamos a la grilla a estirar los cajones por igual */
+    .products-grid, #grid-notebooks, #grid-memorias, #grid-accesorios {
+        align-items: stretch !important;
+    }
 
-/* 1. Obligamos a la fila entera a estirarse parejo */
-.products-grid, #grid-notebooks, #grid-memorias, #grid-accesorios {
-    align-items: stretch !important;
-}
+    /* 2. EL SECRETO: min-width: 0 destraba el corte de texto en Grids */
+    .product-card {
+        height: 100% !important;
+        min-width: 0 !important; 
+        display: flex !important;
+        flex-direction: column !important;
+    }
 
-/* 2. Obligamos a los cajones negros a ocupar el 100% del espacio de esa fila */
-#grid-notebooks .product-card,
-#grid-memorias .product-card,
-#grid-accesorios .product-card,
-.product-card {
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
+    /* 3. Corte de texto implacable con 3 puntitos para TODO el contenido */
+    .product-card h3, 
+    .product-card ul li,
+    .product-card p,
+    .product-card div {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+    }
 
-/* 3. Empujamos el botón de precio siempre contra el piso de la tarjeta */
-#grid-notebooks .product-card .btn-primary,
-#grid-memorias .product-card .btn-primary,
-#grid-accesorios .product-card .btn-primary,
-.product-card .btn-primary {
-    margin-top: auto !important;
+    /* 4. Botón siempre al fondo */
+    .product-card .btn-primary {
+        margin-top: auto !important;
+    }
 }
