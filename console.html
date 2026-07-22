@@ -1547,52 +1547,77 @@
             renderizarHistorial();
         }
 
-        // ========================================== -->
-        // 8 SISTEMA DE ROLES Y PERMISOS                -->
-        // ========================================== -->
-        
-        document.addEventListener("DOMContentLoaded", () => {
-            // Le damos 1.5 segundos a Supabase para que cargue la sesión primero
-            setTimeout(() => {
-                if (typeof supabase !== 'undefined') {
-                    supabase.auth.getSession().then(({ data: { session } }) => {
-                        if (session && session.user) {
-                            const userEmail = session.user.email;
-                            const adminEmail = 'computadoraslei@gmail.com';
+        // ==========================================
+// SISTEMA DE ROLES Y PERMISOS (VERSIÓN AGRESIVA)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        if (typeof supabase !== 'undefined') {
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session && session.user) {
+                    const userEmail = session.user.email;
+                    
+                    // 1. ACÁ DEFINÍS TU EQUIPO 
+                    const adminSupremo = 'computadoraslei@gmail.com';
+                    const editores = ['empleado1@gmail.com', 'empleado2@gmail.com']; 
 
-                            // Si el que entra NO es el Admin Supremo, aplicamos restricciones
-                            if (userEmail !== adminEmail) {
-                                
-                                // 1. Desaparecemos todos los botones de borrar/eliminar del sistema
-                                const cssRoles = document.createElement('style');
-                                cssRoles.innerHTML = `
-                                    .btn-eliminar, 
-                                    .btn-danger, 
-                                    .fa-trash,
-                                    [onclick*="eliminar"], 
-                                    [onclick*="borrar"] { 
-                                        display: none !important; 
-                                        pointer-events: none !important;
-                                    }
-                                `;
-                                document.head.appendChild(cssRoles);
-
-                                // 2. Ocultamos la pestaña de la Papelera / Auditoría
-                                const tabPapelera = document.getElementById('tab-papelera');
-                                if (tabPapelera) tabPapelera.style.display = 'none';
-                                
-                                const navPapelera = document.querySelector('[href*="papelera"]');
-                                if (navPapelera) navPapelera.style.display = 'none';
-                                
-                                console.log("Modo Editor/Visualizador activado. Permisos de eliminación revocados.");
-                            } else {
-                                console.log("Admin Supremo detectado. Acceso total concedido.");
+                    // 2. LÓGICA DE PERMISOS
+                    if (userEmail === adminSupremo) {
+                        console.log("Admin Supremo detectado. Acceso total.");
+                        
+                    } else if (editores.includes(userEmail)) {
+                        console.log("Editor detectado. Ocultando borrado e historial.");
+                        const cssEditor = document.createElement('style');
+                        cssEditor.innerHTML = `
+                            /* Oculta botones rojos/borrar de la tabla */
+                            button[onclick*="eliminar"], button[onclick*="borrar"],
+                            .btn-danger, .fa-trash, [class*="trash"], [class*="eliminar"] { 
+                                display: none !important; pointer-events: none !important;
                             }
-                        }
-                    });
+                            /* Oculta Papelera e Historial del menú izquierdo */
+                            a[href*="papelera"], [id*="papelera"], [onclick*="papelera"], [class*="papelera"],
+                            a[href*="historial"], [id*="historial"], [onclick*="historial"], [class*="historial"] {
+                                display: none !important; pointer-events: none !important;
+                            }
+                        `;
+                        document.head.appendChild(cssEditor);
+                        
+                    } else {
+                        console.log("Visualizador detectado. Modo solo lectura extremo.");
+                        const cssVisualizador = document.createElement('style');
+                        cssVisualizador.innerHTML = `
+                            /* 1. Oculta TODOS los botones de acción de la tabla (Lápiz y Basurero) */
+                            button[onclick*="eliminar"], button[onclick*="borrar"], button[onclick*="delete"],
+                            button[onclick*="editar"], button[onclick*="edit"], button[onclick*="modificar"],
+                            .btn-danger, .btn-warning, .btn-info, .fa-trash, .fa-pen, .fa-edit,
+                            [class*="trash"], [class*="eliminar"], [class*="editar"], [class*="edit"] { 
+                                display: none !important; pointer-events: none !important;
+                            }
+
+                            /* 2. Oculta el botón gigante de "Guardar Componente" */
+                            button[type="submit"], [onclick*="guardar"], [onclick*="agregar"], .btn-success {
+                                display: none !important; pointer-events: none !important;
+                            }
+
+                            /* 3. Oculta Papelera e Historial del menú izquierdo */
+                            a[href*="papelera"], [id*="papelera"], [onclick*="papelera"], [class*="papelera"],
+                            a[href*="historial"], [id*="historial"], [onclick*="historial"], [class*="historial"] {
+                                display: none !important; pointer-events: none !important;
+                            }
+
+                            /* 4. Bloquea todos los campos para que no puedan escribir ni subir fotos */
+                            input, select, textarea { 
+                                pointer-events: none !important; 
+                                opacity: 0.5 !important; 
+                            }
+                        `;
+                        document.head.appendChild(cssVisualizador);
+                    }
                 }
-            }, 1500); 
-        });
+            });
+        }
+    }, 1500); 
+});
 
         // =========================================================================
         // 9 CARGA DE DATOS
