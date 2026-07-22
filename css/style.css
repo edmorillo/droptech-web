@@ -1502,22 +1502,24 @@ h2 {
 }
 
 /* ========================================== */
-/* FIX: TARJETAS UNIFORMES EN CELULARES */
+/* FIX: TARJETAS UNIFORMES Y FOTOS ENTERAS */
 /* ========================================== */
 .product-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100%; /* Obliga a la tarjeta a estirarse parejo */
 }
 
 .product-card img, 
 .product-img {
     width: 100%;
-    height: 180px !important; /* Altura fija para que no se deformen */
-    object-fit: cover !important; /* Recorta la foto perfecto sin aplastarla */
+    height: 220px !important; /* Altura fija para igualar las tarjetas */
+    object-fit: contain !important; /* MAGIA: Muestra la foto entera sin cortar ni deformar */
+    padding: 10px; /* Le da un poco de aire para que no toque los bordes */
+    background-color: transparent; 
 }
 
-/* Esto empuja los botones de "Ver detalles" siempre hacia abajo para que queden alineados */
+/* Alineación inteligente del texto y botones */
 .product-card .card-body, 
 .product-card .info-container {
     display: flex;
@@ -1527,5 +1529,5 @@ h2 {
 
 .product-card .btn, 
 .product-card button {
-    margin-top: auto;
+    margin-top: auto; /* Empuja el botón verde/cyan siempre hacia el fondo */
 }

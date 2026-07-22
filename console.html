@@ -1547,8 +1547,55 @@
             renderizarHistorial();
         }
 
+        // ========================================== -->
+        // 8 SISTEMA DE ROLES Y PERMISOS                -->
+        // ========================================== -->
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            // Le damos 1.5 segundos a Supabase para que cargue la sesión primero
+            setTimeout(() => {
+                if (typeof supabase !== 'undefined') {
+                    supabase.auth.getSession().then(({ data: { session } }) => {
+                        if (session && session.user) {
+                            const userEmail = session.user.email;
+                            const adminEmail = 'computadoraslei@gmail.com';
+
+                            // Si el que entra NO es el Admin Supremo, aplicamos restricciones
+                            if (userEmail !== adminEmail) {
+                                
+                                // 1. Desaparecemos todos los botones de borrar/eliminar del sistema
+                                const cssRoles = document.createElement('style');
+                                cssRoles.innerHTML = `
+                                    .btn-eliminar, 
+                                    .btn-danger, 
+                                    .fa-trash,
+                                    [onclick*="eliminar"], 
+                                    [onclick*="borrar"] { 
+                                        display: none !important; 
+                                        pointer-events: none !important;
+                                    }
+                                `;
+                                document.head.appendChild(cssRoles);
+
+                                // 2. Ocultamos la pestaña de la Papelera / Auditoría
+                                const tabPapelera = document.getElementById('tab-papelera');
+                                if (tabPapelera) tabPapelera.style.display = 'none';
+                                
+                                const navPapelera = document.querySelector('[href*="papelera"]');
+                                if (navPapelera) navPapelera.style.display = 'none';
+                                
+                                console.log("Modo Editor/Visualizador activado. Permisos de eliminación revocados.");
+                            } else {
+                                console.log("Admin Supremo detectado. Acceso total concedido.");
+                            }
+                        }
+                    });
+                }
+            }, 1500); 
+        });
+
         // =========================================================================
-        // 8 CARGA DE DATOS
+        // 9 CARGA DE DATOS
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
@@ -1557,5 +1604,7 @@
         cargarPapelera();
         cargarHistorial();
     </script>
+
+    
 </body>
 </html>
