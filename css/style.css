@@ -397,8 +397,9 @@ h2 {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     
     width: 100%;
-    max-width: 360px; /* <-- NUEVO: Evita que la tarjeta se haga gigante en monitores grandes */
-    margin: 0 auto;   /* <-- NUEVO: Asegura el centrado individual */
+    height: 100%;     /* <-- MAGIA 2: Obliga a todas las tarjetas a medir exactamente lo mismo de alto */
+    max-width: 360px; 
+    margin: 0 auto;   
 }
 
 .product-card:hover {
@@ -949,7 +950,8 @@ h2 {
 .main-prod-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* <-- Volvemos a cover, pero ahora no te va a recortar nada vital */
+    object-fit: contain; /* <-- MAGIA 1: Mete la foto entera en el cajón oscuro sin deformar */
+    background-color: transparent;
     transition: transform 0.4s ease;
 }
 
@@ -1068,7 +1070,8 @@ h2 {
 .main-prod-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* <-- Volvemos a cover, pero ahora no te va a recortar nada vital */
+    object-fit: contain; /* <-- MAGIA 1: Mete la foto entera en el cajón oscuro sin deformar */
+    background-color: transparent;
     transition: transform 0.4s ease;
 }
 
@@ -1377,6 +1380,7 @@ h2 {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
         padding: 5px !important;
+        align-items: stretch !important; /* <-- MAGIA 3: Forza a la grilla a que todos los cajones sean idénticos */
     }
     
     #grid-notebooks .product-card,
