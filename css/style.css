@@ -1505,3 +1505,29 @@ h2 {
     .prices-table td:nth-child(4)::before { content: 'Tarjeta (+15%)'; font-size: 13px; color: #facc15; font-weight: 600; }
 }
 
+/* ========================================== */
+/* FIX DEFINITIVO: ALTURA DE TARJETAS (MÓVIL) */
+/* ========================================== */
+
+/* 1. Obligamos a la fila entera a estirarse parejo */
+.products-grid, #grid-notebooks, #grid-memorias, #grid-accesorios {
+    align-items: stretch !important;
+}
+
+/* 2. Obligamos a los cajones negros a ocupar el 100% del espacio de esa fila */
+#grid-notebooks .product-card,
+#grid-memorias .product-card,
+#grid-accesorios .product-card,
+.product-card {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 3. Empujamos el botón de precio siempre contra el piso de la tarjeta */
+#grid-notebooks .product-card .btn-primary,
+#grid-memorias .product-card .btn-primary,
+#grid-accesorios .product-card .btn-primary,
+.product-card .btn-primary {
+    margin-top: auto !important;
+}
