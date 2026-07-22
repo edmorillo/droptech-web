@@ -1500,3 +1500,32 @@ h2 {
     .prices-table td:nth-child(3)::before { content: 'Efectivo / Transf.'; font-size: 13px; color: #22c55e; font-weight: 600; }
     .prices-table td:nth-child(4)::before { content: 'Tarjeta (+15%)'; font-size: 13px; color: #facc15; font-weight: 600; }
 }
+
+/* ========================================== */
+/* FIX: TARJETAS UNIFORMES EN CELULARES */
+/* ========================================== */
+.product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-card img, 
+.product-img {
+    width: 100%;
+    height: 180px !important; /* Altura fija para que no se deformen */
+    object-fit: cover !important; /* Recorta la foto perfecto sin aplastarla */
+}
+
+/* Esto empuja los botones de "Ver detalles" siempre hacia abajo para que queden alineados */
+.product-card .card-body, 
+.product-card .info-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-card .btn, 
+.product-card button {
+    margin-top: auto;
+}
