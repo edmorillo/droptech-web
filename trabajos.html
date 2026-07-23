@@ -409,11 +409,16 @@
         function quitarMedioExistente(tipo, index) {
             if (tipo === 'video') {
                 const urlObj = videosMantenidos[index];
-                if (urlObj.includes('supabase.co')) archivosVideosABorrar.push(urlObj.split('/').pop()); 
+                if (urlObj.includes('supabase.co')) {
+                    // Decodifica y limpia la URL para que el Storage lo encuentre exacto
+                    archivosVideosABorrar.push(decodeURIComponent(urlObj.split('?')[0].split('/').pop())); 
+                }
                 videosMantenidos.splice(index, 1);
             } else {
                 const urlObj = imagenesMantenidas[index];
-                if (urlObj.includes('supabase.co')) archivosImagenesABorrar.push(urlObj.split('/').pop()); 
+                if (urlObj.includes('supabase.co')) {
+                    archivosImagenesABorrar.push(decodeURIComponent(urlObj.split('?')[0].split('/').pop()));
+                }
                 imagenesMantenidas.splice(index, 1);
             }
             renderizarMediosExistentes();

@@ -1564,21 +1564,64 @@
 
             const btn = document.getElementById('btn-confirmar-destruir');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Destruyendo...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Destruyendo todo...';
             btn.style.pointerEvents = 'none';
 
-            const { error } = await db.from(moduloADestruir).delete().eq('id', idADestruir);
-            
-            btn.innerHTML = originalText;
-            btn.style.pointerEvents = 'auto';
+            try {
+                // 1. BUSCAMOS LOS DATOS ANTES DE BORRAR LA FILA
+                const { data: itemData } = await db.from(moduloADestruir).select('*').eq('id', idADestruir).single();
 
-            if (!error) {
-                mostrarToast("Elemento destruido permanentemente.");
+                if (itemData) {
+                    let imagenesABorrar = [];
+                    let videosABorrar = [];
+
+                    // Función interna para limpiar URLs (Quita parámetros raros y arregla los espacios)
+                    const extraerNombre = (url) => decodeURIComponent(url.split('?')[0].split('/').pop());
+
+                    // Extraer fotos (Aplica a Precios, Notebooks, Memorias, Accesorios)
+                    if (itemData.imagen) {
+                        itemData.imagen.split(',').forEach(url => {
+                            if (url.includes('supabase.co')) imagenesABorrar.push(extraerNombre(url));
+                        });
+                    }
+
+                    // Extraer fotos de Trabajos
+                    if (itemData.imagenes) {
+                        itemData.imagenes.split(',').forEach(url => {
+                            if (url.includes('supabase.co')) imagenesABorrar.push(extraerNombre(url));
+                        });
+                    }
+
+                    // Extraer videos de Trabajos
+                    if (itemData.url_video) {
+                        itemData.url_video.split(',').forEach(url => {
+                            if (url.includes('supabase.co')) videosABorrar.push(extraerNombre(url));
+                        });
+                    }
+
+                    // 2. DESTRUIMOS LOS ARCHIVOS FÍSICOS DEL STORAGE
+                    if (imagenesABorrar.length > 0) {
+                        await db.storage.from('imagenes').remove(imagenesABorrar);
+                    }
+                    if (videosABorrar.length > 0) {
+                        await db.storage.from('videos').remove(videosABorrar);
+                    }
+                }
+
+                // 3. AHORA SÍ, BORRAMOS EL TEXTO DE LA BASE DE DATOS
+                const { error } = await db.from(moduloADestruir).delete().eq('id', idADestruir);
+                if (error) throw error;
+
+                mostrarToast("Elemento y archivos destruidos permanentemente.");
                 cerrarModalDestruir();
                 cargarPapelera();
-            } else {
-                alert("Error al eliminar: " + error.message);
+
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
                 cerrarModalDestruir();
+            } finally {
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
             }
         });
 
