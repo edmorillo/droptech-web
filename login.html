@@ -59,6 +59,28 @@
         .toast.success { background: #00ff66; color: #000; box-shadow: 0 5px 15px rgba(0, 255, 102, 0.3); }
 
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
+        /* ========================================== */
+        /* RESPONSIVE MÓVIL PARA LOGIN Y RESET        */
+        /* ========================================== */
+        @media (max-width: 768px) {
+            body { 
+                zoom: 1 !important; 
+                padding: 20px !important; 
+                align-items: flex-start !important; /* Lo sube un poco para que el teclado no lo tape */
+                padding-top: 10vh !important;
+            }
+            
+            /* Obliga a la caja central a adaptarse a la pantallita */
+            form, .login-container, .card, div[style*="max-width: 400px"], div[style*="max-width: 500px"] {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 30px 20px !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
+        }
+
     </style>
 </head>
 <body>

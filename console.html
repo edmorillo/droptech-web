@@ -91,6 +91,65 @@
 }
 #security-overlay i { color: #00F0FF; font-size: 40px; margin-bottom: 15px; }
 #security-overlay p { color: #94A3B8; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    
+    /* ========================================== */
+        /* MAGIA RESPONSIVE (CELULARES)               */
+        /* ========================================== */
+        @media (max-width: 768px) {
+            body { 
+                flex-direction: column !important; /* Menú arriba, contenido abajo */
+                height: 100vh !important; 
+                zoom: 1 !important; /* Apaga el zoom forzado en celu */
+            }
+            
+            /* 1. Menú lateral se convierte en barra superior deslizable */
+            .sidebar { width: 100% !important; border-right: none !important; flex-shrink: 0 !important; }
+            .sidebar-header { padding: 15px !important; }
+            .sidebar-menu { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                overflow-x: auto !important; 
+                padding: 0 10px !important; 
+            }
+            .sidebar-menu li { margin: 0 !important; padding: 0 !important; border: none !important; }
+            .sidebar-menu a { 
+                padding: 15px 20px !important; 
+                white-space: nowrap !important; 
+                border-left: none !important; 
+                border-bottom: 3px solid transparent !important; 
+            }
+            .sidebar-menu a.active { border-bottom-color: #00F0FF !important; background: transparent !important; }
+            
+            /* 2. Tu cuenta y botón de salir se achican para no molestar */
+            .sidebar > div:last-child { 
+                padding: 10px 15px !important; 
+                display: flex !important; 
+                justify-content: space-between !important; 
+                align-items: center !important; 
+                box-shadow: none !important;
+                border-bottom: 1px solid rgba(0,240,255,0.1) !important;
+            }
+            .sidebar > div:last-child > div:first-child { display: none !important; } /* Oculta "Conectado como" */
+            .sidebar > div:last-child > div#usuario-conectado { margin-bottom: 0 !important; font-size: 11px !important; }
+            .sidebar > div:last-child a { font-size: 12px !important; margin: 0 !important; }
+            
+            /* 3. Contenido Principal y Formularios a 1 columna */
+            .main-content { padding: 20px 15px !important; }
+            .header-title { font-size: 22px !important; }
+            .form-row { grid-template-columns: 1fr !important; gap: 15px !important; margin-bottom: 15px !important; }
+            
+            /* 4. Tablas con scroll lateral (Para que no se rompa la pantalla) */
+            .panel-card { padding: 15px !important; }
+            .panel-card table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
+            th, td { padding: 12px 15px !important; font-size: 13px !important; }
+            
+            /* 5. Buscadores y Filtros apilados */
+            div[style*="display: flex; align-items: center; gap: 15px;"] { 
+                flex-direction: column !important; 
+                align-items: stretch !important; 
+            }
+        }
+    
     </style>
 </head>
 <body>
