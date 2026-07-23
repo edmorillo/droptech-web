@@ -76,62 +76,82 @@
 #security-overlay i { color: #00F0FF; font-size: 40px; margin-bottom: 15px; }
 #security-overlay p { color: #94A3B8; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 
-    /* ========================================== */
-        /* MAGIA RESPONSIVE (CELULARES)               */
         /* ========================================== */
+        /* RESPONSIVE HAMBURGUESA Y ESPACIO INFERIOR  */
+        /* ========================================== */
+        .mobile-nav-toggle { display: none; } /* Oculto en PC */
+
         @media (max-width: 768px) {
             body { 
-                flex-direction: column !important; /* Menú arriba, contenido abajo */
+                flex-direction: column !important; 
                 height: 100vh !important; 
-                zoom: 1 !important; /* Apaga el zoom forzado en celu */
+                zoom: 1 !important; 
             }
             
-            /* 1. Menú lateral se convierte en barra superior deslizable */
-            .sidebar { width: 100% !important; border-right: none !important; flex-shrink: 0 !important; }
-            .sidebar-header { padding: 15px !important; }
-            .sidebar-menu { 
-                display: flex !important; 
-                flex-direction: row !important; 
-                overflow-x: auto !important; 
-                padding: 0 10px !important; 
+            /* 1. Header con botón Hamburguesa */
+            .sidebar { 
+                width: 100% !important; 
+                border-right: none !important; 
+                flex-shrink: 0 !important;
+                position: relative !important;
+                z-index: 99999 !important;
             }
-            .sidebar-menu li { margin: 0 !important; padding: 0 !important; border: none !important; }
-            .sidebar-menu a { 
+            .sidebar-header { 
                 padding: 15px 20px !important; 
-                white-space: nowrap !important; 
-                border-left: none !important; 
-                border-bottom: 3px solid transparent !important; 
-            }
-            .sidebar-menu a.active { border-bottom-color: #00F0FF !important; background: transparent !important; }
-            
-            /* 2. Tu cuenta y botón de salir se achican para no molestar */
-            .sidebar > div:last-child { 
-                padding: 10px 15px !important; 
                 display: flex !important; 
                 justify-content: space-between !important; 
                 align-items: center !important; 
-                box-shadow: none !important;
-                border-bottom: 1px solid rgba(0,240,255,0.1) !important;
             }
-            .sidebar > div:last-child > div:first-child { display: none !important; } /* Oculta "Conectado como" */
-            .sidebar > div:last-child > div#usuario-conectado { margin-bottom: 0 !important; font-size: 11px !important; }
-            .sidebar > div:last-child a { font-size: 12px !important; margin: 0 !important; }
+            .mobile-nav-toggle {
+                display: block !important;
+                background: none;
+                border: none;
+                color: #00F0FF;
+                font-size: 24px;
+                cursor: pointer;
+            }
+
+            /* 2. Menú Desplegable Vertical (Oculto por defecto, abre al dar clic) */
+            .sidebar-menu { 
+                display: none !important; 
+                flex-direction: column !important; 
+                background: #0b0f17 !important;
+                border-bottom: 1px solid rgba(0, 240, 255, 0.2) !important;
+                padding: 10px 0 !important;
+            }
+            .sidebar.active .sidebar-menu { 
+                display: flex !important; 
+            }
+            .sidebar-menu a { 
+                padding: 14px 25px !important; 
+                border-left: 3px solid transparent !important; 
+            }
+            .sidebar-menu a.active { 
+                border-left-color: #00F0FF !important; 
+                background: rgba(0, 240, 255, 0.05) !important; 
+            }
+
+            /* 3. Zona de cuenta dentro del menú desplegable */
+            .sidebar > div:last-child { 
+                display: none !important; 
+                padding: 15px 25px !important; 
+                background: #070a0f !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            }
+            .sidebar.active > div:last-child { 
+                display: block !important; 
+            }
+
+            /* 4. FIX DEL PISO: 140px de espacio libre al final para ver todo */
+            .main-content { 
+                padding: 20px 15px 140px 15px !important; 
+            }
             
-            /* 3. Contenido Principal y Formularios a 1 columna */
-            .main-content { padding: 20px 15px !important; }
             .header-title { font-size: 22px !important; }
-            .form-row { grid-template-columns: 1fr !important; gap: 15px !important; margin-bottom: 15px !important; }
-            
-            /* 4. Tablas con scroll lateral (Para que no se rompa la pantalla) */
+            .form-row { grid-template-columns: 1fr !important; gap: 15px !important; }
             .panel-card { padding: 15px !important; }
             .panel-card table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
             th, td { padding: 12px 15px !important; font-size: 13px !important; }
-            
-            /* 5. Buscadores y Filtros apilados */
-            div[style*="display: flex; align-items: center; gap: 15px;"] { 
-                flex-direction: column !important; 
-                align-items: stretch !important; 
-            }
         }
 
     </style>
@@ -162,6 +182,8 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <h2><i class="fa-solid fa-terminal"></i> Console</h2>
+            <!-- NUEVO: Botón Hamburguesa para celulares -->
+            <button id="menu-toggle-console" class="mobile-nav-toggle"><i class="fa-solid fa-bars"></i></button>
         </div>
         <ul class="sidebar-menu">
             <li><a href="console.html"><i class="fa-solid fa-chart-line"></i> Volver al Console</a></li>
@@ -627,6 +649,23 @@ if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
                         overlay.style.opacity = '0';
                         setTimeout(() => { overlay.style.display = 'none'; }, 300);
                     }
+                });
+            }
+        });
+
+        // =========================================================================
+        // 9. Abrir y cerrar menú desplegable móvil
+        // =========================================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleBtn = document.getElementById("menu-toggle-console");
+            const sidebar = document.querySelector(".sidebar");
+            
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener("click", () => {
+                    sidebar.classList.toggle("active");
+                    toggleBtn.innerHTML = sidebar.classList.contains("active") 
+                        ? '<i class="fa-solid fa-xmark"></i>' 
+                        : '<i class="fa-solid fa-bars"></i>';
                 });
             }
         });
