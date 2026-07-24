@@ -23,7 +23,7 @@ $datos = json_decode($response, true);
 // 4. Valores por defecto (si algo falla)
 $titulo = "Computadoras Lei | Soporte Técnico y Tienda Gamer";
 $descripcion = "Descubrí nuestros equipos, componentes y trabajos realizados.";
-$imagen = "https://computadoraslei.com.ar/assets/img/logo_icon2.png"; 
+$imagen = "https://computadoraslei.com.ar/assets/img/logo1.png"; 
 
 // 5. Armamos la información si el producto existe
 if (!empty($datos) && isset($datos[0])) {
