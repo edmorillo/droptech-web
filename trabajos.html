@@ -546,8 +546,12 @@ if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
 
                 if (fileInputImg.files.length > 0) {
                     for (let i = 0; i < fileInputImg.files.length; i++) {
-                        const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + fileInputImg.files[i].name;
-                        await db.storage.from('imagenes').upload(nomImg, fileInputImg.files[i]);
+                        let archivoImg = fileInputImg.files[i];
+if (archivoImg.type.startsWith('image/')) {
+    archivoImg = await comprimirImagen(archivoImg);
+}
+const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivoImg.name;
+await db.storage.from('imagenes').upload(nomImg, archivoImg);
                         const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
                         nuevasImagenesUrl.push(data.publicUrl);
                     }

@@ -1069,8 +1069,15 @@
                 const inputArchivos = document.getElementById('nb-imagenes');
                 if (inputArchivos.files.length > 0) {
                     for (let i = 0; i < inputArchivos.files.length; i++) {
-                        const archivo = inputArchivos.files[i];
-                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                        // NUEVO CÓDIGO CON COMPRESIÓN
+let archivo = inputArchivos.files[i]; // Cambiamos const por let
+
+// Si el archivo es una imagen, lo pasamos por el compresor
+if (archivo.type.startsWith('image/')) {
+    archivo = await comprimirImagen(archivo);
+}
+
+const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
                         await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
                         urlsSubidas.push(urlData.publicUrl);
@@ -1241,7 +1248,13 @@
                 const inputArchivos = document.getElementById('mem-imagenes');
                 if (inputArchivos.files.length > 0) {
                     for (let i = 0; i < inputArchivos.files.length; i++) {
-                        const archivo = inputArchivos.files[i];
+                        let archivo = inputArchivos.files[i];
+                        
+                        // Si el archivo es una imagen, lo pasamos por el compresor
+                        if (archivo.type.startsWith('image/')) {
+                            archivo = await comprimirImagen(archivo);
+                        }
+
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
                         await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
@@ -1421,7 +1434,13 @@
                 const inputArchivos = document.getElementById('acc-imagenes');
                 if (inputArchivos.files.length > 0) {
                     for (let i = 0; i < inputArchivos.files.length; i++) {
-                        const archivo = inputArchivos.files[i];
+                        let archivo = inputArchivos.files[i];
+                        
+                        // Si el archivo es una imagen, lo pasamos por el compresor
+                        if (archivo.type.startsWith('image/')) {
+                            archivo = await comprimirImagen(archivo);
+                        }
+
                         const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
                         await db.storage.from('imagenes').upload(nombreUnico, archivo);
                         const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
