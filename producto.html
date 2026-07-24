@@ -251,7 +251,7 @@
                 
                 let miniaturasHTML = '';
                 arrayImagenes.forEach((img, idx) => {
-                    miniaturasHTML += `<img src="${img}" class="thumbnail ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal(this, '${img}')">`;
+                    miniaturasHTML += `<img src="${img}" loading="lazy" class="thumbnail ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal(this, '${img}')">`;
                 });
 
                 // Formateo de precio

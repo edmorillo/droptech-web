@@ -159,13 +159,13 @@ function openMixedGallery(id) {
         } else if (el.tipo === 'youtube') {
             // Diseño para YouTube (Foto de portada con Play y Texto encima)
             contenidoMiniatura = `
-                <img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <img src="${el.thumb}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                 <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; flex-direction: column; align-items:center; justify-content:center; color:#fff;"><i class="fa-solid fa-play" style="font-size: 18px; margin-bottom: 4px;"></i><span style="font-size: 10px; font-weight: 700; color: #00F0FF;">VIDEO ${videoCount}</span></div>
             `;
             videoCount++;
         } else {
             // Diseño para Fotos normales
-            contenidoMiniatura = `<img src="${el.thumb}" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
+            contenidoMiniatura = `<img src="${el.thumb}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
         }
 
         thumbsDiv.innerHTML += `
@@ -338,7 +338,7 @@ async function cargarNotebooksDinamicas() {
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <a href="producto.html?id=${item.id}&cat=notebooks" style="text-decoration: none; color: inherit;">
                         <div class="prod-image-container">
-                            <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                            <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                             <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                         </div>
                         <h3>${item.titulo}</h3>
@@ -442,7 +442,7 @@ function renderizarMemoriasPublicas(filtro) {
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=memorias" style="text-decoration: none; color: inherit;">
                     <div class="prod-image-container">
-                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                        <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
                     <h3>${item.titulo}</h3>
@@ -522,7 +522,7 @@ function renderizarAccesoriosPublicos(filtro) {
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=accesorios" style="text-decoration: none; color: inherit;">
                     <div class="prod-image-container">
-                        <img src="${imagenPortada}" alt="${item.titulo}" class="main-prod-img">
+                        <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
                     <h3>${item.titulo}</h3>
@@ -595,14 +595,14 @@ async function cargarVideosDinamicos() {
                 if (esMp4) {
                     fondoVideo = `<video src="${primerVideoUrl}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;"></video>`;
                 } else if (videoId) {
-                    fondoVideo = `<img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
+                    fondoVideo = `<img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
                 } else if (primerVideoUrl.includes('instagram.com')) {
                     fondoVideo = `<div style="width:100%; height:100%; background: radial-gradient(circle, #1e293b 0%, #0b0f17 100%); display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-brands fa-instagram" style="font-size: 60px; color: #E1306C; opacity: 0.9;"></i></div>`;
                 } else {
                     fondoVideo = `<div style="width:100%; height:100%; background: #1e293b; display:flex; align-items:center; justify-content:center; position: absolute; top: 0; left: 0;"><i class="fa-solid fa-link" style="font-size: 50px; color: rgba(255, 255, 255, 0.1);"></i></div>`;
                 }
             } else if (imagenesArray.length > 0) {
-                fondoVideo = `<img src="${imagenesArray[0]}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
+                fondoVideo = `<img src="${imagenesArray[0]}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`;
             }
 
             let txtBadge = '';
