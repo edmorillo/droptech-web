@@ -547,13 +547,22 @@ if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
                 if (fileInputImg.files.length > 0) {
                     for (let i = 0; i < fileInputImg.files.length; i++) {
                         let archivoImg = fileInputImg.files[i];
-if (archivoImg.type.startsWith('image/')) {
-    archivoImg = await comprimirImagen(archivoImg);
-}
-const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivoImg.name;
-await db.storage.from('imagenes').upload(nomImg, archivoImg);
-                        const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
-                        nuevasImagenesUrl.push(data.publicUrl);
+// Si el archivo es una imagen, lo pasamos por el compresor y lo pesamos
+                    if (archivoImg.type.startsWith('image/')) {
+                        let pesoOriginal = (archivoImg.size / 1024 / 1024).toFixed(2);
+                        
+                        archivoImg = await comprimirImagen(archivoImg);
+                        
+                        let pesoNuevo = (archivoImg.size / 1024).toFixed(2);
+                        
+                        // EL CARTELITO DELATOR
+                        alert(`Magia Trabajos: La foto pesaba ${pesoOriginal} MB y ahora fue reducida a ${pesoNuevo} KB 🚀`);
+                    }
+                    
+                    const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivoImg.name;
+                    await db.storage.from('imagenes').upload(nomImg, archivoImg);
+                    const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
+                    nuevasImagenesUrl.push(data.publicUrl);
                     }
                 }
 
@@ -680,39 +689,54 @@ await db.storage.from('imagenes').upload(nomImg, archivoImg);
         });
 
         // ==========================================
-        // 10.MOTOR DE COMPRESIÓN DE IMÁGENES (WEBP)
+        // 10. MOTOR DE COMPRESIÓN REAL (VERSIÓN DEFINITIVA)
         // ==========================================
         async function comprimirImagen(archivo, calidad = 0.7, maxWidth = 1200) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(archivo);
+                
                 reader.onload = (event) => {
                     const img = new Image();
                     img.src = event.target.result;
+                    
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
 
+                        // FORZAR la reducción real si la foto es grande
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
                         }
 
+                        // Dibujar la foto físicamente más chica
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
+                        // Comprimir en formato JPEG
                         canvas.toBlob((blob) => {
-                            // Cambiamos la extensión a .webp
-                            const nuevoNombre = archivo.name.replace(/\.[^/.]+$/, ".webp");
+                            if (!blob) {
+                                resolve(archivo); // Fallback de seguridad
+                                return;
+                            }
+                            
+                            const nuevoNombre = archivo.name.replace(/\.[^/.]+$/, ".jpg");
                             const nuevoArchivo = new File([blob], nuevoNombre, {
-                                type: 'image/webp',
+                                type: 'image/jpeg',
                                 lastModified: Date.now()
                             });
-                            resolve(nuevoArchivo);
-                        }, 'image/webp', calidad);
+
+                            // SEGURO MATEMÁTICO: Si mi proceso la hizo más pesada, mando la original.
+                            if (nuevoArchivo.size >= archivo.size) {
+                                resolve(archivo);
+                            } else {
+                                resolve(nuevoArchivo); // Envía la foto ultra comprimida real
+                            }
+                        }, 'image/jpeg', calidad);
                     };
                     img.onerror = reject;
                 };

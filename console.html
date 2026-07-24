@@ -1072,15 +1072,22 @@
                         // NUEVO CÓDIGO CON COMPRESIÓN
 let archivo = inputArchivos.files[i]; // Cambiamos const por let
 
-// Si el archivo es una imagen, lo pasamos por el compresor
-if (archivo.type.startsWith('image/')) {
-    archivo = await comprimirImagen(archivo);
-}
+                    // Si el archivo es una imagen, lo pasamos por el compresor y lo pesamos
+                    if (archivo.type.startsWith('image/')) {
+                        let pesoOriginal = (archivo.size / 1024 / 1024).toFixed(2); // Lo pasamos a Megas
+                        
+                        archivo = await comprimirImagen(archivo);
+                        
+                        let pesoNuevo = (archivo.size / 1024).toFixed(2); // Lo pasamos a Kilobytes
+                        
+                        // EL CARTELITO DELATOR (Podés borrar esta línea cuando veas que funciona)
+                        alert(`Magia Consola: La foto pesaba ${pesoOriginal} MB y ahora fue reducida a ${pesoNuevo} KB 🚀`);
+                    }
 
-const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
-                        urlsSubidas.push(urlData.publicUrl);
+                    const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                    await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                    const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                    urlsSubidas.push(urlData.publicUrl);
                     }
                 }
                 
@@ -1250,15 +1257,22 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         let archivo = inputArchivos.files[i];
                         
-                        // Si el archivo es una imagen, lo pasamos por el compresor
-                        if (archivo.type.startsWith('image/')) {
-                            archivo = await comprimirImagen(archivo);
-                        }
+                        // Si el archivo es una imagen, lo pasamos por el compresor y lo pesamos
+                    if (archivo.type.startsWith('image/')) {
+                        let pesoOriginal = (archivo.size / 1024 / 1024).toFixed(2); // Lo pasamos a Megas
+                        
+                        archivo = await comprimirImagen(archivo);
+                        
+                        let pesoNuevo = (archivo.size / 1024).toFixed(2); // Lo pasamos a Kilobytes
+                        
+                        // EL CARTELITO DELATOR (Podés borrar esta línea cuando veas que funciona)
+                        alert(`Magia Consola: La foto pesaba ${pesoOriginal} MB y ahora fue reducida a ${pesoNuevo} KB 🚀`);
+                    }
 
-                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
-                        urlsSubidas.push(urlData.publicUrl);
+                    const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                    await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                    const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                    urlsSubidas.push(urlData.publicUrl);
                     }
                 }
                 
@@ -1436,15 +1450,22 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
                     for (let i = 0; i < inputArchivos.files.length; i++) {
                         let archivo = inputArchivos.files[i];
                         
-                        // Si el archivo es una imagen, lo pasamos por el compresor
-                        if (archivo.type.startsWith('image/')) {
-                            archivo = await comprimirImagen(archivo);
-                        }
+                        // Si el archivo es una imagen, lo pasamos por el compresor y lo pesamos
+                    if (archivo.type.startsWith('image/')) {
+                        let pesoOriginal = (archivo.size / 1024 / 1024).toFixed(2); // Lo pasamos a Megas
+                        
+                        archivo = await comprimirImagen(archivo);
+                        
+                        let pesoNuevo = (archivo.size / 1024).toFixed(2); // Lo pasamos a Kilobytes
+                        
+                        // EL CARTELITO DELATOR (Podés borrar esta línea cuando veas que funciona)
+                        alert(`Magia Consola: La foto pesaba ${pesoOriginal} MB y ahora fue reducida a ${pesoNuevo} KB 🚀`);
+                    }
 
-                        const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
-                        await db.storage.from('imagenes').upload(nombreUnico, archivo);
-                        const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
-                        urlsSubidas.push(urlData.publicUrl);
+                    const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivo.name;
+                    await db.storage.from('imagenes').upload(nombreUnico, archivo);
+                    const { data: urlData } = db.storage.from('imagenes').getPublicUrl(nombreUnico);
+                    urlsSubidas.push(urlData.publicUrl);
                     }
                 }
                 
@@ -1800,7 +1821,7 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
         });
 
         // ==========================================
-        // 11. MOTOR DE COMPRESIÓN REAL (VERSIÓN DEFINITIVA)
+        // 10. MOTOR DE COMPRESIÓN REAL (VERSIÓN DEFINITIVA)
         // ==========================================
         async function comprimirImagen(archivo, calidad = 0.7, maxWidth = 1200) {
             return new Promise((resolve, reject) => {
@@ -1816,7 +1837,7 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
                         let width = img.width;
                         let height = img.height;
 
-                        // FORZAR la reducción real si la foto es grande (como las de celular de 5MB)
+                        // FORZAR la reducción real si la foto es grande
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
@@ -1828,7 +1849,7 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Comprimir en formato JPEG (más seguro y compatible que webp)
+                        // Comprimir en formato JPEG
                         canvas.toBlob((blob) => {
                             if (!blob) {
                                 resolve(archivo); // Fallback de seguridad
@@ -1841,7 +1862,7 @@ const nombreUnico = Date.now() + '_' + Math.random().toString(36).substring(7) +
                                 lastModified: Date.now()
                             });
 
-                            // SEGURO MATEMÁTICO: Si WhatsApp ya la comprimió y mi proceso la hizo más pesada, mando la original.
+                            // SEGURO MATEMÁTICO: Si mi proceso la hizo más pesada, mando la original.
                             if (nuevoArchivo.size >= archivo.size) {
                                 resolve(archivo);
                             } else {
