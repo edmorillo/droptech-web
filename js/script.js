@@ -324,7 +324,15 @@ async function cargarNotebooksDinamicas() {
         grid.innerHTML = ''; // Limpiar el "Cargando..."
 
         data.forEach((item, index) => {
-            const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
+            // MATEMÁTICA E-COMMERCE (NOTEBOOKS)
+            const precioEfectivo = item.precio;
+            const precioLista = Math.round(precioEfectivo * 1.15);
+            const ahorro = precioLista - precioEfectivo;
+            const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+
+            const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+            const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
+            const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
             
             // Extraemos la primera foto para que sea la portada (Si subió muchas)
             let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Equipo+Premium';
@@ -332,7 +340,7 @@ async function cargarNotebooksDinamicas() {
                 imagenPortada = item.imagen.split(',')[0];
             }
             
-            const mensajeWs = encodeURIComponent(`Hola Lei! Me interesa la notebook ${item.titulo} que publicaste a $${precioLindo}. ¿Tenés stock?`);
+            const mensajeWs = encodeURIComponent(`Hola Lei! Me interesa la notebook ${item.titulo} que publicaste a $${precioEfectivoLindo}. ¿Tenés stock?`);
 
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
@@ -349,8 +357,16 @@ async function cargarNotebooksDinamicas() {
                         <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> ${item.almacenamiento}</li>
                         <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> ${item.bateria}</li>
                     </ul>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                        $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
+                    <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                            <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.9rem;">$${precioListaLindo}</span>
+                            <span style="background: #ff4a4a; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">${porcentajeOff}% OFF</span>
+                        </div>
+                        <div style="color: #00ff66; font-size: 0.8rem; font-weight: 600; margin-bottom: 2px;">Ahorrá $${ahorroLindo}</div>
+                        <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
+                            $${precioEfectivoLindo}
+                        </div>
+                        <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
                     </div>
                     <a href="producto.html?id=${item.id}&cat=notebooks" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                         Ver Detalles
@@ -415,11 +431,19 @@ function renderizarMemoriasPublicas(filtro) {
     grid.innerHTML = ''; 
 
     datosFiltrados.forEach((item, index) => {
-        const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
+        // MATEMÁTICA E-COMMERCE (NOTEBOOKS)
+            const precioEfectivo = item.precio;
+            const precioLista = Math.round(precioEfectivo * 1.15);
+            const ahorro = precioLista - precioEfectivo;
+            const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+
+            const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+            const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
+            const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
         let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Componente';
         if (item.imagen && item.imagen.trim() !== '') { imagenPortada = item.imagen.split(',')[0]; }
         
-        const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el componente " + item.titulo + " (" + item.capacidad + ") que publicaste a $" + precioLindo + ". Tenes stock?");
+        const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el componente " + item.titulo + " (" + item.capacidad + ") que publicaste a $" + precioEfectivoLindo + ". Tenes stock?");
 
         let listaCaracteristicas = '';
         if (item.tipo === 'Memoria RAM') {
@@ -505,11 +529,19 @@ function renderizarAccesoriosPublicos(filtro) {
     grid.innerHTML = ''; 
 
     datosFiltrados.forEach((item, index) => {
-        const precioLindo = new Intl.NumberFormat('es-AR').format(item.precio);
+        // MATEMÁTICA E-COMMERCE (NOTEBOOKS)
+            const precioEfectivo = item.precio;
+            const precioLista = Math.round(precioEfectivo * 1.15);
+            const ahorro = precioLista - precioEfectivo;
+            const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+
+            const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+            const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
+            const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
         let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Accesorio';
         if (item.imagen && item.imagen.trim() !== '') { imagenPortada = item.imagen.split(',')[0]; }
         
-        const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el accesorio " + item.titulo + " que publicaste a $" + precioLindo + ". Tenes stock?");
+        const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el accesorio " + item.titulo + " que publicaste a $" + precioEfectivoLindo + ". Tenes stock?");
 
         let listaCaracteristicas = `
             <li style="margin-bottom: 8px;"><i class="fa-solid fa-tag" style="width: 25px; color: #00F0FF;"></i> Tipo: ${item.tipo}</li>

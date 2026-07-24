@@ -255,10 +255,18 @@
                 });
 
                 // Formateo de precio
-                const precioFormateado = new Intl.NumberFormat('es-AR').format(data.precio);
+                // MATEMÁTICA E-COMMERCE (DETALLE)
+                const precioEfectivo = data.precio;
+                const precioLista = Math.round(data.precio * 1.15);
+                const ahorro = precioLista - precioEfectivo;
+                const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+
+                const precioEfectivoFormateado = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+                const precioListaFormateado = new Intl.NumberFormat('es-AR').format(precioLista);
+                const ahorroFormateado = new Intl.NumberFormat('es-AR').format(ahorro);
                 
                 // Mensaje WS
-                const mensajeWs = encodeURIComponent(`Hola Lei! Me interesa el producto "${data.titulo}" a $${precioFormateado} que vi en tu web. ¿Tenés stock?`);
+                const mensajeWs = encodeURIComponent(`Hola Lei! Me interesa el producto "${data.titulo}" a $${precioEfectivoFormateado} que vi en tu web. ¿Tenés stock?`);
 
                 // Armar lista de características según categoría
                 let caracteristicasHTML = '';
@@ -365,21 +373,27 @@
                         <span class="product-tag">${tagTexto}</span>
                         <h1 class="product-title">${data.titulo}</h1>
                         
-                        <!-- CAJAS DE PRECIO: ESTRATEGIA DE ESCUDO -->
-                        <div class="maximus-price-green">
-                            <div class="header"><i class="fa-solid fa-money-bill-wave"></i> Efectivo / Transferencia / Dinero en MP</div>
-                            <div class="price-row">
-                                <div class="amount">$${precioFormateado}</div>
-                                <div class="tag">PRECIO ESPECIAL</div>
+                        <!-- CAJAS DE PRECIO: ESTRATEGIA NEUROMARKETING -->
+                        <div style="margin-bottom: 25px; background: rgba(0, 240, 255, 0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.1);">
+                            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                <span style="text-decoration: line-through; color: #94A3B8; font-size: 1.1rem;">$${precioListaFormateado}</span>
+                                <span style="background: #ff4a4a; color: #fff; font-size: 0.85rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-left: 10px;">${porcentajeOff}% OFF</span>
+                            </div>
+                            <div style="color: #00ff66; font-size: 0.95rem; font-weight: 600; margin-bottom: 5px;">Ahorrá $${ahorroFormateado}</div>
+                            <div style="font-size: 2.8rem; font-weight: 800; color: #fff; line-height: 1;">
+                                $${precioEfectivoFormateado}
+                            </div>
+                            <div style="color: #00F0FF; font-size: 0.85rem; margin-top: 8px; font-weight: 500;">
+                                <i class="fa-solid fa-money-bill-wave"></i> Precio exclusivo pagando al contado o transferencia
                             </div>
                         </div>
 
-                        <div class="maximus-price-white">
+                        <div class="maximus-price-white" style="padding: 15px; margin-bottom: 15px;">
                             <div>
-                                <div class="text" style="color: #0f172a;">Con Tarjeta (Débito o Crédito 1 Pago)</div>
-                                <div style="color: #64748b; font-size: 11px; margin-top: 3px;">Precio de Lista (+15% costos de plataforma)</div>
+                                <div class="text" style="color: #0f172a; font-size: 14px;">Precio de Lista</div>
+                                <div style="color: #64748b; font-size: 12px; margin-top: 2px;">Para pagos con Tarjeta u otros medios</div>
                             </div>
-                            <div class="amount">$${new Intl.NumberFormat('es-AR').format(Math.round(data.precio * 1.15))}</div>
+                            <div class="amount" style="font-size: 20px;">$${precioListaFormateado}</div>
                         </div>
 
                         <div class="maximus-installments" onclick="abrirModalPagos()">
