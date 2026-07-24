@@ -351,12 +351,7 @@ async function cargarNotebooksDinamicas() {
                         </div>
                         <h3>${item.titulo}</h3>
                     </a>
-                    <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> ${item.procesador}</li>
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> ${item.ram}</li>
-                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> ${item.almacenamiento}</li>
-                        <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> ${item.bateria}</li>
-                    </ul>
+
                     <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                             <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.9rem;">$${precioListaLindo}</span>
@@ -368,6 +363,14 @@ async function cargarNotebooksDinamicas() {
                         </div>
                         <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
                     </div>
+
+                    <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="width: 25px; color: #00F0FF;"></i> ${item.procesador}</li>
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-memory" style="width: 25px; color: #00F0FF;"></i> ${item.ram}</li>
+                        <li style="margin-bottom: 8px;"><i class="fa-solid fa-hard-drive" style="width: 25px; color: #00F0FF;"></i> ${item.almacenamiento}</li>
+                        <li><i class="fa-solid fa-battery-full" style="width: 25px; color: #00F0FF;"></i> ${item.bateria}</li>
+                    </ul>
+                    
                     <a href="producto.html?id=${item.id}&cat=notebooks" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                         Ver Detalles
                     </a>
@@ -431,15 +434,15 @@ function renderizarMemoriasPublicas(filtro) {
     grid.innerHTML = ''; 
 
     datosFiltrados.forEach((item, index) => {
-        // MATEMÁTICA E-COMMERCE (NOTEBOOKS)
-            const precioEfectivo = item.precio;
-            const precioLista = Math.round(precioEfectivo * 1.15);
-            const ahorro = precioLista - precioEfectivo;
-            const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+        const precioEfectivo = item.precio;
+        const precioLista = Math.round(precioEfectivo * 1.15);
+        const ahorro = precioLista - precioEfectivo;
+        const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
 
-            const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
-            const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
-            const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
+        const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+        const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
+        const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
+
         let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Componente';
         if (item.imagen && item.imagen.trim() !== '') { imagenPortada = item.imagen.split(',')[0]; }
         
@@ -471,12 +474,24 @@ function renderizarMemoriasPublicas(filtro) {
                     </div>
                     <h3>${item.titulo}</h3>
                 </a>
+
+                <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                        <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.9rem;">$${precioListaLindo}</span>
+                        <span style="background: #ff4a4a; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">${porcentajeOff}% OFF</span>
+                    </div>
+                    <div style="color: #00ff66; font-size: 0.8rem; font-weight: 600; margin-bottom: 2px;">Ahorrá $${ahorroLindo}</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
+                        $${precioEfectivoLindo}
+                    </div>
+                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
+                </div>
+
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     ${listaCaracteristicas}
                 </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
+                
+                
                 <a href="producto.html?id=${item.id}&cat=memorias" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                     Ver Detalles
                 </a>
@@ -529,15 +544,15 @@ function renderizarAccesoriosPublicos(filtro) {
     grid.innerHTML = ''; 
 
     datosFiltrados.forEach((item, index) => {
-        // MATEMÁTICA E-COMMERCE (NOTEBOOKS)
-            const precioEfectivo = item.precio;
-            const precioLista = Math.round(precioEfectivo * 1.15);
-            const ahorro = precioLista - precioEfectivo;
-            const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
+        const precioEfectivo = item.precio;
+        const precioLista = Math.round(precioEfectivo * 1.15);
+        const ahorro = precioLista - precioEfectivo;
+        const porcentajeOff = Math.round(((precioLista - precioEfectivo) / precioLista) * 100);
 
-            const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
-            const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
-            const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
+        const precioEfectivoLindo = new Intl.NumberFormat('es-AR').format(precioEfectivo);
+        const precioListaLindo = new Intl.NumberFormat('es-AR').format(precioLista);
+        const ahorroLindo = new Intl.NumberFormat('es-AR').format(ahorro);
+
         let imagenPortada = 'https://via.placeholder.com/1280x960/0b0f17/00F0FF?text=Accesorio';
         if (item.imagen && item.imagen.trim() !== '') { imagenPortada = item.imagen.split(',')[0]; }
         
@@ -559,12 +574,21 @@ function renderizarAccesoriosPublicos(filtro) {
                     </div>
                     <h3>${item.titulo}</h3>
                 </a>
+                <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                        <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.9rem;">$${precioListaLindo}</span>
+                        <span style="background: #ff4a4a; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">${porcentajeOff}% OFF</span>
+                    </div>
+                    <div style="color: #00ff66; font-size: 0.8rem; font-weight: 600; margin-bottom: 2px;">Ahorrá $${ahorroLindo}</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
+                        $${precioEfectivoLindo}
+                    </div>
+                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
+                </div>
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     ${listaCaracteristicas}
                 </ul>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 20px;">
-                    $${precioLindo} <span style="font-size: 0.8rem; font-weight: 400; color: #00ff66;">ARS</span>
-                </div>
+                
                 <a href="producto.html?id=${item.id}&cat=accesorios" class="btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">
                     Ver Detalles
                 </a>
