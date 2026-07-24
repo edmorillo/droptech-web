@@ -556,7 +556,7 @@ if (errorVid) throw new Error("MOTIVO REAL DE SUPABASE: " + errorVid.message);
                         let pesoNuevo = (archivoImg.size / 1024).toFixed(2);
                         
                         // EL CARTELITO DELATOR
-                        alert(`Magia Trabajos: La foto pesaba ${pesoOriginal} MB y ahora fue reducida a ${pesoNuevo} KB 🚀`);
+                        mostrarToast(`¡Foto optimizada! De ${pesoOriginal} MB a ${pesoNuevo} KB 🚀`);
                     }
                     
                     const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivoImg.name;
