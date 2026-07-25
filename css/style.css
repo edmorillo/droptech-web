@@ -1549,7 +1549,7 @@ h2 {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     line-height: 1.3 !important;
-    min-height: 46px !important;
-    white-space: normal !important; /* MAGIA 3: Destraba el salto de línea forzadamente */
-    word-break: break-word !important; /* MAGIA 4: Evita que textos largos deformen la caja */
+    max-height: 2.6em !important; /* MAGIA: Permite 2 líneas como máximo, pero si tiene 1 sola, la caja se achica sola */
+    white-space: normal !important; 
+    word-break: break-word !important; 
 }
