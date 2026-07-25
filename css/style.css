@@ -1523,10 +1523,9 @@ h2 {
         flex-direction: column !important;
     }
 
-    /* 3. Corte de texto implacable con 3 puntitos para TODO el contenido */
-    .product-card h3, 
-    .product-card ul li,
-    .product-card p {
+    /* 3. Corte de texto implacable con 3 puntitos para listas y párrafos */
+.product-card ul li,
+.product-card p {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -1539,4 +1538,19 @@ h2 {
     .product-card .btn-primary {
         margin-top: auto !important;
     }
+}
+
+/* ========================================== */
+/* TITULOS DE PRODUCTOS (ARRIBA Y A 2 LINEAS) */
+/* ========================================== */
+.product-card h3 {
+    font-size: 18px !important;
+    margin-bottom: 15px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important; /* MAGIA 1: Obliga a cortar en la 2da línea con '...' */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
+    min-height: 46px !important; /* MAGIA 2: Si el título es de 1 línea, igual ocupa el espacio de 2, para que las fotos queden perfectamente alineadas horizontalmente */
 }

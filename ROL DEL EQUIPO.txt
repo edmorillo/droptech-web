@@ -1,0 +1,10 @@
+// 1. ACÁ DEFINÍS TU EQUIPO (Ahora es una LISTA, separá los correos con comas)
+const admins = ['computadoraslei@gmail.com', 'socio@gmail.com']; 
+const editores = ['empleado1@gmail.com', 'empleado2@gmail.com'];
+
+
+1. Primero creamos el usuario y definimos una contraseña para el operador o usuario
+2. buscamos esa línes en console y ahí espicificamos los correos que tendrán acceso a:
+	Admin
+	Editores
+Visualizar, solo con crear el usuario en supabase por default esconde los botones.

@@ -345,11 +345,11 @@ async function cargarNotebooksDinamicas() {
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <a href="producto.html?id=${item.id}&cat=notebooks" style="text-decoration: none; color: inherit;">
+                        <h3>${item.titulo}</h3>
                         <div class="prod-image-container">
                             <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                             <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                         </div>
-                        <h3>${item.titulo}</h3>
                     </a>
 
                     <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
@@ -468,11 +468,11 @@ function renderizarMemoriasPublicas(filtro) {
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=memorias" style="text-decoration: none; color: inherit;">
+                    <h3>${item.titulo}</h3>
                     <div class="prod-image-container">
                         <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
-                    <h3>${item.titulo}</h3>
                 </a>
 
                 <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
@@ -568,11 +568,11 @@ function renderizarAccesoriosPublicos(filtro) {
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=accesorios" style="text-decoration: none; color: inherit;">
+                    <h3>${item.titulo}</h3>
                     <div class="prod-image-container">
                         <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
-                    <h3>${item.titulo}</h3>
                 </a>
                 <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
