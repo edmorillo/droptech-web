@@ -292,6 +292,10 @@
                     <div class="number" id="stat-cargadores" style="color: #f0b400;">0</div>
                 </div>
                 <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
+                    <h3 style="color: #f0b400;">Stock Teclados/Mouses</h3>
+                    <div class="number" id="stat-teclados-mouses" style="color: #f0b400;">0</div>
+                </div>
+                <div class="stat-card" style="border-color: rgba(240, 180, 0, 0.3);">
                     <h3 style="color: #f0b400;">Stock Motherboards</h3>
                     <div class="number" id="stat-motherboards" style="color: #f0b400;">0</div>
                 </div>
@@ -577,6 +581,7 @@
                                 <option value="" disabled selected>Seleccioná el tipo...</option>
                                 <option value="Auriculares">Auriculares</option>
                                 <option value="Cargadores">Cargadores</option>
+                                <option value="Teclados/Mouses">Teclados/Mouses</option>
                                 <option value="Motherboards">Motherboards</option>
                                 <option value="Pendrives">Pendrives</option>
                                 <option value="Otros">Otros</option>
@@ -638,6 +643,7 @@
                         <option value="TODOS">Mostrar Todo</option>
                         <option value="Auriculares">Auriculares</option>
                         <option value="Cargadores">Cargadores</option>
+                        <option value="Teclados/Mouses">Teclados/Mouses</option>
                         <option value="Motherboards">Motherboards</option>
                         <option value="Pendrives">Pendrives</option>
                         <option value="Otros">Otros</option>
@@ -1341,7 +1347,8 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             caja.style.display = 'block';
 
             if (tipo === 'Auriculares') { titulo.placeholder = 'Ej: Auriculares Redragon'; lbl1.innerText = 'Conectividad'; in1.placeholder = 'Ej: Bluetooth'; lbl2.innerText = 'Diseño'; in2.placeholder = 'Ej: Over-Ear'; } 
-            else if (tipo === 'Cargadores') { titulo.placeholder = 'Ej: Cargador Lenovo'; lbl1.innerText = 'Voltaje y Amperaje'; in1.placeholder = 'Ej: 20V 3.25A'; lbl2.innerText = 'Ficha / Pin'; in2.placeholder = 'Ej: Tipo C'; } 
+            else if (tipo === 'Cargadores') { titulo.placeholder = 'Ej: Cargador Lenovo'; lbl1.innerText = 'Voltaje y Amperaje'; in1.placeholder = 'Ej: 20V 3.25A'; lbl2.innerText = 'Ficha / Pin'; in2.placeholder = 'Ej: Tipo C'; }
+            else if (tipo === 'Teclados/Mouses') { titulo.placeholder = 'Ej: Teclado Logitech'; lbl1.innerText = 'Tipo'; in1.placeholder = 'Ej: Mecánico'; lbl2.innerText = 'Conectividad'; in2.placeholder = 'Ej: USB'; }
             else if (tipo === 'Motherboards') { titulo.placeholder = 'Ej: Motherboard Gigabyte'; lbl1.innerText = 'Socket'; in1.placeholder = 'Ej: AM4'; lbl2.innerText = 'Chipset'; in2.placeholder = 'Ej: B450'; } 
             else if (tipo === 'Pendrives') { titulo.placeholder = 'Ej: Pendrive Kingston'; lbl1.innerText = 'Capacidad'; in1.placeholder = 'Ej: 64GB'; lbl2.innerText = 'Versión'; in2.placeholder = 'Ej: USB 3.0'; } 
             else { titulo.placeholder = 'Ej: Mouse Pad XL'; lbl1.innerText = 'Característica Principal'; in1.placeholder = 'Ej: 80x30cm'; lbl2.innerText = 'Característica Secundaria'; in2.placeholder = 'Ej: Antideslizante'; }
@@ -1354,6 +1361,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             accesoriosActuales = data || []; 
             document.getElementById('stat-auriculares').innerText = accesoriosActuales.filter(a => a.tipo === 'Auriculares').length;
             document.getElementById('stat-cargadores').innerText = accesoriosActuales.filter(a => a.tipo === 'Cargadores').length;
+            document.getElementById('stat-teclados-mouses').innerText = accesoriosActuales.filter(a => a.tipo === 'Teclados/Mouses').length;
             document.getElementById('stat-motherboards').innerText = accesoriosActuales.filter(a => a.tipo === 'Motherboards').length;
             document.getElementById('stat-pendrives').innerText = accesoriosActuales.filter(a => a.tipo === 'Pendrives').length;
             renderizarTablaAccesorios();
