@@ -387,7 +387,7 @@ h2 {
 
 .product-card {
     background: var(--color-tarjeta);
-    padding: 40px 30px;
+    padding: 25px 20px; /* <-- MAGIA: Reducimos el aire de arriba, abajo y los costados */
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.02);
     display: flex;
@@ -1429,9 +1429,6 @@ h2 {
 }
 
 /* 5. RECORTAR TEXTOS LARGOS (PUNTITOS) SOLO EN LOS PRODUCTOS */
-#grid-notebooks .product-card h3,
-#grid-memorias .product-card h3,
-#grid-accesorios .product-card h3,
 #grid-notebooks .product-card ul li,
 #grid-memorias .product-card ul li,
 #grid-accesorios .product-card ul li {
@@ -1547,10 +1544,12 @@ h2 {
     font-size: 18px !important;
     margin-bottom: 15px !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important; /* MAGIA 1: Obliga a cortar en la 2da línea con '...' */
+    -webkit-line-clamp: 2 !important; 
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     line-height: 1.3 !important;
-    min-height: 46px !important; /* MAGIA 2: Si el título es de 1 línea, igual ocupa el espacio de 2, para que las fotos queden perfectamente alineadas horizontalmente */
+    min-height: 46px !important;
+    white-space: normal !important; /* MAGIA 3: Destraba el salto de línea forzadamente */
+    word-break: break-word !important; /* MAGIA 4: Evita que textos largos deformen la caja */
 }
