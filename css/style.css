@@ -1075,7 +1075,6 @@ h2 {
     transition: transform 0.4s ease;
 }
 
-/* El cartelito de "Ver galería" que aparece al hacer hover */
 .img-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -1527,15 +1526,14 @@ h2 {
     /* 3. Corte de texto implacable con 3 puntitos para TODO el contenido */
     .product-card h3, 
     .product-card ul li,
-    .product-card p,
-    .product-card div {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        display: block !important;
-    }
+    .product-card p {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+}
 
     /* 4. Botón siempre al fondo */
     .product-card .btn-primary {
