@@ -387,7 +387,7 @@ h2 {
 
 .product-card {
     background: var(--color-tarjeta);
-    padding: 25px 20px; /* <-- MAGIA: 25px(arriba y abajo) 20px(derecha e izquierda) Reducimos el aire de arriba, abajo y los costados */
+    padding: 20px 20px; /* <-- MAGIA: 20px(arriba y abajo) 20px(derecha e izquierda) Reducimos el aire de arriba, abajo y los costados */
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.02);
     display: flex;
