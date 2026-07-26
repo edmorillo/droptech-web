@@ -294,7 +294,7 @@ async function cargarPreciosDinamicos() {
                     <td>${item.servicio}</td>
                     <td>${item.compatibilidad}</td>
                     <td>
-                        <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; text-align: right;">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.85rem;">$${precioLista}</span>
                                 <span style="background: #ff4a4a; color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 5px; border-radius: 4px;">${porcentajeOff}% OFF</span>
