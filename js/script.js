@@ -731,24 +731,32 @@ async function generarPDF(event) {
         const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
-        // Armamos la data con las 3 columnas fusionadas
+        // Armamos la data con las 3 columnas fusionadas (Textos exactos de la web)
         const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => {
             const precioEfvo = item.precio;
             const precioListaNum = Math.round(precioEfvo * 1.15);
+            const ahorroNum = precioListaNum - precioEfvo;
             const porcentajeOff = Math.round(((precioListaNum - precioEfvo) / precioListaNum) * 100);
             
             const pEfvo = new Intl.NumberFormat('es-AR').format(precioEfvo);
             const pLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
-            return [item.servicio, item.compatibilidad, `$${pEfvo} (Efectivo)\n$${pLista} (${porcentajeOff}% OFF)`];
+            const ahorro = new Intl.NumberFormat('es-AR').format(ahorroNum);
+            
+            // Usamos "en efvo." abreviado para que no ocupe tanto espacio en el PDF
+            return [item.servicio, item.compatibilidad, `$${pLista} (${porcentajeOff}% OFF)\n$${pEfvo}\nAhorrás $${ahorro} en efvo.`];
         });
+        
         const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => {
             const precioEfvo = item.precio;
             const precioListaNum = Math.round(precioEfvo * 1.15);
+            const ahorroNum = precioListaNum - precioEfvo;
             const porcentajeOff = Math.round(((precioListaNum - precioEfvo) / precioListaNum) * 100);
             
             const pEfvo = new Intl.NumberFormat('es-AR').format(precioEfvo);
             const pLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
-            return [item.servicio, item.compatibilidad, `$${pEfvo} (Efectivo)\n$${pLista} (${porcentajeOff}% OFF)`];
+            const ahorro = new Intl.NumberFormat('es-AR').format(ahorroNum);
+            
+            return [item.servicio, item.compatibilidad, `$${pLista} (${porcentajeOff}% OFF)\n$${pEfvo}\nAhorrás $${ahorro} en efvo.`];
         });
 
         const { jsPDF } = window.jspdf;
@@ -787,11 +795,11 @@ async function generarPDF(event) {
 
         let posicionY = 34; 
         
-        // Estructura de anchos y colores de las 3 columnas
+        // Estructura de anchos y alineación de las 3 columnas (Más compacto)
         const columnasDiseño = {
-            0: { halign: 'left', cellWidth: 90 },
-            1: { halign: 'left', cellWidth: 50 },
-            2: { halign: 'center', cellWidth: 40, fontStyle: 'bold', textColor: [34, 197, 94] }
+            0: { halign: 'left', cellWidth: 95 },
+            1: { halign: 'left', cellWidth: 45 },
+            2: { halign: 'right', cellWidth: 40, fontStyle: 'bold', textColor: [34, 197, 94] }
         };
 
         if (softwareData.length > 0) {
@@ -807,7 +815,7 @@ async function generarPDF(event) {
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
                 columnStyles: columnasDiseño,
-                styles: { fontSize: 8.5, cellPadding: 2.5 }, 
+                styles: { fontSize: 8.5, cellPadding: 2.5, valign: 'middle' }, 
                 alternateRowStyles: { fillColor: [248, 250, 252] }
             });
             posicionY = doc.lastAutoTable.finalY + 10; 
@@ -826,7 +834,7 @@ async function generarPDF(event) {
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
                 columnStyles: columnasDiseño,
-                styles: { fontSize: 8.5, cellPadding: 2.5 }, 
+                styles: { fontSize: 8.5, cellPadding: 2.5, valign: 'middle' }, 
                 alternateRowStyles: { fillColor: [248, 250, 252] }
             });
         }
