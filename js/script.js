@@ -786,7 +786,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3, 
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO ESPECIAL', 'PRECIO DE LISTA']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'INVERSIÓN']],
                 body: softwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
@@ -805,7 +805,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3,
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO ESPECIAL', 'PRECIO DE LISTA']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'INVERSIÓN']],
                 body: hardwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
