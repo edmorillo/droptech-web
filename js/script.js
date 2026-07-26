@@ -280,15 +280,25 @@ async function cargarPreciosDinamicos() {
         let htmlSoftware = ''; let htmlHardware = '';
 
         data.forEach(item => {
-            const precioEfectivo = new Intl.NumberFormat('es-AR').format(item.precio);
-            const precioTarjeta = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
+            const precioEfectivoNum = item.precio;
+            const precioListaNum = Math.round(item.precio * 1.15);
+            const ahorroNum = precioListaNum - precioEfectivoNum;
+
+            const precioEfectivo = new Intl.NumberFormat('es-AR').format(precioEfectivoNum);
+            const precioLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
+            const ahorro = new Intl.NumberFormat('es-AR').format(ahorroNum);
             
             const fila = `
                 <tr>
                     <td>${item.servicio}</td>
                     <td>${item.compatibilidad}</td>
-                    <td style="color: #22c55e; font-weight: 600;">$${precioEfectivo}</td>
-                    <td style="color: #facc15; font-weight: 600;">$${precioTarjeta}</td>
+                    <td>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.85rem;">$${precioLista}</span>
+                            <span style="color: #22c55e; font-weight: 700; font-size: 1.15rem; margin: 2px 0;">$${precioEfectivo}</span>
+                            <span style="color: #00ff66; font-size: 0.75rem; font-weight: 500;">Ahorrás $${ahorro} al contado</span>
+                        </div>
+                    </td>
                 </tr>
             `;
             
@@ -713,19 +723,17 @@ async function generarPDF(event) {
         const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
         if (error) throw error;
 
-        // Armamos la data con las 4 columnas ya calculadas
-        const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => [
-            item.servicio, 
-            item.compatibilidad, 
-            '$' + new Intl.NumberFormat('es-AR').format(item.precio),
-            '$' + new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15))
-        ]);
-        const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => [
-            item.servicio, 
-            item.compatibilidad, 
-            '$' + new Intl.NumberFormat('es-AR').format(item.precio),
-            '$' + new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15))
-        ]);
+        // Armamos la data con las 3 columnas fusionadas
+        const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => {
+            const pEfvo = new Intl.NumberFormat('es-AR').format(item.precio);
+            const pLista = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
+            return [item.servicio, item.compatibilidad, `$${pEfvo} (Contado)\n$${pLista} (Lista)`];
+        });
+        const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => {
+            const pEfvo = new Intl.NumberFormat('es-AR').format(item.precio);
+            const pLista = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
+            return [item.servicio, item.compatibilidad, `$${pEfvo} (Contado)\n$${pLista} (Lista)`];
+        });
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -763,12 +771,11 @@ async function generarPDF(event) {
 
         let posicionY = 34; 
         
-        // Estructura de anchos y colores de las 4 columnas
+        // Estructura de anchos y colores de las 3 columnas
         const columnasDiseño = {
-            0: { halign: 'left', cellWidth: 80 },
-            1: { halign: 'left', cellWidth: 42 },
-            2: { halign: 'center', cellWidth: 30, fontStyle: 'bold', textColor: [34, 197, 94] },
-            3: { halign: 'center', cellWidth: 30, fontStyle: 'bold', textColor: [200, 160, 0] }
+            0: { halign: 'left', cellWidth: 90 },
+            1: { halign: 'left', cellWidth: 50 },
+            2: { halign: 'center', cellWidth: 40, fontStyle: 'bold', textColor: [34, 197, 94] }
         };
 
         if (softwareData.length > 0) {

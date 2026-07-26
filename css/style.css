@@ -1483,23 +1483,25 @@ h2 {
         color: #64748b;
     }
     
-    /* 3. Filas de Precios (Estilo Recibo) */
-    .prices-table td:nth-child(3), .prices-table td:nth-child(4) { 
+    /* 3. Filas de Precios (Estilo Recibo Fusionado) */
+    .prices-table td:nth-child(3) { 
         display: flex !important;
         justify-content: space-between !important;
-        align-items: center;
-        background: rgba(0,0,0,0.2);
-        padding: 10px 12px;
-        border-radius: 6px;
-        margin-top: 6px;
-        width: 100%;
-        font-size: 15px;
+        align-items: center !important;
+        background: rgba(0,0,0,0.2) !important;
+        padding: 12px !important;
+        border-radius: 6px !important;
+        margin-top: 6px !important;
+        width: 100% !important;
+        text-align: right !important; /* Alinea los precios a la derecha */
     }
 
-    /* Textos a la izquierda */
-    /* Textos a la izquierda */
-    .prices-table td:nth-child(3)::before { content: 'Precio Especial'; font-size: 13px; color: #22c55e; font-weight: 600; }
-    .prices-table td:nth-child(4)::before { content: 'Precio de Lista'; font-size: 13px; color: #facc15; font-weight: 600; }
+    .prices-table td:nth-child(3)::before { 
+        content: 'Inversión:'; 
+        font-size: 13px; 
+        color: #a0aec0; 
+        font-weight: 600; 
+    }
 }
 
 /* ========================================== */
