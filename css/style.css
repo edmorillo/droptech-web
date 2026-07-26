@@ -1497,7 +1497,7 @@ h2 {
     }
 
     .prices-table td:nth-child(3)::before { 
-        content: 'Inversión:'; 
+        content: 'Precio:'; 
         font-size: 13px; 
         color: #a0aec0; 
         font-weight: 600; 

@@ -264,7 +264,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 async function cargarPreciosDinamicos() {
     const tablaSoftware = document.getElementById('tabla-software-dinamica');
     const tablaHardware = document.getElementById('tabla-hardware-dinamica');
-    if (!tablaSoftware && !tablaHardware) return; // Si no estoy en el index, no hago nada
+    if (!tablaSoftware && !tablaHardware) return; 
 
     try {
         const { data, error } = await db.from('precios').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
@@ -283,6 +283,7 @@ async function cargarPreciosDinamicos() {
             const precioEfectivoNum = item.precio;
             const precioListaNum = Math.round(item.precio * 1.15);
             const ahorroNum = precioListaNum - precioEfectivoNum;
+            const porcentajeOff = Math.round(((precioListaNum - precioEfectivoNum) / precioListaNum) * 100);
 
             const precioEfectivo = new Intl.NumberFormat('es-AR').format(precioEfectivoNum);
             const precioLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
@@ -294,9 +295,12 @@ async function cargarPreciosDinamicos() {
                     <td>${item.compatibilidad}</td>
                     <td>
                         <div style="display: flex; flex-direction: column;">
-                            <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.85rem;">$${precioLista}</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.85rem;">$${precioLista}</span>
+                                <span style="background: #ff4a4a; color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 5px; border-radius: 4px;">${porcentajeOff}% OFF</span>
+                            </div>
                             <span style="color: #22c55e; font-weight: 700; font-size: 1.15rem; margin: 2px 0;">$${precioEfectivo}</span>
-                            <span style="color: #00ff66; font-size: 0.75rem; font-weight: 500;">Ahorrás $${ahorro} al contado</span>
+                            <span style="color: #00ff66; font-size: 0.75rem; font-weight: 500;">Ahorrás $${ahorro} en efectivo</span>
                         </div>
                     </td>
                 </tr>
@@ -355,11 +359,12 @@ async function cargarNotebooksDinamicas() {
             const card = `
                 <div class="product-card reveal active" style="animation-delay: ${index * 0.1}s;">
                     <a href="producto.html?id=${item.id}&cat=notebooks" style="text-decoration: none; color: inherit;">
-                        <h3>${item.titulo}</h3>
+                        
                         <div class="prod-image-container">
                             <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                             <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                         </div>
+                        <h3>${item.titulo}</h3>
                     </a>
 
                     <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
@@ -371,7 +376,7 @@ async function cargarNotebooksDinamicas() {
                         <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
                             $${precioEfectivoLindo}
                         </div>
-                        <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
+                        <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago en efectivo/transf.</div>
                     </div>
 
                     <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
@@ -478,11 +483,12 @@ function renderizarMemoriasPublicas(filtro) {
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=memorias" style="text-decoration: none; color: inherit;">
-                    <h3>${item.titulo}</h3>
+                    
                     <div class="prod-image-container">
                         <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
+                    <h3>${item.titulo}</h3>
                 </a>
 
                 <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
@@ -494,7 +500,7 @@ function renderizarMemoriasPublicas(filtro) {
                     <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
                         $${precioEfectivoLindo}
                     </div>
-                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
+                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago en efectivo/transf.</div>
                 </div>
 
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
@@ -578,12 +584,14 @@ function renderizarAccesoriosPublicos(filtro) {
         const card = `
             <div class="product-card reveal active" style="animation-delay: ${index * 0.05}s;">
                 <a href="producto.html?id=${item.id}&cat=accesorios" style="text-decoration: none; color: inherit;">
-                    <h3>${item.titulo}</h3>
+                    
                     <div class="prod-image-container">
                         <img src="${imagenPortada}" loading="lazy" alt="${item.titulo}" class="main-prod-img">
                         <div class="img-overlay"><i class="fa-solid fa-eye"></i><span>Ver Detalles</span></div>
                     </div>
+                    <h3>${item.titulo}</h3>
                 </a>
+                
                 <div style="margin-bottom: 15px; text-align: left; padding: 0 10px;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                         <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.9rem;">$${precioListaLindo}</span>
@@ -593,7 +601,7 @@ function renderizarAccesoriosPublicos(filtro) {
                     <div style="font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1;">
                         $${precioEfectivoLindo}
                     </div>
-                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago al contado/transf.</div>
+                    <div style="font-size: 0.7rem; color: #00F0FF; margin-top: 4px;">Pago en efectivo/transf.</div>
                 </div>
                 <ul style="text-align: left; color: #a0aec0; font-size: 0.95rem; margin-bottom: 25px; list-style: none; width: 100%; padding: 0 10px;">
                     ${listaCaracteristicas}
@@ -709,7 +717,7 @@ async function cargarVideosDinamicos() {
 }
 
 // =========================================================================
-// 7. GENERADOR AUTOMÁTICO DE PDF (CORREGIDO - 4 COLUMNAS)
+// 7. GENERADOR AUTOMÁTICO DE PDF (CORREGIDO - 3 COLUMNAS)
 // =========================================================================
 async function generarPDF(event) {
     event.preventDefault(); 
@@ -725,14 +733,22 @@ async function generarPDF(event) {
 
         // Armamos la data con las 3 columnas fusionadas
         const softwareData = data.filter(item => item.categoria !== 'hardware').map(item => {
-            const pEfvo = new Intl.NumberFormat('es-AR').format(item.precio);
-            const pLista = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
-            return [item.servicio, item.compatibilidad, `$${pEfvo} (Contado)\n$${pLista} (Lista)`];
+            const precioEfvo = item.precio;
+            const precioListaNum = Math.round(precioEfvo * 1.15);
+            const porcentajeOff = Math.round(((precioListaNum - precioEfvo) / precioListaNum) * 100);
+            
+            const pEfvo = new Intl.NumberFormat('es-AR').format(precioEfvo);
+            const pLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
+            return [item.servicio, item.compatibilidad, `$${pEfvo} (Efectivo)\n$${pLista} (${porcentajeOff}% OFF)`];
         });
         const hardwareData = data.filter(item => item.categoria === 'hardware').map(item => {
-            const pEfvo = new Intl.NumberFormat('es-AR').format(item.precio);
-            const pLista = new Intl.NumberFormat('es-AR').format(Math.round(item.precio * 1.15));
-            return [item.servicio, item.compatibilidad, `$${pEfvo} (Contado)\n$${pLista} (Lista)`];
+            const precioEfvo = item.precio;
+            const precioListaNum = Math.round(precioEfvo * 1.15);
+            const porcentajeOff = Math.round(((precioListaNum - precioEfvo) / precioListaNum) * 100);
+            
+            const pEfvo = new Intl.NumberFormat('es-AR').format(precioEfvo);
+            const pLista = new Intl.NumberFormat('es-AR').format(precioListaNum);
+            return [item.servicio, item.compatibilidad, `$${pEfvo} (Efectivo)\n$${pLista} (${porcentajeOff}% OFF)`];
         });
 
         const { jsPDF } = window.jspdf;
@@ -786,7 +802,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3, 
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'INVERSIÓN']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO']],
                 body: softwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
@@ -805,7 +821,7 @@ async function generarPDF(event) {
             
             doc.autoTable({
                 startY: posicionY + 3,
-                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'INVERSIÓN']],
+                head: [['SERVICIO / SOLUCIÓN TÉCNICA', 'COMPATIBILIDAD', 'PRECIO']],
                 body: hardwareData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
