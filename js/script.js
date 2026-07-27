@@ -574,10 +574,19 @@ function renderizarAccesoriosPublicos(filtro) {
         
         const mensajeWs = encodeURIComponent("Hola Lei! Me interesa el accesorio " + item.titulo + " que publicaste a $" + precioEfectivoLindo + ". Tenes stock?");
 
+        let icon1 = 'fa-circle-info'; let lbl1 = 'Característica';
+        let icon2 = 'fa-star'; let lbl2 = 'Detalle';
+
+        if (item.tipo === 'Auriculares') { icon1 = 'fa-link'; lbl1 = 'Conectividad'; icon2 = 'fa-headphones'; lbl2 = 'Diseño'; }
+        else if (item.tipo === 'Cargadores') { icon1 = 'fa-bolt'; lbl1 = 'Voltaje/Amp.'; icon2 = 'fa-plug'; lbl2 = 'Ficha'; }
+        else if (item.tipo === 'Teclados/Mouses') { icon1 = 'fa-keyboard'; lbl1 = 'Tipo'; icon2 = 'fa-wifi'; lbl2 = 'Conexión'; }
+        else if (item.tipo === 'Motherboards') { icon1 = 'fa-microchip'; lbl1 = 'Socket'; icon2 = 'fa-memory'; lbl2 = 'Chipset'; }
+        else if (item.tipo === 'Pendrives') { icon1 = 'fa-hard-drive'; lbl1 = 'Capacidad'; icon2 = 'fa-usb'; lbl2 = 'Versión'; }
+
         let listaCaracteristicas = `
             <li style="margin-bottom: 8px;"><i class="fa-solid fa-tag" style="width: 25px; color: #00F0FF;"></i> Tipo: ${item.tipo}</li>
-            <li style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info" style="width: 25px; color: #00F0FF;"></i> ${item.detalle_1}</li>
-            <li style="margin-bottom: 8px;"><i class="fa-solid fa-star" style="width: 25px; color: #00F0FF;"></i> ${item.detalle_2}</li>
+            <li style="margin-bottom: 8px;"><i class="fa-solid ${icon1}" style="width: 25px; color: #00F0FF;"></i> ${lbl1}: ${item.detalle_1}</li>
+            <li style="margin-bottom: 8px;"><i class="fa-solid ${icon2}" style="width: 25px; color: #00F0FF;"></i> ${lbl2}: ${item.detalle_2}</li>
             <li><i class="fa-solid fa-circle-check" style="width: 25px; color: #00F0FF;"></i> Estado: ${item.estado}</li>
         `;
 
