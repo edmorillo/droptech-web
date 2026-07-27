@@ -579,7 +579,7 @@ function renderizarAccesoriosPublicos(filtro) {
 
         if (item.tipo === 'Auriculares') { icon1 = 'fa-link'; lbl1 = 'Conectividad'; icon2 = 'fa-headphones'; lbl2 = 'Diseño'; }
         else if (item.tipo === 'Cargadores') { icon1 = 'fa-bolt'; lbl1 = 'Voltaje/Amp.'; icon2 = 'fa-plug'; lbl2 = 'Ficha'; }
-        else if (item.tipo === 'Teclados/Mouses') { icon1 = 'fa-keyboard'; lbl1 = 'Tipo'; icon2 = 'fa-wifi'; lbl2 = 'Conexión'; }
+        else if (item.tipo === 'Teclados/Mouses') { icon1 = 'fa-keyboard'; lbl1 = 'Arquitectura'; icon2 = 'fa-wifi'; lbl2 = 'Conexión'; }
         else if (item.tipo === 'Motherboards') { icon1 = 'fa-microchip'; lbl1 = 'Socket'; icon2 = 'fa-memory'; lbl2 = 'Chipset'; }
         else if (item.tipo === 'Pendrives') { icon1 = 'fa-hard-drive'; lbl1 = 'Capacidad'; icon2 = 'fa-usb'; lbl2 = 'Versión'; }
 
