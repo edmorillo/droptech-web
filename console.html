@@ -789,7 +789,7 @@
                         <div class="form-group">
                             <label>Contacto (Opcional)</label>
                             <div style="display: flex; gap: 10px;">
-                                <select id="venta-tipo-contacto" style="width: 130px; background: #1E293B; color: #fff;">
+                                <select id="venta-tipo-contacto" onchange="actualizarPlaceholderContacto()" style="width: 130px; background: #1E293B; color: #fff;">
                                     <option value="Teléfono">Teléfono</option>
                                     <option value="DNI">DNI</option>
                                     <option value="Email">Email</option>
@@ -2035,6 +2035,19 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 }
             });
             selectProducto.innerHTML = opcionesHTML;
+        }
+
+        function actualizarPlaceholderContacto() {
+            const tipo = document.getElementById('venta-tipo-contacto').value;
+            const inputContacto = document.getElementById('venta-contacto');
+            
+            if (tipo === 'DNI') {
+                inputContacto.placeholder = 'Ej: 35.123.456';
+            } else if (tipo === 'Email') {
+                inputContacto.placeholder = 'Ej: cliente@correo.com';
+            } else {
+                inputContacto.placeholder = 'Ej: 11-2345-6789';
+            }
         }
 
         function actualizarPrecioVenta() {
