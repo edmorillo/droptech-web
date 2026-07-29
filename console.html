@@ -13,7 +13,9 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: #070A0F; color: #fff; display: flex; height: 112vh; overflow: hidden; zoom: 90%; }
@@ -237,6 +239,7 @@
             <li><a onclick="cambiarSeccion('notebooks', this)"><i class="fa-solid fa-laptop"></i> Listado Notebooks</a></li>
             <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias y SSDs</a></li>
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
+            <li><a onclick="cambiarSeccion('ventas', this)" style="color: #00ff66;"><i class="fa-solid fa-file-invoice-dollar"></i> Ventas y Comprobantes</a></li>
             <li><a href="trabajos.html" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
             <li style="margin-top: 20px;">
                 <a onclick="cambiarSeccion('papelera', this)" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</a>
@@ -766,6 +769,77 @@
                     </thead>
                     <tbody id="tabla-admin-papelera">
                         <tr><td colspan="3" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando papelera...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN VENTAS Y COMPROBANTES -->
+        <section id="sec-ventas" class="dashboard-section">
+            <h1 class="header-title" style="color: #00ff66;"><i class="fa-solid fa-file-invoice-dollar"></i> Registradora & Comprobantes</h1>
+            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Registrá la venta. El sistema buscará el producto, calculará el total y el descuento, y te generará el PDF listo para WhatsApp.</p>
+            
+            <div class="panel-card">
+                <form id="form-ventas">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente (Nombre y Apellido)</label>
+                            <input type="text" id="venta-cliente" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto (Opcional)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <select id="venta-tipo-contacto" style="width: 130px; background: #1E293B; color: #fff;">
+                                    <option value="Teléfono">Teléfono</option>
+                                    <option value="DNI">DNI</option>
+                                    <option value="Email">Email</option>
+                                </select>
+                                <input type="text" id="venta-contacto" placeholder="Ej: 11-2345-6789" style="flex: 1;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Buscar Producto Vendido</label>
+                            <input type="text" id="buscador-producto-venta" placeholder="Buscar por nombre (Ej: SSD, Notebook...)" oninput="filtrarCatalogoVentas()" style="margin-bottom: 8px; background: rgba(0, 240, 255, 0.05); border-color: #00F0FF;">
+                            <select id="venta-producto" required onchange="actualizarPrecioVenta()" style="background: #1E293B; color: #fff;">
+                                <option value="" disabled selected>Cargando catálogo...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Medio de Pago</label>
+                            <select id="venta-pago" required onchange="actualizarPrecioVenta()" style="background: #1E293B; color: #fff;">
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia">Transferencia</option>
+                                <option value="Dinero en MP">Dinero en MP</option>
+                                <option value="Tarjeta">Tarjeta (Aplica Precio de Lista)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 20px; text-align: right;">
+                        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 5px;">Monto a cobrar al cliente:</div>
+                        <div id="venta-resumen-precio" style="font-size: 28px; font-weight: 800; color: #00ff66;">$0</div>
+                        <div id="venta-resumen-descuento" style="font-size: 13px; color: #00F0FF; margin-top: 5px; font-weight: 600;"></div>
+                    </div>
+                    
+                    <button type="submit" id="btn-submit-venta" class="btn" style="background: #00ff66; color: #000; box-shadow: 0 4px 15px rgba(0, 255, 102, 0.2);"><i class="fa-solid fa-check"></i> Registrar Venta y Guardar Historial</button>
+                    <button type="button" id="btn-cancelar-venta" onclick="cancelarEdicionVenta()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+                </form>
+            </div>
+
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Producto</th>
+                            <th>Cobrado</th>
+                            <th>Comprobante</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-ventas">
+                        <tr><td colspan="5" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial de ventas...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1919,6 +1993,295 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             });
         }
 
+        // =========================================================================
+        // 10.5 MOTOR DE CAJA REGISTRADORA Y PDF DE COMPROBANTES
+        // =========================================================================
+        let catalogoCompleto = [];
+        let ventasActuales = [];
+        let editandoVentaId = null;
+
+        async function cargarCatalogoVentas() {
+            const selectProducto = document.getElementById('venta-producto');
+            try {
+                const [precios, notebooks, memorias, accesorios] = await Promise.all([
+                    db.from('precios').select('id, servicio, precio').eq('estado_registro', 'activo'),
+                    db.from('notebooks').select('id, titulo, precio').eq('estado_registro', 'activo'),
+                    db.from('memorias').select('id, titulo, precio').eq('estado_registro', 'activo'),
+                    db.from('accesorios').select('id, titulo, precio').eq('estado_registro', 'activo')
+                ]);
+
+                catalogoCompleto = [];
+                if (precios.data) precios.data.forEach(i => catalogoCompleto.push({ id_cat: 'P-'+i.id, nombre: 'Servicio: ' + i.servicio, precio: i.precio }));
+                if (notebooks.data) notebooks.data.forEach(i => catalogoCompleto.push({ id_cat: 'N-'+i.id, nombre: 'Notebook: ' + i.titulo, precio: i.precio }));
+                if (memorias.data) memorias.data.forEach(i => catalogoCompleto.push({ id_cat: 'M-'+i.id, nombre: 'Componente: ' + i.titulo, precio: i.precio }));
+                if (accesorios.data) accesorios.data.forEach(i => catalogoCompleto.push({ id_cat: 'A-'+i.id, nombre: 'Accesorio: ' + i.titulo, precio: i.precio }));
+
+                catalogoCompleto.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                filtrarCatalogoVentas(); // Esto carga las opciones por defecto
+            } catch (err) {
+                console.error("Error al cargar catálogo:", err);
+                selectProducto.innerHTML = '<option value="" disabled selected>Error al cargar catálogo</option>';
+            }
+        }
+
+        function filtrarCatalogoVentas() {
+            const busqueda = document.getElementById('buscador-producto-venta').value.toLowerCase();
+            const selectProducto = document.getElementById('venta-producto');
+            
+            let opcionesHTML = '<option value="" disabled selected>Seleccioná el producto o servicio...</option>';
+            catalogoCompleto.forEach(item => {
+                if (item.nombre.toLowerCase().includes(busqueda)) {
+                    opcionesHTML += `<option value="${item.id_cat}">${item.nombre} (Contado: $${new Intl.NumberFormat('es-AR').format(item.precio)})</option>`;
+                }
+            });
+            selectProducto.innerHTML = opcionesHTML;
+        }
+
+        function actualizarPrecioVenta() {
+            const idSeleccionado = document.getElementById('venta-producto').value;
+            const medioPago = document.getElementById('venta-pago').value;
+            const resumenPrecio = document.getElementById('venta-resumen-precio');
+            const resumenDescuento = document.getElementById('venta-resumen-descuento');
+
+            if (!idSeleccionado) {
+                resumenPrecio.innerHTML = '$0';
+                resumenDescuento.innerHTML = '';
+                return;
+            }
+            const producto = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
+            if (!producto) return;
+
+            const precioEfectivo = producto.precio;
+            const precioLista = Math.round(precioEfectivo * 1.15);
+            const ahorro = precioLista - precioEfectivo;
+
+            // Ahora cualquier medio que NO sea Tarjeta, lleva descuento.
+            if (medioPago !== 'Tarjeta') {
+                resumenPrecio.innerHTML = `$${new Intl.NumberFormat('es-AR').format(precioEfectivo)}`;
+                resumenDescuento.innerHTML = `<i class="fa-solid fa-gift"></i> Le estás aplicando un descuento de -$${new Intl.NumberFormat('es-AR').format(ahorro)} por pago al contado.`;
+            } else {
+                resumenPrecio.innerHTML = `$${new Intl.NumberFormat('es-AR').format(precioLista)}`;
+                resumenDescuento.innerHTML = `<i class="fa-solid fa-credit-card"></i> Cobro a precio de lista. Sin descuento.`;
+            }
+        }
+
+        document.getElementById('form-ventas').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-venta');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                const idSeleccionado = document.getElementById('venta-producto').value;
+                const productoObj = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
+                
+                // Formateo del contacto
+                const tipoContacto = document.getElementById('venta-tipo-contacto').value;
+                const valorContacto = document.getElementById('venta-contacto').value;
+                const contactoFinal = (valorContacto.trim() !== '') ? `${tipoContacto}: ${valorContacto}` : '';
+                
+                const payload = {
+                    cliente: document.getElementById('venta-cliente').value,
+                    contacto: contactoFinal,
+                    producto: productoObj.nombre,
+                    precio_base: productoObj.precio,
+                    medio_pago: document.getElementById('venta-pago').value,
+                    estado_registro: 'activo'
+                };
+
+                if (editandoVentaId) {
+                    const { error } = await db.from('ventas').update(payload).eq('id', editandoVentaId);
+                    if (error) throw error;
+                    mostrarToast("Venta editada con éxito.");
+                } else {
+                    const { error } = await db.from('ventas').insert([payload]);
+                    if (error) throw error;
+                    mostrarToast("Venta registrada con éxito.");
+                }
+
+                cancelarEdicionVenta();
+                cargarVentas();
+            } catch (err) {
+                alert("Error al guardar venta: " + err.message);
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.style.pointerEvents = 'auto';
+            }
+        });
+
+        function prepararEdicionVenta(id) {
+            const venta = ventasActuales.find(v => v.id === id);
+            if (!venta) return;
+            editandoVentaId = id;
+            
+            document.getElementById('venta-cliente').value = venta.cliente;
+            
+            if (venta.contacto && venta.contacto.includes(':')) {
+                const partes = venta.contacto.split(':');
+                document.getElementById('venta-tipo-contacto').value = partes[0].trim();
+                document.getElementById('venta-contacto').value = partes.slice(1).join(':').trim();
+            } else {
+                document.getElementById('venta-contacto').value = venta.contacto || '';
+            }
+
+            document.getElementById('buscador-producto-venta').value = '';
+            filtrarCatalogoVentas(); // Resetea la lista visual
+            
+            const index = catalogoCompleto.findIndex(p => p.nombre === venta.producto && p.precio === venta.precio_base);
+            if (index !== -1) document.getElementById('venta-producto').value = catalogoCompleto[index].id_cat;
+            
+            document.getElementById('venta-pago').value = venta.medio_pago;
+            actualizarPrecioVenta();
+
+            document.getElementById('btn-submit-venta').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Venta';
+            document.getElementById('btn-submit-venta').style.background = '#facc15';
+            document.getElementById('btn-cancelar-venta').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionVenta() {
+            editandoVentaId = null;
+            document.getElementById('form-ventas').reset();
+            document.getElementById('buscador-producto-venta').value = '';
+            filtrarCatalogoVentas();
+            document.getElementById('venta-resumen-precio').innerHTML = '$0';
+            document.getElementById('venta-resumen-descuento').innerHTML = '';
+            
+            const btnSubmit = document.getElementById('btn-submit-venta');
+            btnSubmit.innerHTML = '<i class="fa-solid fa-check"></i> Registrar Venta y Guardar Historial';
+            btnSubmit.style.background = '#00ff66';
+            document.getElementById('btn-cancelar-venta').style.display = 'none';
+        }
+
+        async function cargarVentas() {
+            const tabla = document.getElementById('tabla-admin-ventas');
+            try {
+                const { data, error } = await db.from('ventas').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
+                if (error) throw error;
+                ventasActuales = data || [];
+                
+                if (ventasActuales.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Aún no tenés ventas registradas.</td></tr>';
+                    return;
+                }
+
+                tabla.innerHTML = '';
+                ventasActuales.forEach(venta => {
+                    const fechaObj = new Date(venta.created_at).toLocaleDateString('es-AR');
+                    const precioEfectivo = venta.precio_base;
+                    const precioLista = Math.round(precioEfectivo * 1.15);
+                    const totalCobrado = venta.medio_pago !== 'Tarjeta' ? precioEfectivo : precioLista;
+
+                    tabla.innerHTML += `
+                        <tr>
+                            <td style="color:#94A3B8;">${fechaObj}</td>
+                            <td style="color:#fff; font-weight:600;">${venta.cliente}</td>
+                            <td style="font-size: 13px; color: #00F0FF;">${venta.producto}</td>
+                            <td style="color:#00ff66; font-weight:700;">$${new Intl.NumberFormat('es-AR').format(totalCobrado)}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit" onclick="prepararEdicionVenta(${venta.id})" title="Editar Venta"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-edit" style="background: rgba(0, 255, 102, 0.1); color: #00ff66; border-color: #00ff66;" onclick="generarComprobante(${venta.id})" title="Descargar PDF"><i class="fa-solid fa-file-pdf"></i> Imprimir</button>
+                                    <button class="btn-delete" onclick="abrirModalEliminar(${venta.id}, 'ventas')" title="Eliminar Venta"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ff4a4a;">Error al cargar ventas.</td></tr>';
+            }
+        }
+
+        // =========================================================================
+        // EL DIBUJANTE DEL PDF
+        // =========================================================================
+        function generarComprobante(idVenta) {
+            const venta = ventasActuales.find(v => v.id === idVenta);
+            if (!venta) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const fechaFormat = new Date(venta.created_at).toLocaleDateString('es-AR');
+            const precioEfectivo = venta.precio_base;
+            const precioLista = Math.round(precioEfectivo * 1.15);
+            const ahorro = precioLista - precioEfectivo;
+            
+            const esEfectivo = venta.medio_pago !== 'Tarjeta';
+            
+            const precioUnitario = precioLista; 
+            const subtotal = precioLista;
+            
+            const descuentoMostrar = esEfectivo ? ahorro : 0;
+            const totalFinal = esEfectivo ? precioEfectivo : precioLista;
+
+            // Dibujo del Logo
+            doc.setDrawColor(0, 180, 200); doc.setLineWidth(0.8);
+            doc.roundedRect(14, 12, 16, 11, 1.5, 1.5, 'S'); doc.line(18, 23, 16, 28); doc.line(16, 28, 28, 28); doc.line(28, 28, 26, 23); 
+            doc.roundedRect(33, 10, 8, 18, 1.5, 1.5, 'S'); doc.line(36, 13, 38, 13); doc.line(36, 16, 38, 16); 
+            doc.setDrawColor(150, 150, 150); doc.line(19, 17.5, 25, 17.5); doc.line(22, 14.5, 22, 20.5);
+
+            // Textos del Cabezal
+            doc.setTextColor(0, 0, 0); doc.setFontSize(22); doc.setFont("helvetica", "bold");
+            doc.text("COMPUTADORAS LEI", 48, 19);
+            doc.setTextColor(100, 100, 100); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+            doc.text("Soporte Técnico Premium & Armado de PC", 48, 25);
+            
+            // Info Comprobante Derecha (Acomodado)
+            doc.setFontSize(12); doc.setTextColor(0, 150, 170); doc.setFont("helvetica", "bold");
+            doc.text("COMPROBANTE DE VENTA", 196, 15, { align: "right" });
+            doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+            doc.text(`Fecha: ${fechaFormat}`, 196, 21, { align: "right" });
+            doc.text(`Comprobante Nº: 000${venta.id}`, 196, 26, { align: "right" });
+
+            // Datos del Cliente (Acomodado)
+            doc.setDrawColor(200, 200, 200); doc.line(14, 33, 196, 33);
+            doc.setFontSize(10); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
+            doc.text("DATOS DEL CLIENTE", 14, 40);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nombre: ${venta.cliente}`, 14, 47);
+            
+            // Si el contacto está vacío, no se imprime esta línea en el PDF
+            if (venta.contacto && venta.contacto.trim() !== '') {
+                doc.text(`${venta.contacto}`, 14, 52);
+            }
+
+            // Tabla (CANT corregido a width 18)
+            doc.autoTable({
+                startY: 59,
+                head: [['CANT', 'DESCRIPCIÓN DEL PRODUCTO / SERVICIO', 'PRECIO UNIT.', 'SUBTOTAL']],
+                body: [['1', venta.producto, `$${new Intl.NumberFormat('es-AR').format(precioUnitario)}`, `$${new Intl.NumberFormat('es-AR').format(subtotal)}`]],
+                theme: 'grid',
+                headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { halign: 'center', cellWidth: 18 }, 1: { halign: 'left' }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 35 } },
+                styles: { fontSize: 10, cellPadding: 4 }
+            });
+
+            const finalY = doc.lastAutoTable.finalY;
+
+            // Descuento y Total
+            doc.setFontSize(10);
+            if (esEfectivo) {
+                doc.setTextColor(100, 100, 100);
+                doc.text("Descuento pago al contado:", 145, finalY + 10, { align: "right" });
+                doc.setTextColor(34, 197, 94); doc.setFont("helvetica", "bold");
+                doc.text(`-$${new Intl.NumberFormat('es-AR').format(descuentoMostrar)}`, 196, finalY + 10, { align: "right" });
+            }
+
+            doc.setFontSize(14); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
+            doc.text("TOTAL A PAGAR:", 145, finalY + 22, { align: "right" });
+            doc.text(`$${new Intl.NumberFormat('es-AR').format(totalFinal)}`, 196, finalY + 22, { align: "right" });
+
+            // Cierre
+            doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+            doc.text(`Medio de pago: ${venta.medio_pago}`, 14, finalY + 35);
+            doc.text("¡Gracias por confiar en Computadoras Lei! Documento no válido como factura fiscal.", 14, finalY + 40);
+
+            doc.save(`Comprobante_${venta.cliente.replace(/\s+/g, '_')}_${fechaFormat}.pdf`);
+        }
+
         
 
         // =========================================================================
@@ -1930,6 +2293,9 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         cargarAccesorios();
         cargarPapelera();
         cargarHistorial();
+        // ESTAS DOS SON NUEVAS:
+        cargarCatalogoVentas();
+        cargarVentas();
     </script>
     
 
