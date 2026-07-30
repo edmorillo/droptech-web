@@ -246,6 +246,13 @@
                         <!-- JS dibuja las miniaturas acá -->
                     </div>
                 </div>
+                <!-- NUEVO: CAJA ROJA DE PAPELERA TEMPORAL TRABAJOS -->
+                <div id="gestor-papelera-temporal" style="display: none; width: 100%; margin-bottom: 20px; padding: 15px; background: rgba(255, 74, 74, 0.05); border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 8px;">
+                    <h4 style="color: #ff4a4a; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-trash-can"></i> Archivos en cola para borrar (Se eliminarán al publicar)</h4>
+                    <div id="lista-medios-cola" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <!-- JS dibuja las miniaturas a borrar acá -->
+                    </div>
+                </div>
                 
                 <div class="form-row">
                         <!-- CAJA 1: Videos -->
@@ -364,79 +371,79 @@
         let videosActuales = [];
         let videosMantenidos = [];
         let imagenesMantenidas = [];
-        let archivosVideosABorrar = [];
-        let archivosImagenesABorrar = [];
+        let videosEnCola = [];
+        let imagenesEnCola = [];
 
         function renderizarMediosExistentes() {
-            const contenedor = document.getElementById('gestor-medios');
-            const lista = document.getElementById('lista-medios-existentes');
-            lista.innerHTML = '';
+            const contenedorMantenidos = document.getElementById('gestor-medios');
+            const listaMantenidos = document.getElementById('lista-medios-existentes');
+            const contenedorCola = document.getElementById('gestor-papelera-temporal');
+            const listaCola = document.getElementById('lista-medios-cola');
+            
+            listaMantenidos.innerHTML = '';
+            listaCola.innerHTML = '';
 
+            // 1. Mostrar/Ocultar caja azul
             if (videosMantenidos.length === 0 && imagenesMantenidas.length === 0) {
-                contenedor.style.display = 'none';
-                return;
+                contenedorMantenidos.style.display = 'none';
+            } else {
+                contenedorMantenidos.style.display = 'block';
+                // Dibujar Videos Mantenidos
+                videosMantenidos.forEach((vid, index) => {
+                    listaMantenidos.innerHTML += crearMiniaturaHTML(vid, index, 'video', false);
+                });
+                // Dibujar Fotos Mantenidas
+                imagenesMantenidas.forEach((img, index) => {
+                    listaMantenidos.innerHTML += crearMiniaturaHTML(img, index, 'img', false);
+                });
             }
 
-            contenedor.style.display = 'block';
+            // 2. Mostrar/Ocultar caja roja
+            if (videosEnCola.length === 0 && imagenesEnCola.length === 0) {
+                contenedorCola.style.display = 'none';
+            } else {
+                contenedorCola.style.display = 'block';
+                // Dibujar Videos en Cola
+                videosEnCola.forEach((vid, index) => {
+                    listaCola.innerHTML += crearMiniaturaHTML(vid, index, 'video', true);
+                });
+                // Dibujar Fotos en Cola
+                imagenesEnCola.forEach((img, index) => {
+                    listaCola.innerHTML += crearMiniaturaHTML(img, index, 'img', true);
+                });
+            }
+        }
 
-            // Dibujar Videos guardados (Click para ver + Texto)
-            videosMantenidos.forEach((vid, index) => {
-                let thumb = `
-                    <a href="${vid}" target="_blank" style="text-decoration: none; width: 100%; height: 100%; background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #00F0FF; transition: 0.3s;" onmouseover="this.style.background='#2a3a50'" onmouseout="this.style.background='#1e293b'" title="Clic para ver video">
-                        <i class="fa-solid fa-video" style="font-size: 18px; margin-bottom: 5px;"></i>
-                        <span style="font-size: 9px; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Video ${index + 1}</span>
-                    </a>`;
-                
-                if (vid.includes('youtube.com') || vid.includes('youtu.be')) {
-                    const match = vid.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
+        function crearMiniaturaHTML(url, index, tipo, esCola) {
+            let thumb = '';
+            if (tipo === 'video') {
+                thumb = `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #00F0FF;"><i class="fa-solid fa-video" style="font-size: 18px; margin-bottom: 5px;"></i><span style="font-size: 9px; font-weight: 700;">VIDEO</span></div>`;
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
                     if (match && match[2].length === 11) {
-                        thumb = `
-                        <a href="${vid}" target="_blank" style="text-decoration: none; width: 100%; height: 100%; display: block; position: relative;" title="Ver en YouTube">
-                            <img src="https://img.youtube.com/vi/${match[2]}/default.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
-                                <i class="fa-brands fa-youtube" style="font-size: 18px; color: #ff0000; margin-bottom: 5px;"></i>
-                                <span style="font-size: 9px; font-weight: 700;">YOUTUBE</span>
-                            </div>
-                        </a>`;
+                        thumb = `<img src="https://img.youtube.com/vi/${match[2]}/default.jpg" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;"><i class="fa-brands fa-youtube" style="font-size: 18px; color: #ff0000;"></i></div>`;
                     }
                 }
+            } else {
+                thumb = `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover; opacity: ${esCola ? '0.5' : '0.8'};">`;
+            }
 
-                lista.innerHTML += `
-                    <div style="position: relative; width: 90px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                        ${thumb}
-                        <span onclick="quitarMedioExistente('video', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10;">&times;</span>
-                    </div>
-                `;
-            });
+            const btnAccion = esCola 
+                ? `<span onclick="restaurarMedio('${tipo}', ${index})" style="position: absolute; top: 2px; right: 2px; background: #00ff66; color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10;" title="Restaurar"><i class="fa-solid fa-rotate-left"></i></span>`
+                : `<span onclick="quitarMedioExistente('${tipo}', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10;" title="Borrar">&times;</span>`;
 
-            // Dibujar Fotos guardadas (Click para ampliar)
-            imagenesMantenidas.forEach((img, index) => {
-                lista.innerHTML += `
-                    <div style="position: relative; width: 90px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                        <a href="${img}" target="_blank" style="display: block; width: 100%; height: 100%;" title="Clic para ampliar foto">
-                            <img src="${img}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
-                        </a>
-                        <span onclick="quitarMedioExistente('img', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10;">&times;</span>
-                    </div>
-                `;
-            });
+            return `<div style="position: relative; width: 90px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid ${esCola ? 'rgba(255,74,74,0.5)' : 'rgba(255,255,255,0.1)'}; background: #000;">${thumb}${btnAccion}</div>`;
         }
 
         function quitarMedioExistente(tipo, index) {
-            if (tipo === 'video') {
-                const urlObj = videosMantenidos[index];
-                if (urlObj.includes('supabase.co')) {
-                    // Decodifica y limpia la URL para que el Storage lo encuentre exacto
-                    archivosVideosABorrar.push(decodeURIComponent(urlObj.split('?')[0].split('/').pop())); 
-                }
-                videosMantenidos.splice(index, 1);
-            } else {
-                const urlObj = imagenesMantenidas[index];
-                if (urlObj.includes('supabase.co')) {
-                    archivosImagenesABorrar.push(decodeURIComponent(urlObj.split('?')[0].split('/').pop()));
-                }
-                imagenesMantenidas.splice(index, 1);
-            }
+            if (tipo === 'video') { videosEnCola.push(videosMantenidos[index]); videosMantenidos.splice(index, 1); } 
+            else { imagenesEnCola.push(imagenesMantenidas[index]); imagenesMantenidas.splice(index, 1); }
+            renderizarMediosExistentes();
+        }
+
+        function restaurarMedio(tipo, index) {
+            if (tipo === 'video') { videosMantenidos.push(videosEnCola[index]); videosEnCola.splice(index, 1); } 
+            else { imagenesMantenidas.push(imagenesEnCola[index]); imagenesEnCola.splice(index, 1); }
             renderizarMediosExistentes();
         }
 
@@ -517,8 +524,9 @@
             editandoVidId = null;
             videosMantenidos = [];
             imagenesMantenidas = [];
-            archivosVideosABorrar = []; 
-            archivosImagenesABorrar = []; 
+            videosEnCola = []; 
+            imagenesEnCola = []; 
+            document.getElementById('gestor-papelera-temporal').style.display = 'none'; 
             document.getElementById('form-videos').reset();
             document.getElementById('gestor-medios').style.display = 'none';
             document.getElementById('vid-origen').value = 'link';
@@ -598,27 +606,42 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 const { data: { session } } = await db.auth.getSession();
                 const usuarioEmail = session ? session.user.email : 'Administrador';
 
+                // --- BARREDORA Y CONTEO (Aniquilación real) ---
+                let archivosEliminadosCount = 0;
+                for (let url of videosEnCola) { 
+                    if (url.includes('supabase.co')) {
+                        const file = decodeURIComponent(url.split('?')[0].split('/').pop());
+                        await db.storage.from('videos').remove([file]); 
+                        archivosEliminadosCount++;
+                    }
+                }
+                for (let url of imagenesEnCola) { 
+                    if (url.includes('supabase.co')) {
+                        const file = decodeURIComponent(url.split('?')[0].split('/').pop());
+                        await db.storage.from('imagenes').remove([file]); 
+                        archivosEliminadosCount++;
+                    }
+                }
+                videosEnCola = [];
+                imagenesEnCola = [];
+                // ---------------------------------------
+
                 if (editandoVidId) { 
                     await db.from('videos').update(payload).eq('id', editandoVidId); 
                     
-                    // REGISTRO DE AUDITORÍA (Quién lo editó)
+                    let msjHistorial = 'Trabajo editado y actualizado';
+                    if (archivosEliminadosCount > 0) msjHistorial += ` (Se eliminaron ${archivosEliminadosCount} archivos del servidor)`;
+
                     await db.from('auditoria_borrados').insert([{
                         modulo: 'videos',
                         registro_id: editandoVidId,
-                        detalle: 'Trabajo editado y actualizado',
+                        detalle: msjHistorial,
                         usuario: usuarioEmail
                     }]);
                 } 
                 else { 
                     await db.from('videos').insert([payload]); 
                 }
-                
-                // --- BARREDORA DE ARCHIVOS HUÉRFANOS ---
-                for (let file of archivosVideosABorrar) { await db.storage.from('videos').remove([file]); }
-                for (let file of archivosImagenesABorrar) { await db.storage.from('imagenes').remove([file]); }
-                archivosVideosABorrar = [];
-                archivosImagenesABorrar = [];
-                // ---------------------------------------
 
                 mostrarToast("Trabajo guardado correctamente"); 
                 cancelarEdicionVideo(); 

@@ -434,6 +434,11 @@
                             <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
                             <div id="contenedor-fotos-nb" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
                         </div>
+                        <!-- NUEVO: CAJA ROJA DE PAPELERA TEMPORAL -->
+                        <div id="gestor-papelera-nb" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 74, 74, 0.05); border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 8px;">
+                            <label style="color: #ff4a4a; font-size: 12px;"><i class="fa-solid fa-trash-can"></i> FOTOS EN COLA PARA BORRAR (Se eliminarán al guardar)</label>
+                            <div id="contenedor-basura-nb" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                        </div>
                     </div>
                     
                     <button type="submit" id="btn-submit-nb" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar Notebook</button>
@@ -531,6 +536,11 @@
                                 <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
                                 <div id="contenedor-fotos-mem" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
                             </div>
+                            <!-- NUEVO: CAJA ROJA DE PAPELERA TEMPORAL MEMORIAS -->
+                            <div id="gestor-papelera-mem" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 74, 74, 0.05); border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 8px;">
+                                <label style="color: #ff4a4a; font-size: 12px;"><i class="fa-solid fa-trash-can"></i> FOTOS EN COLA PARA BORRAR (Se eliminarán al guardar)</label>
+                                <div id="contenedor-basura-mem" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -610,6 +620,11 @@
                                 <div id="gestor-medios-acc" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 8px;">
                                     <label style="color: #00F0FF; font-size: 12px;"><i class="fa-solid fa-images"></i> FOTOS GUARDADAS (TOCÁ LA X PARA QUITAR)</label>
                                     <div id="contenedor-fotos-acc" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                                </div>
+                                <!-- NUEVO: CAJA ROJA DE PAPELERA TEMPORAL ACCESORIOS -->
+                                <div id="gestor-papelera-acc" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 74, 74, 0.05); border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 8px;">
+                                    <label style="color: #ff4a4a; font-size: 12px;"><i class="fa-solid fa-trash-can"></i> FOTOS EN COLA PARA BORRAR (Se eliminarán al guardar)</label>
+                                    <div id="contenedor-basura-acc" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -1050,7 +1065,7 @@
         let notebooksActuales = [];
         let editandoNbId = null;
         let imagenesMantenidasNb = [];
-        let archivosImagenesABorrarNb = [];
+        let imagenesEnColaNb = [];
 
         async function cargarNotebooks() {
             const tabla = document.getElementById('tabla-admin-notebooks');
@@ -1062,26 +1077,51 @@
         }
 
         function renderizarFotosNb() {
-            const cont = document.getElementById('contenedor-fotos-nb');
+            const contMantenidas = document.getElementById('contenedor-fotos-nb');
+            const contCola = document.getElementById('contenedor-basura-nb');
+            const gestorMantenidas = document.getElementById('gestor-medios-nb');
+            const gestorCola = document.getElementById('gestor-papelera-nb');
+
+            // 1. Fotos guardadas (Caja Azul)
             if (imagenesMantenidasNb.length === 0) {
-                document.getElementById('gestor-medios-nb').style.display = 'none';
-                return;
+                gestorMantenidas.style.display = 'none';
+            } else {
+                gestorMantenidas.style.display = 'block';
+                contMantenidas.innerHTML = '';
+                imagenesMantenidasNb.forEach((url, index) => {
+                    contMantenidas.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="quitarFotoNb(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Mover a papelera"><i class="fa-solid fa-xmark"></i></button>
+                        </div>`;
+                });
             }
-            document.getElementById('gestor-medios-nb').style.display = 'block';
-            cont.innerHTML = '';
-            imagenesMantenidasNb.forEach((url, index) => {
-                cont.innerHTML += `
-                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
-                        <button type="button" onclick="quitarFotoNb(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
-                    </div>`;
-            });
+
+            // 2. Fotos en cola para borrar (Caja Roja)
+            if (imagenesEnColaNb.length === 0) {
+                gestorCola.style.display = 'none';
+            } else {
+                gestorCola.style.display = 'block';
+                contCola.innerHTML = '';
+                imagenesEnColaNb.forEach((url, index) => {
+                    contCola.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,74,74,0.5); opacity: 0.5;">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="restaurarFotoNb(${index})" style="position: absolute; top: 2px; right: 2px; background: #00ff66; color: #000; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;" title="Restaurar"><i class="fa-solid fa-rotate-left"></i></button>
+                        </div>`;
+                });
+            }
         }
 
         function quitarFotoNb(index) {
-            const urlObj = imagenesMantenidasNb[index];
-            if (urlObj.includes('supabase.co')) archivosImagenesABorrarNb.push(urlObj.split('/').pop());
+            imagenesEnColaNb.push(imagenesMantenidasNb[index]);
             imagenesMantenidasNb.splice(index, 1);
+            renderizarFotosNb();
+        }
+
+        function restaurarFotoNb(index) {
+            imagenesMantenidasNb.push(imagenesEnColaNb[index]);
+            imagenesEnColaNb.splice(index, 1);
             renderizarFotosNb();
         }
 
@@ -1145,7 +1185,8 @@
         function cancelarEdicionNotebook() {
             editandoNbId = null;
             imagenesMantenidasNb = [];
-            archivosImagenesABorrarNb = [];
+            imagenesEnColaNb = [];
+            document.getElementById('gestor-papelera-nb').style.display = 'none';
             document.getElementById('gestor-medios-nb').style.display = 'none';
             document.getElementById('form-notebooks').reset();
             document.getElementById('busqueda-notebooks').value = '';
@@ -1197,15 +1238,26 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 const { data: { session } } = await db.auth.getSession();
                 const usuarioEmail = session ? session.user.email : 'Administrador';
 
+                // Barredora y conteo (Aniquilación real)
+                let archivosEliminadosCount = 0;
+                for (let url of imagenesEnColaNb) { 
+                    if (url.includes('supabase.co')) {
+                        const file = decodeURIComponent(url.split('?')[0].split('/').pop());
+                        await db.storage.from('imagenes').remove([file]); 
+                        archivosEliminadosCount++;
+                    }
+                }
+                imagenesEnColaNb = [];
+
                 if (editandoNbId) { 
                     await db.from('notebooks').update(payload).eq('id', editandoNbId); 
-                    await db.from('auditoria_borrados').insert([{ modulo: 'notebooks', registro_id: editandoNbId, detalle: 'Notebook editada y actualizada', usuario: usuarioEmail }]);
+                    
+                    let msjHistorial = 'Notebook editada y actualizada';
+                    if (archivosEliminadosCount > 0) msjHistorial += ` (Se eliminaron ${archivosEliminadosCount} archivos del servidor)`;
+
+                    await db.from('auditoria_borrados').insert([{ modulo: 'notebooks', registro_id: editandoNbId, detalle: msjHistorial, usuario: usuarioEmail }]);
                 } 
                 else { await db.from('notebooks').insert([payload]); }
-
-                // Barredora
-                for (let file of archivosImagenesABorrarNb) { await db.storage.from('imagenes').remove([file]); }
-                archivosImagenesABorrarNb = [];
 
                 mostrarToast("Notebook guardada"); cancelarEdicionNotebook(); cargarNotebooks(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
@@ -1219,7 +1271,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         let memoriasActuales = [];
         let editandoMemId = null;
         let imagenesMantenidasMem = [];
-        let archivosImagenesABorrarMem = [];
+        let imagenesEnColaMem = [];
 
         function adaptarFormularioMemoria() {
             const tipo = document.getElementById('mem-tipo').value;
@@ -1241,26 +1293,51 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         }
 
         function renderizarFotosMem() {
-            const cont = document.getElementById('contenedor-fotos-mem');
+            const contMantenidas = document.getElementById('contenedor-fotos-mem');
+            const contCola = document.getElementById('contenedor-basura-mem');
+            const gestorMantenidas = document.getElementById('gestor-medios-mem');
+            const gestorCola = document.getElementById('gestor-papelera-mem');
+
+            // 1. Fotos guardadas (Caja Azul)
             if (imagenesMantenidasMem.length === 0) {
-                document.getElementById('gestor-medios-mem').style.display = 'none';
-                return;
+                gestorMantenidas.style.display = 'none';
+            } else {
+                gestorMantenidas.style.display = 'block';
+                contMantenidas.innerHTML = '';
+                imagenesMantenidasMem.forEach((url, index) => {
+                    contMantenidas.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="quitarFotoMem(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Mover a papelera"><i class="fa-solid fa-xmark"></i></button>
+                        </div>`;
+                });
             }
-            document.getElementById('gestor-medios-mem').style.display = 'block';
-            cont.innerHTML = '';
-            imagenesMantenidasMem.forEach((url, index) => {
-                cont.innerHTML += `
-                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
-                        <button type="button" onclick="quitarFotoMem(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
-                    </div>`;
-            });
+
+            // 2. Fotos en cola para borrar (Caja Roja)
+            if (imagenesEnColaMem.length === 0) {
+                gestorCola.style.display = 'none';
+            } else {
+                gestorCola.style.display = 'block';
+                contCola.innerHTML = '';
+                imagenesEnColaMem.forEach((url, index) => {
+                    contCola.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,74,74,0.5); opacity: 0.5;">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="restaurarFotoMem(${index})" style="position: absolute; top: 2px; right: 2px; background: #00ff66; color: #000; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;" title="Restaurar"><i class="fa-solid fa-rotate-left"></i></button>
+                        </div>`;
+                });
+            }
         }
 
         function quitarFotoMem(index) {
-            const urlObj = imagenesMantenidasMem[index];
-            if (urlObj.includes('supabase.co')) archivosImagenesABorrarMem.push(urlObj.split('/').pop());
+            imagenesEnColaMem.push(imagenesMantenidasMem[index]);
             imagenesMantenidasMem.splice(index, 1);
+            renderizarFotosMem();
+        }
+
+        function restaurarFotoMem(index) {
+            imagenesMantenidasMem.push(imagenesEnColaMem[index]);
+            imagenesEnColaMem.splice(index, 1);
             renderizarFotosMem();
         }
 
@@ -1330,7 +1407,8 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function cancelarEdicionMemoria() {
             editandoMemId = null;
             imagenesMantenidasMem = [];
-            archivosImagenesABorrarMem = [];
+            imagenesEnColaMem = [];
+            document.getElementById('gestor-papelera-mem').style.display = 'none';
             document.getElementById('gestor-medios-mem').style.display = 'none';
             document.getElementById('form-memorias').reset();
             document.getElementById('campos-ram').style.display = 'none'; document.getElementById('campos-ssd').style.display = 'none';
@@ -1388,15 +1466,26 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 const { data: { session } } = await db.auth.getSession();
                 const usuarioEmail = session ? session.user.email : 'Administrador';
 
+                // Barredora y conteo (Aniquilación real)
+                let archivosEliminadosCount = 0;
+                for (let url of imagenesEnColaMem) { 
+                    if (url.includes('supabase.co')) {
+                        const file = decodeURIComponent(url.split('?')[0].split('/').pop());
+                        await db.storage.from('imagenes').remove([file]); 
+                        archivosEliminadosCount++;
+                    }
+                }
+                imagenesEnColaMem = [];
+
                 if (editandoMemId) { 
                     await db.from('memorias').update(payload).eq('id', editandoMemId); 
-                    await db.from('auditoria_borrados').insert([{ modulo: 'memorias', registro_id: editandoMemId, detalle: 'Componente editado y actualizado', usuario: usuarioEmail }]);
+                    
+                    let msjHistorial = 'Componente editado y actualizado';
+                    if (archivosEliminadosCount > 0) msjHistorial += ` (Se eliminaron ${archivosEliminadosCount} archivos del servidor)`;
+
+                    await db.from('auditoria_borrados').insert([{ modulo: 'memorias', registro_id: editandoMemId, detalle: msjHistorial, usuario: usuarioEmail }]);
                 } 
                 else { await db.from('memorias').insert([payload]); }
-
-                // Barredora
-                for (let file of archivosImagenesABorrarMem) { await db.storage.from('imagenes').remove([file]); }
-                archivosImagenesABorrarMem = [];
 
                 mostrarToast("Componente guardado"); cancelarEdicionMemoria(); cargarMemorias(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
@@ -1410,7 +1499,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         let accesoriosActuales = [];
         let editandoAccId = null;
         let imagenesMantenidasAcc = [];
-        let archivosImagenesABorrarAcc = [];
+        let imagenesEnColaAcc = [];
 
         function adaptarFormularioAccesorio() {
             const tipo = document.getElementById('acc-tipo').value;
@@ -1442,26 +1531,51 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         }
 
         function renderizarFotosAcc() {
-            const cont = document.getElementById('contenedor-fotos-acc');
+            const contMantenidas = document.getElementById('contenedor-fotos-acc');
+            const contCola = document.getElementById('contenedor-basura-acc');
+            const gestorMantenidas = document.getElementById('gestor-medios-acc');
+            const gestorCola = document.getElementById('gestor-papelera-acc');
+
+            // 1. Fotos guardadas (Caja Azul)
             if (imagenesMantenidasAcc.length === 0) {
-                document.getElementById('gestor-medios-acc').style.display = 'none';
-                return;
+                gestorMantenidas.style.display = 'none';
+            } else {
+                gestorMantenidas.style.display = 'block';
+                contMantenidas.innerHTML = '';
+                imagenesMantenidasAcc.forEach((url, index) => {
+                    contMantenidas.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="quitarFotoAcc(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Mover a papelera"><i class="fa-solid fa-xmark"></i></button>
+                        </div>`;
+                });
             }
-            document.getElementById('gestor-medios-acc').style.display = 'block';
-            cont.innerHTML = '';
-            imagenesMantenidasAcc.forEach((url, index) => {
-                cont.innerHTML += `
-                    <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                        <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
-                        <button type="button" onclick="quitarFotoAcc(${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
-                    </div>`;
-            });
+
+            // 2. Fotos en cola para borrar (Caja Roja)
+            if (imagenesEnColaAcc.length === 0) {
+                gestorCola.style.display = 'none';
+            } else {
+                gestorCola.style.display = 'block';
+                contCola.innerHTML = '';
+                imagenesEnColaAcc.forEach((url, index) => {
+                    contCola.innerHTML += `
+                        <div style="position: relative; width: 80px; height: 80px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,74,74,0.5); opacity: 0.5;">
+                            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <button type="button" onclick="restaurarFotoAcc(${index})" style="position: absolute; top: 2px; right: 2px; background: #00ff66; color: #000; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;" title="Restaurar"><i class="fa-solid fa-rotate-left"></i></button>
+                        </div>`;
+                });
+            }
         }
 
         function quitarFotoAcc(index) {
-            const urlObj = imagenesMantenidasAcc[index];
-            if (urlObj.includes('supabase.co')) archivosImagenesABorrarAcc.push(urlObj.split('/').pop());
+            imagenesEnColaAcc.push(imagenesMantenidasAcc[index]);
             imagenesMantenidasAcc.splice(index, 1);
+            renderizarFotosAcc();
+        }
+
+        function restaurarFotoAcc(index) {
+            imagenesMantenidasAcc.push(imagenesEnColaAcc[index]);
+            imagenesEnColaAcc.splice(index, 1);
             renderizarFotosAcc();
         }
 
@@ -1526,7 +1640,8 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function cancelarEdicionAccesorio() {
             editandoAccId = null;
             imagenesMantenidasAcc = [];
-            archivosImagenesABorrarAcc = [];
+            imagenesEnColaAcc = [];
+            document.getElementById('gestor-papelera-acc').style.display = 'none';
             document.getElementById('gestor-medios-acc').style.display = 'none';
             document.getElementById('form-accesorios').reset();
             document.getElementById('campos-dinamicos-acc').style.display = 'none';
@@ -1578,15 +1693,26 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 const { data: { session } } = await db.auth.getSession();
                 const usuarioEmail = session ? session.user.email : 'Administrador';
 
+                // Barredora y conteo (Aniquilación real)
+                let archivosEliminadosCount = 0;
+                for (let url of imagenesEnColaAcc) { 
+                    if (url.includes('supabase.co')) {
+                        const file = decodeURIComponent(url.split('?')[0].split('/').pop());
+                        await db.storage.from('imagenes').remove([file]); 
+                        archivosEliminadosCount++;
+                    }
+                }
+                imagenesEnColaAcc = [];
+
                 if (editandoAccId) { 
                     await db.from('accesorios').update(payload).eq('id', editandoAccId); 
-                    await db.from('auditoria_borrados').insert([{ modulo: 'accesorios', registro_id: editandoAccId, detalle: 'Accesorio editado y actualizado', usuario: usuarioEmail }]);
+                    
+                    let msjHistorial = 'Accesorio editado y actualizado';
+                    if (archivosEliminadosCount > 0) msjHistorial += ` (Se eliminaron ${archivosEliminadosCount} archivos del servidor)`;
+
+                    await db.from('auditoria_borrados').insert([{ modulo: 'accesorios', registro_id: editandoAccId, detalle: msjHistorial, usuario: usuarioEmail }]);
                 } 
                 else { await db.from('accesorios').insert([payload]); }
-
-                // Barredora
-                for (let file of archivosImagenesABorrarAcc) { await db.storage.from('imagenes').remove([file]); }
-                archivosImagenesABorrarAcc = [];
 
                 mostrarToast("Accesorio guardado"); cancelarEdicionAccesorio(); cargarAccesorios(); cargarHistorial();
             } catch (err) { alert("Error: " + err.message); } 
