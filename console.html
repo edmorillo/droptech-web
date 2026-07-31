@@ -240,6 +240,7 @@
             <li><a onclick="cambiarSeccion('memorias', this)"><i class="fa-solid fa-memory"></i> Listado Memorias y SSDs</a></li>
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
             <li><a onclick="cambiarSeccion('ventas', this)" style="color: #00ff66;"><i class="fa-solid fa-file-invoice-dollar"></i> Ventas y Comprobantes</a></li>
+            <li><a onclick="cambiarSeccion('presupuestos', this)" style="color: #a855f7;"><i class="fa-solid fa-file-signature"></i> Presupuestos de PC</a></li>
             <li><a href="trabajos.html" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
             <li style="margin-top: 20px;">
                 <a onclick="cambiarSeccion('papelera', this)" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</a>
@@ -855,6 +856,115 @@
                     </thead>
                     <tbody id="tabla-admin-ventas">
                         <tr><td colspan="5" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial de ventas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN PRESUPUESTOS -->
+        <section id="sec-presupuestos" class="dashboard-section">
+            <h1 class="header-title" style="color: #a855f7;"><i class="fa-solid fa-file-signature"></i> Presupuestos y Armado de PC</h1>
+            <p style="color: #94A3B8; margin-bottom: 25px; font-size: 14px;">Cotizá equipos combinando tus servicios locales con hardware externo. El PDF tendrá una validez automática de 3 días.</p>
+            
+            <div class="panel-card">
+                <form id="form-presupuestos">
+                    <!-- 1. DATOS DEL CLIENTE -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente (Nombre y Apellido)</label>
+                            <input type="text" id="presup-cliente" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto (Opcional)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <select id="presup-tipo-contacto" onchange="actualizarPlaceholderPresupuesto()" style="width: 130px; background: #1E293B; color: #fff;">
+                                    <option value="Teléfono">Teléfono</option>
+                                    <option value="DNI">DNI</option>
+                                    <option value="Email">Email</option>
+                                </select>
+                                <input type="text" id="presup-contacto" placeholder="Ej: 11-2345-6789" style="flex: 1;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid rgba(168, 85, 247, 0.2); margin: 20px 0;">
+
+                    <!-- 2. AGREGAR AL CARRITO -->
+                    <div class="form-row">
+                        <!-- CATÁLOGO LOCAL -->
+                        <div class="form-group" style="background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2);">
+                            <label style="color: #00F0FF;"><i class="fa-solid fa-box-open"></i> Agregar de mi catálogo (Servicios/Stock)</label>
+                            <input type="text" id="buscador-producto-presup" placeholder="Buscar en mi stock..." oninput="filtrarCatalogoPresup()" style="margin-bottom: 8px; background: #1E293B;">
+                            <select id="presup-producto-local" style="background: #1E293B; color: #fff; margin-bottom: 10px;">
+                                <option value="" disabled selected>Cargando catálogo...</option>
+                            </select>
+                            <button type="button" onclick="agregarAlCarritoLocal()" class="btn" style="background: transparent; border: 1px solid #00F0FF; color: #00F0FF; padding: 10px;"><i class="fa-solid fa-plus"></i> Sumar al presupuesto</button>
+                        </div>
+
+                        <!-- PROVEEDOR EXTERNO -->
+                        <div class="form-group" style="background: rgba(168, 85, 247, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(168, 85, 247, 0.2);">
+                            <label style="color: #a855f7;"><i class="fa-solid fa-globe"></i> Agregar componente Externo</label>
+                            <input type="text" id="presup-ext-nombre" placeholder="Nombre (Ej: Placa de Video RTX 4060)" style="margin-bottom: 8px; background: #1E293B;">
+                            
+                            <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                                <input type="number" id="presup-ext-costo" placeholder="Costo Proveedor ($)" style="background: #1E293B; flex: 2;">
+                                <input type="number" id="presup-ext-margen" placeholder="Margen (%)" value="2" style="background: #1E293B; flex: 1;" title="Tu ganancia sugerida (Ej: 2%)">
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" id="presup-ext-prov-nombre" placeholder="Nombre Proveedor (Opcional)" style="background: #1E293B; flex: 1;">
+                                <input type="text" id="presup-ext-prov-link" placeholder="Pegá el Link acá (Opcional)" style="background: #1E293B; flex: 1;">
+                            </div>
+
+                            <button type="button" onclick="agregarAlCarritoExterno()" class="btn" style="background: transparent; border: 1px solid #a855f7; color: #a855f7; padding: 10px;"><i class="fa-solid fa-plus"></i> Sumar al presupuesto</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. LA TABLA DEL CARRITO VISUAL -->
+                    <div style="background: #0b0f17; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; margin-bottom: 20px;">
+                        <table style="margin-bottom: 0;">
+                            <thead>
+                                <tr>
+                                    <th>CANT</th>
+                                    <th>PRODUCTO / SERVICIO</th>
+                                    <th>INFO SECRETA</th>
+                                    <th>PRECIO FINAL</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carrito-presupuesto-body">
+                                <tr><td colspan="5" style="text-align: center; color: #94A3B8; padding: 20px;">Aún no agregaste componentes a este presupuesto.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 4. TOTALES -->
+                    <div style="background: rgba(168, 85, 247, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(168, 85, 247, 0.2); margin-bottom: 20px; text-align: right;">
+                        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 5px;">Monto Total (Precio Lista):</div>
+                        <div id="presup-resumen-lista" style="font-size: 18px; font-weight: 600; color: #94A3B8; text-decoration: line-through;">$0</div>
+                        <div style="color: #94A3B8; font-size: 13px; margin-top: 10px; margin-bottom: 5px;">Monto Total en Efectivo/Transferencia:</div>
+                        <div id="presup-resumen-efectivo" style="font-size: 28px; font-weight: 800; color: #a855f7;">$0</div>
+                    </div>
+                    
+                    <button type="submit" id="btn-submit-presup" class="btn" style="background: #a855f7; color: #fff; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);"><i class="fa-solid fa-file-pdf"></i> Guardar Presupuesto y Generar PDF</button>
+                    <button type="button" id="btn-cancelar-presup" onclick="cancelarEdicionPresupuesto()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar / Limpiar</button>
+                </form>
+            </div>
+
+            <!-- HISTORIAL DE PRESUPUESTOS -->
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Total Efvo.</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-presupuestos">
+                        <tr><td colspan="5" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2424,7 +2534,343 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         
 
         // =========================================================================
-        // 11. CARGA DE DATOS
+        // 11. MOTOR DE PRESUPUESTOS (CARRITO Y PDF)
+        // =========================================================================
+        let carritoPresupuesto = [];
+        let presupuestosActuales = [];
+        let editandoPresupId = null;
+
+        function filtrarCatalogoPresup() {
+            const busqueda = document.getElementById('buscador-producto-presup').value.toLowerCase();
+            const selectProducto = document.getElementById('presup-producto-local');
+            let opcionesHTML = '<option value="" disabled selected>Seleccioná el producto o servicio...</option>';
+            catalogoCompleto.forEach(item => {
+                if (item.nombre.toLowerCase().includes(busqueda)) {
+                    opcionesHTML += `<option value="${item.id_cat}">${item.nombre} (Contado: $${new Intl.NumberFormat('es-AR').format(item.precio)})</option>`;
+                }
+            });
+            selectProducto.innerHTML = opcionesHTML;
+        }
+
+        function agregarAlCarritoLocal() {
+            const idSeleccionado = document.getElementById('presup-producto-local').value;
+            if (!idSeleccionado) return alert("Seleccioná un producto del catálogo primero.");
+            
+            const producto = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
+            const precioEfvo = producto.precio;
+            const precioLista = Math.round(precioEfvo * 1.15); // Automático +15%
+
+            carritoPresupuesto.push({
+                cantidad: 1,
+                nombre: producto.nombre,
+                secreto: "Catálogo Local", // No hay secreto, es tuyo
+                link: "",
+                precio_efvo: precioEfvo,
+                precio_lista: precioLista
+            });
+            renderizarCarritoPresupuesto();
+        }
+
+        function agregarAlCarritoExterno() {
+            const nombre = document.getElementById('presup-ext-nombre').value;
+            const costo = parseFloat(document.getElementById('presup-ext-costo').value);
+            const margen = parseFloat(document.getElementById('presup-ext-margen').value);
+            const provNombre = document.getElementById('presup-ext-prov-nombre').value || 'Sin especificar';
+            const provLink = document.getElementById('presup-ext-prov-link').value || '';
+
+            if (!nombre || isNaN(costo) || isNaN(margen)) return alert("Completá Nombre, Costo y Margen para agregar el componente.");
+
+            // Calcula tu ganancia silenciosamente
+            const precioEfvo = Math.round(costo + (costo * (margen / 100)));
+            const precioLista = Math.round(precioEfvo * 1.15);
+
+            carritoPresupuesto.push({
+                cantidad: 1,
+                nombre: nombre,
+                secreto: provNombre,
+                link: provLink,
+                precio_efvo: precioEfvo,
+                precio_lista: precioLista
+            });
+
+            // Limpiamos las cajitas rápidas
+            document.getElementById('presup-ext-nombre').value = '';
+            document.getElementById('presup-ext-costo').value = '';
+            document.getElementById('presup-ext-prov-nombre').value = '';
+            document.getElementById('presup-ext-prov-link').value = '';
+            
+            renderizarCarritoPresupuesto();
+        }
+
+        function quitarDelCarritoPresup(index) {
+            carritoPresupuesto.splice(index, 1);
+            renderizarCarritoPresupuesto();
+        }
+
+        function renderizarCarritoPresupuesto() {
+            const tbody = document.getElementById('carrito-presupuesto-body');
+            let totalEfvo = 0;
+            let totalLista = 0;
+
+            if (carritoPresupuesto.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94A3B8; padding: 20px;">Aún no agregaste componentes a este presupuesto.</td></tr>';
+                document.getElementById('presup-resumen-efectivo').innerText = '$0';
+                document.getElementById('presup-resumen-lista').innerText = '$0';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            carritoPresupuesto.forEach((item, index) => {
+                totalEfvo += item.precio_efvo;
+                totalLista += item.precio_lista;
+                
+                // Iconito con el link si es que pusiste uno
+                let linkHtml = item.link ? `<a href="${item.link}" target="_blank" style="color:#a855f7; text-decoration:none; margin-left:8px;" title="Abrir link del proveedor"><i class="fa-solid fa-up-right-from-square"></i></a>` : '';
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="color:#fff; font-weight:bold;">${item.cantidad}</td>
+                        <td style="color:#00F0FF; font-size: 13px;">${item.nombre}</td>
+                        <td style="color:#94A3B8; font-size: 12px; font-style: italic;">${item.secreto} ${linkHtml}</td>
+                        <td style="color:#a855f7; font-weight:bold;">$${new Intl.NumberFormat('es-AR').format(item.precio_efvo)}</td>
+                        <td><button type="button" class="btn-delete" onclick="quitarDelCarritoPresup(${index})"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('presup-resumen-efectivo').innerText = '$' + new Intl.NumberFormat('es-AR').format(totalEfvo);
+            document.getElementById('presup-resumen-lista').innerText = '$' + new Intl.NumberFormat('es-AR').format(totalLista);
+        }
+
+        function actualizarPlaceholderPresupuesto() {
+            const tipo = document.getElementById('presup-tipo-contacto').value;
+            const inputContacto = document.getElementById('presup-contacto');
+            if (tipo === 'DNI') inputContacto.placeholder = 'Ej: 35.123.456';
+            else if (tipo === 'Email') inputContacto.placeholder = 'Ej: cliente@correo.com';
+            else inputContacto.placeholder = 'Ej: 11-2345-6789';
+        }
+
+        document.getElementById('form-presupuestos').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (carritoPresupuesto.length === 0) return alert("El carrito está vacío. Agregá al menos un ítem.");
+
+            const btnSubmit = document.getElementById('btn-submit-presup');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                let totalEfvo = 0; let totalLista = 0;
+                carritoPresupuesto.forEach(i => { totalEfvo += i.precio_efvo; totalLista += i.precio_lista; });
+
+                const tipoContacto = document.getElementById('presup-tipo-contacto').value;
+                const valorContacto = document.getElementById('presup-contacto').value;
+                const contactoFinal = (valorContacto.trim() !== '') ? `${tipoContacto}: ${valorContacto}` : '';
+
+                const payload = {
+                    cliente: document.getElementById('presup-cliente').value,
+                    contacto: contactoFinal,
+                    items: JSON.stringify(carritoPresupuesto),
+                    total_efectivo: totalEfvo,
+                    total_lista: totalLista,
+                    estado_presupuesto: 'Pendiente',
+                    estado_registro: 'activo'
+                };
+
+                let idGenerado = editandoPresupId;
+
+                if (editandoPresupId) {
+                    const { error } = await db.from('presupuestos').update(payload).eq('id', editandoPresupId);
+                    if (error) throw error;
+                    mostrarToast("Presupuesto actualizado con éxito.");
+                } else {
+                    const { data, error } = await db.from('presupuestos').insert([payload]).select();
+                    if (error) throw error;
+                    idGenerado = data[0].id;
+                    mostrarToast("Presupuesto guardado y PDF generado.");
+                }
+
+                // Generar PDF al instante (El PDF ignora los secretos)
+                generarPDFPresupuesto(payload, idGenerado);
+
+                cancelarEdicionPresupuesto();
+                cargarPresupuestos();
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.style.pointerEvents = 'auto';
+            }
+        });
+
+        async function cargarPresupuestos() {
+            const tabla = document.getElementById('tabla-admin-presupuestos');
+            try {
+                const { data, error } = await db.from('presupuestos').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
+                if (error) throw error;
+                presupuestosActuales = data || [];
+                
+                if (presupuestosActuales.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Aún no tenés presupuestos armados.</td></tr>';
+                    return;
+                }
+
+                tabla.innerHTML = '';
+                presupuestosActuales.forEach(p => {
+                    const fechaObj = new Date(p.created_at).toLocaleDateString('es-AR');
+                    const itemsObj = JSON.parse(p.items);
+                    const cantidadItems = itemsObj.length;
+                    
+                    let estadoBadge = '<span style="background: rgba(240, 180, 0, 0.1); color: #facc15; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">Pendiente</span>';
+                    if (p.estado_presupuesto === 'Aprobado') estadoBadge = '<span style="background: rgba(0, 255, 102, 0.1); color: #00ff66; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">Aprobado</span>';
+
+                    tabla.innerHTML += `
+                        <tr>
+                            <td style="color:#94A3B8;">${fechaObj}</td>
+                            <td style="color:#fff; font-weight:600;">${p.cliente}</td>
+                            <td style="font-size: 13px; color: #a855f7;"><i class="fa-solid fa-boxes-stacked"></i> ${cantidadItems} ítems</td>
+                            <td style="color:#00ff66; font-weight:700;">$${new Intl.NumberFormat('es-AR').format(p.total_efectivo)}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit" onclick="prepararEdicionPresupuesto(${p.id})" title="Editar Presupuesto"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-edit" style="background: rgba(168, 85, 247, 0.1); color: #a855f7; border-color: #a855f7;" onclick="reimprimirPresupuesto(${p.id})" title="Descargar PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                    <button class="btn-delete" onclick="abrirModalEliminar(${p.id}, 'presupuestos')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                tabla.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ff4a4a;">Error al cargar presupuestos.</td></tr>';
+            }
+        }
+
+        function prepararEdicionPresupuesto(id) {
+            const p = presupuestosActuales.find(x => x.id === id);
+            if (!p) return;
+            editandoPresupId = id;
+            
+            document.getElementById('presup-cliente').value = p.cliente;
+            if (p.contacto && p.contacto.includes(':')) {
+                const partes = p.contacto.split(':');
+                document.getElementById('presup-tipo-contacto').value = partes[0].trim();
+                document.getElementById('presup-contacto').value = partes.slice(1).join(':').trim();
+            } else {
+                document.getElementById('presup-contacto').value = p.contacto || '';
+            }
+
+            carritoPresupuesto = JSON.parse(p.items);
+            renderizarCarritoPresupuesto();
+
+            document.getElementById('btn-submit-presup').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar y Generar PDF';
+            document.getElementById('btn-submit-presup').style.background = '#facc15';
+            document.getElementById('btn-cancelar-presup').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionPresupuesto() {
+            editandoPresupId = null;
+            document.getElementById('form-presupuestos').reset();
+            carritoPresupuesto = [];
+            renderizarCarritoPresupuesto();
+            
+            const btnSubmit = document.getElementById('btn-submit-presup');
+            btnSubmit.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Guardar Presupuesto y Generar PDF';
+            btnSubmit.style.background = '#a855f7';
+            document.getElementById('btn-cancelar-presup').style.display = 'none';
+        }
+
+        function reimprimirPresupuesto(id) {
+            const p = presupuestosActuales.find(x => x.id === id);
+            if (!p) return;
+            generarPDFPresupuesto({
+                cliente: p.cliente,
+                contacto: p.contacto,
+                items: p.items,
+                total_efectivo: p.total_efectivo,
+                total_lista: p.total_lista
+            }, p.id);
+        }
+
+        function generarPDFPresupuesto(datos, idPresup) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const fechaFormat = new Date().toLocaleDateString('es-AR');
+            const itemsParseados = JSON.parse(datos.items);
+
+            // Dibujo del Logo
+            doc.setDrawColor(0, 180, 200); doc.setLineWidth(0.8);
+            doc.roundedRect(14, 12, 16, 11, 1.5, 1.5, 'S'); doc.line(18, 23, 16, 28); doc.line(16, 28, 28, 28); doc.line(28, 28, 26, 23); 
+            doc.roundedRect(33, 10, 8, 18, 1.5, 1.5, 'S'); doc.line(36, 13, 38, 13); doc.line(36, 16, 38, 16); 
+            doc.setDrawColor(150, 150, 150); doc.line(19, 17.5, 25, 17.5); doc.line(22, 14.5, 22, 20.5);
+
+            // Textos del Cabezal
+            doc.setTextColor(0, 0, 0); doc.setFontSize(22); doc.setFont("helvetica", "bold");
+            doc.text("COMPUTADORAS LEI", 48, 19);
+            doc.setTextColor(100, 100, 100); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+            doc.text("Soporte Técnico Premium & Armado de PC", 48, 25);
+            
+            // Info Comprobante Derecha
+            doc.setFontSize(12); doc.setTextColor(168, 85, 247); doc.setFont("helvetica", "bold");
+            doc.text("PRESUPUESTO", 196, 15, { align: "right" });
+            doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+            doc.text(`Fecha: ${fechaFormat}`, 196, 21, { align: "right" });
+            doc.text(`Nº: 000${idPresup || 'X'}`, 196, 26, { align: "right" });
+
+            // Datos del Cliente
+            doc.setDrawColor(200, 200, 200); doc.line(14, 33, 196, 33);
+            doc.setFontSize(10); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
+            doc.text("DATOS DEL CLIENTE", 14, 40);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nombre: ${datos.cliente}`, 14, 47);
+            if (datos.contacto && datos.contacto.trim() !== '') doc.text(`${datos.contacto}`, 14, 52);
+
+            // ARMADO DEL CARRITO PARA EL PDF (Ignorando link y secreto)
+            let bodyData = [];
+            itemsParseados.forEach(item => {
+                let unitarioLista = `$${new Intl.NumberFormat('es-AR').format(item.precio_lista)}`;
+                bodyData.push([item.cantidad.toString(), item.nombre, unitarioLista, unitarioLista]);
+            });
+
+            // Tabla PDF
+            doc.autoTable({
+                startY: 59,
+                head: [['CANT', 'DESCRIPCIÓN DEL PRODUCTO / SERVICIO', 'PRECIO UNIT. (Lista)', 'SUBTOTAL']],
+                body: bodyData,
+                theme: 'grid',
+                headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { halign: 'left' }, 2: { halign: 'right', cellWidth: 38 }, 3: { halign: 'right', cellWidth: 35 } },
+                styles: { fontSize: 10, cellPadding: 4 }
+            });
+
+            const finalY = doc.lastAutoTable.finalY;
+            const descuentoMonetario = datos.total_lista - datos.total_efectivo;
+
+            // Totales PDF
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+            doc.text("Subtotal (Precio Lista):", 145, finalY + 10, { align: "right" });
+            doc.text(`$${new Intl.NumberFormat('es-AR').format(datos.total_lista)}`, 196, finalY + 10, { align: "right" });
+            
+            doc.text("Descuento pago de contado:", 145, finalY + 17, { align: "right" });
+            doc.setTextColor(34, 197, 94); doc.setFont("helvetica", "bold");
+            doc.text(`-$${new Intl.NumberFormat('es-AR').format(descuentoMonetario)}`, 196, finalY + 17, { align: "right" });
+
+            doc.setFontSize(14); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
+            doc.text("TOTAL EN EFECTIVO:", 145, finalY + 29, { align: "right" });
+            doc.setTextColor(168, 85, 247); 
+            doc.text(`$${new Intl.NumberFormat('es-AR').format(datos.total_efectivo)}`, 196, finalY + 29, { align: "right" });
+
+            // Validez 3 Días
+            doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+            doc.text("Validez del presupuesto: 3 días (72hs) desde la fecha de emisión. Sujeto a stock.", 14, finalY + 42);
+
+            doc.save(`Presupuesto_${datos.cliente.replace(/\s+/g, '_')}_${fechaFormat}.pdf`);
+        }
+
+        // =========================================================================
+        // 12. CARGA DE DATOS AL ABRIR LA CONSOLA
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
@@ -2432,9 +2878,10 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         cargarAccesorios();
         cargarPapelera();
         cargarHistorial();
-        // ESTAS DOS SON NUEVAS:
         cargarCatalogoVentas();
         cargarVentas();
+        cargarPresupuestos(); // <--- Inicia el historial nuevo
+        setTimeout(() => filtrarCatalogoPresup(), 2000); // Precarga el catálogo local
     </script>
     
 
