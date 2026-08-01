@@ -946,7 +946,7 @@
                         <div id="presup-resumen-efectivo" style="font-size: 28px; font-weight: 800; color: #a855f7;">$0</div>
                     </div>
                     
-                    <button type="submit" id="btn-submit-presup" class="btn" style="background: #a855f7; color: #fff; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);"><i class="fa-solid fa-file-pdf"></i> Guardar Presupuesto y Generar PDF</button>
+                    <button type="submit" id="btn-submit-presup" class="btn" style="background: #a855f7; color: #fff; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);"><i class="fa-solid fa-floppy-disk"></i> Guardar Presupuesto</button>
                     <button type="button" id="btn-cancelar-presup" onclick="cancelarEdicionPresupuesto()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar / Limpiar</button>
                 </form>
             </div>
@@ -2552,23 +2552,43 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             selectProducto.innerHTML = opcionesHTML;
         }
 
+        let editandoCarritoIndex = null;
+
+        function restaurarBotonesCarrito() {
+            const btnLocal = document.querySelector('button[onclick="agregarAlCarritoLocal()"]');
+            const btnExt = document.querySelector('button[onclick="agregarAlCarritoExterno()"]');
+            if(btnLocal) { btnLocal.innerHTML = '<i class="fa-solid fa-plus"></i> Sumar al presupuesto'; btnLocal.style.color = '#00F0FF'; btnLocal.style.borderColor = '#00F0FF'; }
+            if(btnExt) { btnExt.innerHTML = '<i class="fa-solid fa-plus"></i> Sumar al presupuesto'; btnExt.style.color = '#a855f7'; btnExt.style.borderColor = '#a855f7'; }
+            editandoCarritoIndex = null;
+            renderizarCarritoPresupuesto();
+        }
+
         function agregarAlCarritoLocal() {
             const idSeleccionado = document.getElementById('presup-producto-local').value;
             if (!idSeleccionado) return alert("Seleccioná un producto del catálogo primero.");
             
             const producto = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
             const precioEfvo = producto.precio;
-            const precioLista = Math.round(precioEfvo * 1.15); // Automático +15%
+            const precioLista = Math.round(precioEfvo * 1.15); 
 
-            carritoPresupuesto.push({
+            const nuevoItem = {
+                es_local: true,
+                id_cat: idSeleccionado,
                 cantidad: 1,
                 nombre: producto.nombre,
-                secreto: "Catálogo Local", // No hay secreto, es tuyo
+                secreto: "Catálogo Local", 
                 link: "",
                 precio_efvo: precioEfvo,
                 precio_lista: precioLista
-            });
-            renderizarCarritoPresupuesto();
+            };
+
+            if (editandoCarritoIndex !== null) {
+                carritoPresupuesto[editandoCarritoIndex] = nuevoItem;
+            } else {
+                carritoPresupuesto.push(nuevoItem);
+            }
+            
+            restaurarBotonesCarrito();
         }
 
         function agregarAlCarritoExterno() {
@@ -2580,31 +2600,97 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
 
             if (!nombre || isNaN(costo) || isNaN(margen)) return alert("Completá Nombre, Costo y Margen para agregar el componente.");
 
-            // Calcula tu ganancia silenciosamente
             const precioEfvo = Math.round(costo + (costo * (margen / 100)));
             const precioLista = Math.round(precioEfvo * 1.15);
 
-            carritoPresupuesto.push({
+            const nuevoItem = {
+                es_local: false,
+                costo_original: costo,
+                margen_original: margen,
                 cantidad: 1,
                 nombre: nombre,
                 secreto: provNombre,
                 link: provLink,
                 precio_efvo: precioEfvo,
                 precio_lista: precioLista
-            });
+            };
 
-            // Limpiamos las cajitas rápidas
+            if (editandoCarritoIndex !== null) {
+                carritoPresupuesto[editandoCarritoIndex] = nuevoItem;
+            } else {
+                carritoPresupuesto.push(nuevoItem);
+            }
+
             document.getElementById('presup-ext-nombre').value = '';
             document.getElementById('presup-ext-costo').value = '';
             document.getElementById('presup-ext-prov-nombre').value = '';
             document.getElementById('presup-ext-prov-link').value = '';
+            
+            restaurarBotonesCarrito();
+        }
+
+        function editarDelCarritoPresup(index) {
+            const item = carritoPresupuesto[index];
+            editandoCarritoIndex = index;
+            
+            if (item.es_local || item.secreto === 'Catálogo Local') {
+                // 1. LLENAMOS EL LADO LOCAL
+                document.getElementById('buscador-producto-presup').value = '';
+                filtrarCatalogoPresup(); 
+                if (item.id_cat) document.getElementById('presup-producto-local').value = item.id_cat;
+                
+                const btnLocal = document.querySelector('button[onclick="agregarAlCarritoLocal()"]');
+                btnLocal.innerHTML = '<i class="fa-solid fa-pen"></i> Actualizar producto';
+                btnLocal.style.color = '#facc15';
+                btnLocal.style.borderColor = '#facc15';
+                
+                // 2. BARREDORA: VACIAMOS EL LADO EXTERNO
+                document.getElementById('presup-ext-nombre').value = '';
+                document.getElementById('presup-ext-costo').value = '';
+                document.getElementById('presup-ext-margen').value = '2';
+                document.getElementById('presup-ext-prov-nombre').value = '';
+                document.getElementById('presup-ext-prov-link').value = '';
+
+                const btnExt = document.querySelector('button[onclick="agregarAlCarritoExterno()"]');
+                btnExt.innerHTML = '<i class="fa-solid fa-plus"></i> Sumar al presupuesto';
+                btnExt.style.color = '#a855f7';
+                btnExt.style.borderColor = '#a855f7';
+            } else {
+                // 1. LLENAMOS EL LADO EXTERNO
+                document.getElementById('presup-ext-nombre').value = item.nombre;
+                document.getElementById('presup-ext-costo').value = item.costo_original !== undefined ? item.costo_original : Math.round(item.precio_efvo / 1.02);
+                document.getElementById('presup-ext-margen').value = item.margen_original !== undefined ? item.margen_original : 2;
+                document.getElementById('presup-ext-prov-nombre').value = (item.secreto && item.secreto !== 'Sin especificar' && item.secreto !== 'Catálogo Local') ? item.secreto : '';
+                document.getElementById('presup-ext-prov-link').value = item.link || '';
+
+                const btnExt = document.querySelector('button[onclick="agregarAlCarritoExterno()"]');
+                btnExt.innerHTML = '<i class="fa-solid fa-pen"></i> Actualizar producto';
+                btnExt.style.color = '#facc15';
+                btnExt.style.borderColor = '#facc15';
+                
+                // 2. BARREDORA: VACIAMOS EL LADO LOCAL
+                document.getElementById('buscador-producto-presup').value = '';
+                filtrarCatalogoPresup(); // Al estar vacío, reinicia el select de productos locales a su estado inicial
+
+                const btnLocal = document.querySelector('button[onclick="agregarAlCarritoLocal()"]');
+                btnLocal.innerHTML = '<i class="fa-solid fa-plus"></i> Sumar al presupuesto';
+                btnLocal.style.color = '#00F0FF';
+                btnLocal.style.borderColor = '#00F0FF';
+            }
             
             renderizarCarritoPresupuesto();
         }
 
         function quitarDelCarritoPresup(index) {
             carritoPresupuesto.splice(index, 1);
-            renderizarCarritoPresupuesto();
+            if (editandoCarritoIndex === index) {
+                restaurarBotonesCarrito();
+            } else if (editandoCarritoIndex !== null && editandoCarritoIndex > index) {
+                editandoCarritoIndex--;
+                renderizarCarritoPresupuesto();
+            } else {
+                renderizarCarritoPresupuesto();
+            }
         }
 
         function renderizarCarritoPresupuesto() {
@@ -2624,16 +2710,24 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 totalEfvo += item.precio_efvo;
                 totalLista += item.precio_lista;
                 
-                // Iconito con el link si es que pusiste uno
                 let linkHtml = item.link ? `<a href="${item.link}" target="_blank" style="color:#a855f7; text-decoration:none; margin-left:8px;" title="Abrir link del proveedor"><i class="fa-solid fa-up-right-from-square"></i></a>` : '';
+                
+                // Efecto visual: la fila se pinta de amarillo transparente si la estás editando
+                const bgColor = index === editandoCarritoIndex ? 'rgba(250, 204, 21, 0.15)' : 'transparent';
+                const nombreColor = index === editandoCarritoIndex ? '#facc15' : '#00F0FF';
 
                 tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${bgColor};">
                         <td style="color:#fff; font-weight:bold;">${item.cantidad}</td>
-                        <td style="color:#00F0FF; font-size: 13px;">${item.nombre}</td>
+                        <td style="color:${nombreColor}; font-size: 13px;">${item.nombre}</td>
                         <td style="color:#94A3B8; font-size: 12px; font-style: italic;">${item.secreto} ${linkHtml}</td>
                         <td style="color:#a855f7; font-weight:bold;">$${new Intl.NumberFormat('es-AR').format(item.precio_efvo)}</td>
-                        <td><button type="button" class="btn-delete" onclick="quitarDelCarritoPresup(${index})"><i class="fa-solid fa-trash"></i></button></td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="btn-edit" onclick="editarDelCarritoPresup(${index})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="btn-delete" onclick="quitarDelCarritoPresup(${index})" title="Borrar"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
                     </tr>
                 `;
             });
@@ -2687,11 +2781,11 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                     const { data, error } = await db.from('presupuestos').insert([payload]).select();
                     if (error) throw error;
                     idGenerado = data[0].id;
-                    mostrarToast("Presupuesto guardado y PDF generado.");
+                    mostrarToast("Presupuesto guardado en el historial.");
                 }
 
-                // Generar PDF al instante (El PDF ignora los secretos)
-                generarPDFPresupuesto(payload, idGenerado);
+                // Eliminamos la generación automática del PDF para no ensuciar las descargas.
+                // generarPDFPresupuesto(payload, idGenerado);
 
                 cancelarEdicionPresupuesto();
                 cargarPresupuestos();
@@ -2772,10 +2866,10 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             editandoPresupId = null;
             document.getElementById('form-presupuestos').reset();
             carritoPresupuesto = [];
-            renderizarCarritoPresupuesto();
+            restaurarBotonesCarrito();
             
             const btnSubmit = document.getElementById('btn-submit-presup');
-            btnSubmit.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Guardar Presupuesto y Generar PDF';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Presupuesto';
             btnSubmit.style.background = '#a855f7';
             document.getElementById('btn-cancelar-presup').style.display = 'none';
         }
@@ -2840,7 +2934,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 body: bodyData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
-                columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 1: { halign: 'left' }, 2: { halign: 'right', cellWidth: 38 }, 3: { halign: 'right', cellWidth: 35 } },
+                columnStyles: { 0: { halign: 'center', cellWidth: 18 }, 1: { halign: 'left' }, 2: { halign: 'right', cellWidth: 38 }, 3: { halign: 'right', cellWidth: 35 } },
                 styles: { fontSize: 10, cellPadding: 4 }
             });
 
