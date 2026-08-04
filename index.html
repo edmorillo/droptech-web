@@ -156,7 +156,7 @@
         <p class="products-subtitle">Disponemos de componentes nuevos y usados premium con garantía de funcionamiento.</p>
         <div class="products-grid">
             <!-- Tarjeta Notebooks -->
-            <div class="product-card reveal" onclick="window.location.href='notebooks.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="setTimeout(() => window.location.href='notebooks.html', 150)" ontouchstart="" style="cursor: pointer;">
                 <div class="prod-icon">💻</div>
                 <h3>Notebooks Usadas</h3>
                 <p>Equipos seleccionados, testeados al 100% y en excelente estado estético y operativo.</p>
@@ -164,7 +164,7 @@
             </div>
             
             <!-- Tarjeta Memorias -->
-            <div class="product-card reveal" onclick="window.location.href='memorias.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="setTimeout(() => window.location.href='memorias.html', 150)" ontouchstart="" style="cursor: pointer;">
                 <div class="prod-icon">🧠</div>
                 <h3>Memorias RAM & SSDs</h3>
                 <p>Módulos de memoria RAM de 8GB y 16GB (Nuevas y Usadas Premium) y discos sólidos SSD de alta velocidad.</p>
@@ -172,7 +172,7 @@
             </div>
             
             <!-- Tarjeta Accesorios -->
-            <div class="product-card reveal" onclick="window.location.href='accesorios.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="setTimeout(() => window.location.href='accesorios.html', 150)" ontouchstart="" style="cursor: pointer;">
                 <div class="prod-icon">🔌</div>
                 <h3>Hardware & Repuestos</h3>
                 <p>Motherboards multizócalo, teclados, mouses, monitores y auriculares de alta fidelidad para tu setup.</p>
@@ -417,6 +417,26 @@
     </footer>
 
     <script src="js/script.js"></script>
+
+    <!-- MOTOR PARA ARREGLAR EL SALTO DE PÁGINA (Volver a la tienda) -->
+    <script>
+        window.addEventListener('load', () => {
+            if (window.location.hash) {
+                setTimeout(() => {
+                    const destino = document.querySelector(window.location.hash);
+                    if (destino) {
+                        const alturaMenu = 80; 
+                        const posicionElemento = destino.getBoundingClientRect().top;
+                        const posicionFinal = posicionElemento + window.scrollY - alturaMenu;
+                        window.scrollTo({
+                            top: posicionFinal,
+                            behavior: "smooth"
+                        });
+                    }
+                }, 800);
+            }
+        });
+    </script>
 
     <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <i class="fa-brands fa-whatsapp"></i>
