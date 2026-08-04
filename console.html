@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="icon" type="image/png" href="assets/img/logo_icon2.png">
-    <link rel="apple-touch-icon" href="assets/img/logo_icon2.png">
+    <link rel="icon" type="image/png" href="assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="assets/img/logo_icon1.png">
     <link rel="manifest" href="manifest.json">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -241,7 +241,8 @@
             <li><a onclick="cambiarSeccion('accesorios', this)"><i class="fa-solid fa-keyboard"></i> Listado Accesorios</a></li>
             <li><a onclick="cambiarSeccion('ventas', this)" style="color: #00ff66;"><i class="fa-solid fa-file-invoice-dollar"></i> Ventas y Comprobantes</a></li>
             <li><a onclick="cambiarSeccion('presupuestos', this)" style="color: #a855f7;"><i class="fa-solid fa-file-signature"></i> Presupuestos de PC</a></li>
-            <li><a href="trabajos.html" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
+            
+            <li><a onclick="cambiarSeccion('videos', this)" style="color: #facc15;"><i class="fa-solid fa-video"></i> Trabajos / Videos</a></li>
             <li style="margin-top: 20px;">
                 <a onclick="cambiarSeccion('papelera', this)" style="color: #ff4a4a;"><i class="fa-solid fa-trash-can"></i> Papelera de Reciclaje</a>
             </li>
@@ -970,7 +971,94 @@
             </div>
         </section>
 
+        <!-- SECCIÓN VIDEOS Y TRABAJOS -->
+        <section id="sec-videos" class="dashboard-section" style="display: none;">
+            <h1 class="header-title"><i class="fa-solid fa-video" style="color: #facc15;"></i> Trabajos y Videos del Taller</h1>
+
+            <div class="panel-card">
+                <form id="form-videos">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Título del Trabajo</label>
+                            <input type="text" id="vid-titulo" placeholder="Ej: Mantenimiento Avanzado PS4 Pro" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Origen del Video (Opcional si subís fotos)</label>
+                            <select id="vid-origen" onchange="adaptarModoVideo()">
+                                <option value="link" selected>Pegar Link (YouTube, Drive, Instagram)</option>
+                                <option value="archivo">Subir archivo desde mi PC (MP4)</option>
+                                <option value="ninguno">Solo subiré fotos, sin video</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="gestor-medios" style="display: none; width: 100%; margin-bottom: 20px; padding: 15px; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px;">
+                        <h4 style="color: #00F0FF; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-photo-film"></i> Archivos Guardados (Tocá la X para quitar)</h4>
+                        <div id="lista-medios-existentes" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                    </div>
+                    
+                    <div id="gestor-papelera-temporal" style="display: none; width: 100%; margin-bottom: 20px; padding: 15px; background: rgba(255, 74, 74, 0.05); border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 8px;">
+                        <h4 style="color: #ff4a4a; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-trash-can"></i> Archivos en cola para borrar (Se eliminarán al publicar)</h4>
+                        <div id="lista-medios-cola" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" id="caja-vid-url" style="width: 100%;">
+                            <label>URL del Video (Si son varios, separalos con coma)</label>
+                            <input type="text" id="vid-url" placeholder="Ej: https://youtu.be/..., https://youtu.be/...">
+                        </div>
+                        <div class="form-group" id="caja-vid-archivo" style="display: none; width: 100%;">
+                            <label>Subir Videos (Se pueden varios a la vez)</label>
+                            <input type="file" id="vid-archivo" accept="video/mp4,video/webm" multiple>
+                            <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionada la tecla CTRL para elegir varios videos.</small>
+                        </div>
+                        <div class="form-group" style="width: 100%;">
+                            <label>Galería de Fotos del Proceso</label>
+                            <input type="file" id="vid-imagenes" accept="image/png, image/jpeg, image/webp" multiple>
+                            <small style="color: #94A3B8; font-size: 11px; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Mantené presionada la tecla CTRL para elegir varias fotos.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción Corta del Trabajo</label>
+                        <textarea id="vid-descripcion" rows="3" placeholder="Ej: Desarme completo y cambio de pasta térmica." style="width: 100%; padding: 14px; border-radius: 8px; background: #070A0F; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 14px; outline: none; transition: 0.3s; resize: vertical;" required></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-submit-vid" class="btn" style="background: #facc15; color: #000;"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar Trabajo</button>
+                    <button type="button" id="btn-cancelar-vid" onclick="cancelarEdicionVideo()" class="btn-delete full-width" style="display: none;"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+                </form>
+            </div>
+
+            <div class="panel-card" style="padding: 0; background: transparent; border: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trabajo</th>
+                            <th>Descripción</th>
+                            <th>Contenido</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin-videos">
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando historial...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
+
+    <!-- MODAL DE COMPRESIÓN DE FOTOS -->
+    <div id="modal-compresion" class="modal" style="display: none; position: fixed; z-index: 999999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #111622; padding: 35px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.3); text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);">
+            <div style="width: 70px; height: 70px; background: rgba(0, 240, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                <i class="fa-solid fa-compress" style="font-size: 35px; color: #00F0FF;"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 20px; margin-bottom: 10px;">¡Foto Optimizada!</h3>
+            <p id="texto-modal-compresion" style="color: #94A3B8; font-size: 14px; margin-bottom: 25px; line-height: 1.5;"></p>
+            <button id="btn-aceptar-compresion" style="width: 100%; background: #00F0FF; color: #000; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">Aceptar</button>
+        </div>
+    </div>
 
     
 
@@ -2964,7 +3052,224 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         }
 
         // =========================================================================
-        // 12. CARGA DE DATOS AL ABRIR LA CONSOLA
+        // 12. MOTOR DE TRABAJOS Y VIDEOS
+        // =========================================================================
+        let editandoVidId = null;
+        let videosActuales = [];
+        let videosMantenidos = [];
+        let imagenesMantenidas = [];
+        let videosEnCola = [];
+        let imagenesEnCola = [];
+
+        function adaptarModoVideo() {
+            const origen = document.getElementById('vid-origen').value;
+            const urlBox = document.getElementById('caja-vid-url');
+            const fileBox = document.getElementById('caja-vid-archivo');
+            if(origen === 'link') { urlBox.style.display = 'block'; fileBox.style.display = 'none'; } 
+            else if (origen === 'archivo') { urlBox.style.display = 'none'; fileBox.style.display = 'block'; } 
+            else { urlBox.style.display = 'none'; fileBox.style.display = 'none'; }
+        }
+
+        async function cargarVideos() {
+            const { data, error } = await db.from('videos').select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
+            if (!error) { videosActuales = data || []; renderizarTablaVideos(); }
+        }
+
+        function renderizarTablaVideos() {
+            const tabla = document.getElementById('tabla-admin-videos');
+            if (videosActuales.length === 0) { tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay trabajos publicados.</td></tr>'; return; }
+
+            tabla.innerHTML = ''; 
+            videosActuales.forEach(item => {
+                const urlStr = item.url_video || '';
+                let iconoTipo = '<i class="fa-solid fa-camera"></i> Solo Fotos';
+                if (urlStr.includes('supabase.co')) iconoTipo = '<i class="fa-solid fa-hard-drive"></i> MP4 en Nube';
+                else if (urlStr !== '') iconoTipo = '<i class="fa-brands fa-youtube"></i> Link Externo';
+                    
+                let cantidadFotos = item.imagenes && item.imagenes.trim() !== '' ? item.imagenes.split(',').length : 0;
+
+                tabla.innerHTML += `
+                    <tr>
+                        <td style="color:#fff; font-weight:600;"><i class="fa-solid fa-briefcase" style="color: #facc15; margin-right: 8px;"></i> ${item.titulo}</td>
+                        <td style="font-size: 13px; color: #94A3B8;">${item.descripcion}</td>
+                        <td>
+                            <div style="color: #64748b; font-size: 11px; font-weight: 600; margin-bottom: 4px;">${iconoTipo}</div>
+                            <div style="font-size: 11px; color: #00F0FF;"><i class="fa-solid fa-images"></i> ${cantidadFotos} fotos</div>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="prepararEdicionVideo(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-delete" onclick="abrirModalEliminar(${item.id}, 'videos')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function renderizarMediosExistentes() {
+            const contenedorMantenidos = document.getElementById('gestor-medios');
+            const listaMantenidos = document.getElementById('lista-medios-existentes');
+            const contenedorCola = document.getElementById('gestor-papelera-temporal');
+            const listaCola = document.getElementById('lista-medios-cola');
+            listaMantenidos.innerHTML = ''; listaCola.innerHTML = '';
+
+            if (videosMantenidos.length === 0 && imagenesMantenidas.length === 0) { contenedorMantenidos.style.display = 'none'; } 
+            else {
+                contenedorMantenidos.style.display = 'block';
+                videosMantenidos.forEach((vid, index) => listaMantenidos.innerHTML += crearMiniaturaHTML(vid, index, 'video', false));
+                imagenesMantenidas.forEach((img, index) => listaMantenidos.innerHTML += crearMiniaturaHTML(img, index, 'img', false));
+            }
+
+            if (videosEnCola.length === 0 && imagenesEnCola.length === 0) { contenedorCola.style.display = 'none'; } 
+            else {
+                contenedorCola.style.display = 'block';
+                videosEnCola.forEach((vid, index) => listaCola.innerHTML += crearMiniaturaHTML(vid, index, 'video', true));
+                imagenesEnCola.forEach((img, index) => listaCola.innerHTML += crearMiniaturaHTML(img, index, 'img', true));
+            }
+        }
+
+        function crearMiniaturaHTML(url, index, tipo, esCola) {
+            let thumb = tipo === 'video' ? `<div style="width: 100%; height: 100%; background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #00F0FF;"><i class="fa-solid fa-video" style="font-size: 18px; margin-bottom: 5px;"></i><span style="font-size: 9px; font-weight: 700;">VIDEO</span></div>` : `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover; opacity: ${esCola ? '0.5' : '0.8'};">`;
+            if (tipo === 'video' && (url.includes('youtube.com') || url.includes('youtu.be'))) {
+                const match = url.match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/);
+                if (match && match[2].length === 11) thumb = `<img src="https://img.youtube.com/vi/${match[2]}/default.jpg" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;"><i class="fa-brands fa-youtube" style="font-size: 18px; color: #ff0000;"></i></div>`;
+            }
+            const btnAccion = esCola ? `<span onclick="restaurarMedio('${tipo}', ${index})" style="position: absolute; top: 2px; right: 2px; background: #00ff66; color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; z-index: 10;"><i class="fa-solid fa-rotate-left"></i></span>` : `<span onclick="quitarMedioExistente('${tipo}', ${index})" style="position: absolute; top: 2px; right: 2px; background: #ff4a4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; z-index: 10;">&times;</span>`;
+            return `<div style="position: relative; width: 90px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid ${esCola ? 'rgba(255,74,74,0.5)' : 'rgba(255,255,255,0.1)'}; background: #000;">${thumb}${btnAccion}</div>`;
+        }
+
+        function quitarMedioExistente(tipo, index) { if (tipo === 'video') { videosEnCola.push(videosMantenidos[index]); videosMantenidos.splice(index, 1); } else { imagenesEnCola.push(imagenesMantenidas[index]); imagenesMantenidas.splice(index, 1); } renderizarMediosExistentes(); }
+        function restaurarMedio(tipo, index) { if (tipo === 'video') { videosMantenidos.push(videosEnCola[index]); videosEnCola.splice(index, 1); } else { imagenesMantenidas.push(imagenesEnCola[index]); imagenesEnCola.splice(index, 1); } renderizarMediosExistentes(); }
+
+        function prepararEdicionVideo(id) {
+            const item = videosActuales.find(v => v.id === id); if (!item) return;
+            editandoVidId = id;
+            document.getElementById('vid-titulo').value = item.titulo;
+            document.getElementById('vid-descripcion').value = item.descripcion;
+            videosMantenidos = item.url_video ? item.url_video.split(',').map(v=>v.trim()).filter(v=>v!=='') : [];
+            imagenesMantenidas = item.imagenes ? item.imagenes.split(',').map(i=>i.trim()).filter(i=>i!=='') : [];
+            renderizarMediosExistentes();
+            document.getElementById('vid-origen').value = 'archivo';
+            document.getElementById('vid-url').value = '';
+            adaptarModoVideo();
+            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Trabajo';
+            document.getElementById('btn-submit-vid').style.background = '#00ff66';
+            document.getElementById('btn-cancelar-vid').style.display = 'block';
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionVideo() {
+            editandoVidId = null; videosMantenidos = []; imagenesMantenidas = []; videosEnCola = []; imagenesEnCola = [];
+            document.getElementById('gestor-papelera-temporal').style.display = 'none';
+            document.getElementById('form-videos').reset();
+            document.getElementById('gestor-medios').style.display = 'none';
+            document.getElementById('vid-origen').value = 'link'; adaptarModoVideo();
+            document.getElementById('btn-submit-vid').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Trabajo';
+            document.getElementById('btn-submit-vid').style.background = '#facc15';
+            document.getElementById('btn-cancelar-vid').style.display = 'none';
+        }
+
+        document.getElementById('form-videos').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-vid');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            try {
+                let nuevosVideosUrl = [];
+                const origen = document.getElementById('vid-origen').value;
+                if (origen === 'archivo') {
+                    const fileInputVid = document.getElementById('vid-archivo');
+                    if (fileInputVid.files.length > 0) {
+                        for (let i = 0; i < fileInputVid.files.length; i++) {
+                            const archivoVid = fileInputVid.files[i];
+                            const nombreUnicoVid = Date.now() + '_vid_' + Math.random().toString(36).substring(7) + '_' + archivoVid.name;
+                            const { error: errorVid } = await db.storage.from('videos').upload(nombreUnicoVid, archivoVid);
+                            if (errorVid) throw errorVid;
+                            const { data } = db.storage.from('videos').getPublicUrl(nombreUnicoVid);
+                            nuevosVideosUrl.push(data.publicUrl);
+                        }
+                    }
+                } else if (origen === 'link' && document.getElementById('vid-url').value.trim() !== '') { 
+                    nuevosVideosUrl.push(document.getElementById('vid-url').value.trim()); 
+                }
+
+                const fileInputImg = document.getElementById('vid-imagenes');
+                let nuevasImagenesUrl = [];
+                if (fileInputImg.files.length > 0) {
+                    for (let i = 0; i < fileInputImg.files.length; i++) {
+                        let archivoImg = fileInputImg.files[i];
+                        if (archivoImg.type.startsWith('image/')) {
+                            let pesoOriginal = (archivoImg.size / 1024 / 1024).toFixed(2);
+                            archivoImg = await comprimirImagen(archivoImg);
+                            let pesoNuevo = (archivoImg.size / 1024).toFixed(2);
+                            await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue reducida mágicamente a ${pesoNuevo} KB 🚀`);
+                        }
+                        const nomImg = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + archivoImg.name;
+                        await db.storage.from('imagenes').upload(nomImg, archivoImg);
+                        const { data } = db.storage.from('imagenes').getPublicUrl(nomImg);
+                        nuevasImagenesUrl.push(data.publicUrl);
+                    }
+                }
+
+                const urlFinalVideo = [...videosMantenidos, ...nuevosVideosUrl].join(',');
+                const urlsImagenesFinal = [...imagenesMantenidas, ...nuevasImagenesUrl].join(',');
+                const payload = { titulo: document.getElementById('vid-titulo').value, descripcion: document.getElementById('vid-descripcion').value, url_video: urlFinalVideo, imagenes: urlsImagenesFinal, estado_registro: 'activo' };
+
+                let archivosEliminadosCount = 0;
+                for (let url of videosEnCola) { if (url.includes('supabase.co')) { const file = decodeURIComponent(url.split('?')[0].split('/').pop()); await db.storage.from('videos').remove([file]); archivosEliminadosCount++; } }
+                for (let url of imagenesEnCola) { if (url.includes('supabase.co')) { const file = decodeURIComponent(url.split('?')[0].split('/').pop()); await db.storage.from('imagenes').remove([file]); archivosEliminadosCount++; } }
+                videosEnCola = []; imagenesEnCola = [];
+
+                if (editandoVidId) { 
+                    await db.from('videos').update(payload).eq('id', editandoVidId); 
+                } else { 
+                    await db.from('videos').insert([payload]); 
+                }
+
+                mostrarToast("Trabajo guardado correctamente"); 
+                cancelarEdicionVideo(); 
+                cargarVideos();
+            } catch (err) { alert("Error: " + err.message); } finally { btnSubmit.innerHTML = textoOriginal; btnSubmit.style.pointerEvents = 'auto'; }
+        });
+
+        async function comprimirImagen(archivo, calidad = 0.7, maxWidth = 1200) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(archivo);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width; let height = img.height;
+                        if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            if (!blob) return resolve(archivo);
+                            const nuevoArchivo = new File([blob], archivo.name.replace(/\.[^/.]+$/, ".jpg"), { type: 'image/jpeg', lastModified: Date.now() });
+                            if (nuevoArchivo.size >= archivo.size) resolve(archivo); else resolve(nuevoArchivo);
+                        }, 'image/jpeg', calidad);
+                    }; img.onerror = reject;
+                }; reader.onerror = reject;
+            });
+        }
+
+        function mostrarModalCompresion(mensaje) {
+            return new Promise((resolve) => {
+                document.getElementById('texto-modal-compresion').innerText = mensaje;
+                document.getElementById('modal-compresion').style.display = 'flex';
+                document.getElementById('btn-aceptar-compresion').onclick = () => {
+                    document.getElementById('modal-compresion').style.display = 'none';
+                    resolve(); 
+                };
+            });
+        }
+
+        // =========================================================================
+        // 13. CARGA DE DATOS AL ABRIR LA CONSOLA
         // =========================================================================
         cargarPrecios();
         cargarNotebooks();
@@ -2974,8 +3279,9 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         cargarHistorial();
         cargarCatalogoVentas();
         cargarVentas();
-        cargarPresupuestos(); // <--- Inicia el historial nuevo
-        setTimeout(() => filtrarCatalogoPresup(), 2000); // Precarga el catálogo local
+        cargarPresupuestos();
+        cargarVideos(); // <--- INICIA EL HISTORIAL DE VIDEOS
+        setTimeout(() => filtrarCatalogoPresup(), 2000);
     </script>
     
 
