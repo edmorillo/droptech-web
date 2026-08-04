@@ -156,27 +156,27 @@
         <p class="products-subtitle">Disponemos de componentes nuevos y usados premium con garantía de funcionamiento.</p>
         <div class="products-grid">
             <!-- Tarjeta Notebooks -->
-            <div class="product-card reveal" onclick="window.location.href='notebooks.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="navegarConEfecto('notebooks.html', this)" style="cursor: pointer;">
                 <div class="prod-icon">💻</div>
                 <h3>Notebooks Usadas</h3>
                 <p>Equipos seleccionados, testeados al 100% y en excelente estado estético y operativo.</p>
-                <a href="notebooks.html" class="prod-badge" style="text-decoration: none;" onclick="event.stopPropagation();">Premium Usado</a>
+                <a href="notebooks.html" class="prod-badge" style="text-decoration: none;" onclick="event.preventDefault(); event.stopPropagation(); navegarConEfecto('notebooks.html', this.parentElement)">Premium Usado</a>
             </div>
             
             <!-- Tarjeta Memorias -->
-            <div class="product-card reveal" onclick="window.location.href='memorias.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="navegarConEfecto('memorias.html', this)" style="cursor: pointer;">
                 <div class="prod-icon">🧠</div>
                 <h3>Memorias RAM & SSDs</h3>
                 <p>Módulos de memoria RAM de 8GB y 16GB (Nuevas y Usadas Premium) y discos sólidos SSD de alta velocidad.</p>
-                <a href="memorias.html" class="prod-badge" style="text-decoration: none;" onclick="event.stopPropagation();">Nuevas / Usadas</a>
+                <a href="memorias.html" class="prod-badge" style="text-decoration: none;" onclick="event.preventDefault(); event.stopPropagation(); navegarConEfecto('memorias.html', this.parentElement)">Nuevas / Usadas</a>
             </div>
             
             <!-- Tarjeta Accesorios -->
-            <div class="product-card reveal" onclick="window.location.href='accesorios.html'" style="cursor: pointer;">
+            <div class="product-card reveal" onclick="navegarConEfecto('accesorios.html', this)" style="cursor: pointer;">
                 <div class="prod-icon">🔌</div>
                 <h3>Hardware & Repuestos</h3>
                 <p>Motherboards multizócalo, teclados, mouses, monitores y auriculares de alta fidelidad para tu setup.</p>
-                <a href="accesorios.html" class="prod-badge" style="text-decoration: none;" onclick="event.stopPropagation();">Accesorios</a>
+                <a href="accesorios.html" class="prod-badge" style="text-decoration: none;" onclick="event.preventDefault(); event.stopPropagation(); navegarConEfecto('accesorios.html', this.parentElement)">Accesorios</a>
             </div>
         </div>
     </section>
@@ -417,6 +417,46 @@
     </footer>
 
     <script src="js/script.js"></script>
+
+    <!-- MOTOR DE NAVEGACIÓN Y EFECTOS VISUALES -->
+    <script>
+        // 1. Efecto visual Neón al tocar las tarjetas de la tienda
+        function navegarConEfecto(url, elemento) {
+            // Le aplicamos el estilo de "botón presionado" y lo pintamos de celeste neón
+            elemento.style.transition = 'all 0.2s ease';
+            elemento.style.borderColor = '#00F0FF';
+            elemento.style.boxShadow = '0 0 25px rgba(0, 240, 255, 0.4)';
+            elemento.style.transform = 'scale(0.97)';
+            
+            // Le damos 200 milisegundos de tiempo al ojo humano para ver el efecto antes de cambiar de página
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+
+        // 2. Francotirador de posición: Arregla el salto de página al volver a la tienda
+        window.addEventListener('load', () => {
+            // Si detecta que la URL termina en "#productos" (cuando tocan volver a la tienda)
+            if (window.location.hash) {
+                // Esperamos un momento a que la base de datos dibuje la tabla de precios
+                setTimeout(() => {
+                    const destino = document.querySelector(window.location.hash);
+                    if (destino) {
+                        // Calcula dónde quedó la tienda después de que creció la tabla de arriba
+                        const alturaMenu = 80; // Compensa la altura del menú superior
+                        const posicionElemento = destino.getBoundingClientRect().top;
+                        const posicionFinal = posicionElemento + window.scrollY - alturaMenu;
+                        
+                        // Te desliza suavemente al lugar exacto
+                        window.scrollTo({
+                            top: posicionFinal,
+                            behavior: "smooth"
+                        });
+                    }
+                }, 800); // 800 milisegundos de espera silenciosa
+            }
+        });
+    </script>
 
     <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20tu%20web%20y%20quería%20hacerte%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <i class="fa-brands fa-whatsapp"></i>
