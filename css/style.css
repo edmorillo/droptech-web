@@ -776,6 +776,7 @@ h2 {
     border-color: #00F0FF !important;
     background: rgba(0, 240, 255, 0.02) !important;
     box-shadow: 0 10px 25px rgba(0, 240, 255, 0.15) !important;
+    transition-delay: 0s !important; /* <-- ESTO ANULA LA TARDANZA AL TOCAR */
 }
 
 /* 4. Efecto Neón para las Tarjetas de Servicios (¿Qué hacemos?) */
