@@ -1327,6 +1327,12 @@ h2 {
     transition-delay: 0.4s !important; 
 }
 
+/* ANULAR DEMORA AL TOCAR O PASAR EL MOUSE (NEÓN INSTANTÁNEO) */
+.card:hover, .product-card:hover, .why-card:hover,
+.card:active, .product-card:active, .why-card:active {
+    transition-delay: 0s !important;
+}
+
 /* ==========================================
    PARCHES VISUALES (ZOOM 90%, MENÚ Y TIENDA MÓVIL)
    ========================================== */
