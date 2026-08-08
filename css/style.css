@@ -769,8 +769,9 @@ h2 {
     box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15) !important;
 }
 
-/* 3. Efecto Neón para las Tarjetas de la Tienda (Product Cards) al pasar el mouse */
-.product-card:hover {
+/* 3. Efecto Neón para las Tarjetas de la Tienda al pasar el mouse (PC) o tocar (Celular) */
+.product-card:hover,
+.product-card:active {
     transform: translateY(-8px) !important;
     border-color: #00F0FF !important;
     background: rgba(0, 240, 255, 0.02) !important;
@@ -1522,15 +1523,21 @@ h2 {
         flex-direction: column !important;
     }
 
-    /* 3. Corte de texto implacable con 3 puntitos para listas y párrafos */
-.product-card ul li,
-.product-card p {
+    /* 3. Corte de texto implacable con 3 puntitos SOLO para listas */
+.product-card ul li {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     width: 100% !important;
     max-width: 100% !important;
     display: block !important;
+}
+
+    /* Párrafos libres para que se lea todo el texto en la portada */
+.product-card p {
+    width: 100% !important;
+    display: block !important;
+    white-space: normal !important;
 }
 
     /* 4. Botón siempre al fondo */
