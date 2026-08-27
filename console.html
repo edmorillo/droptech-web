@@ -3273,6 +3273,25 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             });
         }
 
+        // =========================================================================
+        // 14. CIERRE DE SESIÓN AUTOMÁTICO POR INACTIVIDAD (SEGURIDAD)
+        // =========================================================================
+        let temporizadorInactividad;
+        const TIEMPO_LIMITE = 15 * 60 * 1000; // 15 minutos exactos
+
+        function reiniciarRelojSeguridad() {
+            clearTimeout(temporizadorInactividad);
+            temporizadorInactividad = setTimeout(() => {
+                alert("Por seguridad, tu sesión ha expirado por inactividad. Volvé a ingresar.");
+                cerrarSesion();
+            }, TIEMPO_LIMITE);
+        }
+
+        // Cada vez que toques la pantalla, muevas el mouse o escribas, el reloj vuelve a cero
+        ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'].forEach(evento => {
+            document.addEventListener(evento, reiniciarRelojSeguridad, true);
+        });
+
         
 
         // =========================================================================
@@ -3289,6 +3308,8 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         cargarPresupuestos();
         cargarVideos(); // <--- INICIA EL HISTORIAL DE VIDEOS
         setTimeout(() => filtrarCatalogoPresup(), 2000);
+        // Arrancamos el reloj apenas entrás
+        reiniciarRelojSeguridad();
     </script>
     
 
