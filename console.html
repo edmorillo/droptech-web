@@ -2570,7 +2570,10 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             doc.text("COMPROBANTE DE VENTA", 196, 15, { align: "right" });
             doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
             doc.text(`Fecha: ${fechaFormat}`, 196, 21, { align: "right" });
-            doc.text(`Comprobante Nº: 000${venta.id}`, 196, 26, { align: "right" });
+            
+            // EL TRUCO DEL NÚMERO (Le sumamos 150 al ID real)
+            const numeroComprobante = venta.id + 150;
+            doc.text(`Comprobante Nº: 000${numeroComprobante}`, 196, 26, { align: "right" });
 
             // Datos del Cliente (Acomodado)
             doc.setDrawColor(200, 200, 200); doc.line(14, 33, 196, 33);
@@ -2997,7 +3000,10 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             doc.text("PRESUPUESTO", 196, 15, { align: "right" });
             doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
             doc.text(`Fecha: ${fechaFormat}`, 196, 21, { align: "right" });
-            doc.text(`Nº: 000${idPresup || 'X'}`, 196, 26, { align: "right" });
+            
+            // EL TRUCO DEL NÚMERO (Le sumamos 150 al ID real)
+            const numeroPresupuesto = idPresup ? (idPresup + 150) : 'X';
+            doc.text(`Nº: 000${numeroPresupuesto}`, 196, 26, { align: "right" });
 
             // Datos del Cliente
             doc.setDrawColor(200, 200, 200); doc.line(14, 33, 196, 33);
@@ -3266,6 +3272,8 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 };
             });
         }
+
+        
 
         // =========================================================================
         // 13. CARGA DE DATOS AL ABRIR LA CONSOLA
