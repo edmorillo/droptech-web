@@ -832,6 +832,15 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- NUEVO: CAJA DE FECHA (OCULTA POR DEFECTO, SOLO PARA ADMIN) -->
+                    <div class="form-row" id="fila-admin-fecha" style="display: none; margin-bottom: 15px;">
+                        <div class="form-group" style="width: 50%;">
+                            <label style="color: #00F0FF;"><i class="fa-regular fa-calendar-days"></i> Fecha del Comprobante</label>
+                            <input type="date" id="venta-fecha" onclick="try{this.showPicker()}catch(e){}" style="background: #1E293B; border-color: #00F0FF; color: #fff; cursor: pointer;">
+                        </div>
+                    </div>
+
                     <div style="background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 20px; text-align: right;">
                         <div style="color: #94A3B8; font-size: 13px; margin-bottom: 5px;">Monto a cobrar al cliente:</div>
                         <div id="venta-resumen-precio" style="font-size: 28px; font-weight: 800; color: #00ff66;">$0</div>
@@ -1149,6 +1158,9 @@
                 if(tablaRecargar === 'notebooks') cargarNotebooks();
                 if(tablaRecargar === 'memorias') cargarMemorias();
                 if(tablaRecargar === 'accesorios') cargarAccesorios();
+                if(tablaRecargar === 'ventas') cargarVentas();
+                if(tablaRecargar === 'presupuestos') cargarPresupuestos();
+                if(tablaRecargar === 'videos') cargarVideos();
 
                 document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
                 cargarHistorial();
@@ -2004,6 +2016,9 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 if(modulo === 'notebooks') cargarNotebooks();
                 if(modulo === 'memorias') cargarMemorias();
                 if(modulo === 'accesorios') cargarAccesorios();
+                if(modulo === 'ventas') cargarVentas();
+                if(modulo === 'presupuestos') cargarPresupuestos();
+                if(modulo === 'videos') cargarVideos();
             } else {
                 alert("Error al restaurar: " + error.message);
             }
@@ -2198,6 +2213,13 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                             console.log("Admin Supremo. Acceso total.");
                             // Le pintamos el texto de dorado al admin para que se note que es el jefe
                             if (etiquetaUsuario) etiquetaUsuario.style.color = '#facc15'; 
+                            
+                            // NUEVO: Revelar calendario de ventas y fijarlo en 'hoy'
+                            const filaFecha = document.getElementById('fila-admin-fecha');
+                            if (filaFecha) {
+                                filaFecha.style.display = 'block';
+                                document.getElementById('venta-fecha').value = new Date().toISOString().split('T')[0];
+                            }
                             
                         } else if (editores.includes(userEmail)) {
                             console.log("Editor. Ocultando borrado e historial.");
@@ -2426,6 +2448,12 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                     estado_registro: 'activo'
                 };
 
+                // NUEVO: Si la caja de fecha existe y tiene valor, guardamos esa fecha
+                const inputFecha = document.getElementById('venta-fecha');
+                if (inputFecha && inputFecha.value !== '') {
+                    payload.created_at = inputFecha.value + 'T12:00:00Z';
+                }
+
                 if (editandoVentaId) {
                     const { error } = await db.from('ventas').update(payload).eq('id', editandoVentaId);
                     if (error) throw error;
@@ -2470,6 +2498,12 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             document.getElementById('venta-pago').value = venta.medio_pago;
             actualizarPrecioVenta();
 
+            // NUEVO: Cargar la fecha del comprobante en el calendario
+            const inputFecha = document.getElementById('venta-fecha');
+            if (inputFecha && venta.created_at) {
+                inputFecha.value = venta.created_at.split('T')[0];
+            }
+
             document.getElementById('btn-submit-venta').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar Venta';
             document.getElementById('btn-submit-venta').style.background = '#facc15';
             document.getElementById('btn-cancelar-venta').style.display = 'block';
@@ -2484,6 +2518,10 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             document.getElementById('venta-resumen-precio').innerHTML = '$0';
             document.getElementById('venta-resumen-descuento').innerHTML = '';
             
+            // NUEVO: Resetear el calendario al día de hoy al limpiar
+            const inputFecha = document.getElementById('venta-fecha');
+            if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
+
             const btnSubmit = document.getElementById('btn-submit-venta');
             btnSubmit.innerHTML = '<i class="fa-solid fa-check"></i> Registrar Venta y Guardar Historial';
             btnSubmit.style.background = '#00ff66';
