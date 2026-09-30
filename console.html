@@ -3456,7 +3456,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function reiniciarRelojSeguridad() {
             clearTimeout(temporizadorInactividad);
             temporizadorInactividad = setTimeout(() => {
-                alert("Por seguridad, tu sesión ha expirado por inactividad. Volvé a ingresar.");
+                alert("🛡️️ Sesión finalizada por seguridad.\n\nEl sistema no detectó actividad reciente. Por favor, volvé a iniciar sesión.");
                 cerrarSesion();
             }, TIEMPO_LIMITE);
         }
