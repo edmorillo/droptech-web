@@ -814,17 +814,31 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- NUEVO: FECHA ADMIN -->
+                    <div class="form-row" id="fila-admin-fecha" style="display: none; margin-bottom: 15px;">
+                        <div class="form-group" style="width: 50%;">
+                            <label style="color: #00F0FF;"><i class="fa-regular fa-calendar-days"></i> Fecha del Comprobante</label>
+                            <input type="date" id="venta-fecha" onclick="try{this.showPicker()}catch(e){}" style="background: #1E293B; border-color: #00F0FF; color: #fff; cursor: pointer; color-scheme: dark;">
+                        </div>
+                    </div>
+                    
+                    <hr style="border: 0; border-top: 1px solid rgba(0, 240, 255, 0.2); margin: 20px 0;">
+
+                    <!-- NUEVO: CARRITO DE VENTAS -->
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Buscar Producto Vendido</label>
-                            <input type="text" id="buscador-producto-venta" placeholder="Buscar por nombre (Ej: SSD, Notebook...)" oninput="filtrarCatalogoVentas()" style="margin-bottom: 8px; background: rgba(0, 240, 255, 0.05); border-color: #00F0FF;">
-                            <select id="venta-producto" required onchange="actualizarPrecioVenta()" style="background: #1E293B; color: #fff;">
+                        <div class="form-group" style="background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2);">
+                            <label style="color: #00F0FF;"><i class="fa-solid fa-box-open"></i> Agregar Producto o Servicio</label>
+                            <input type="text" id="buscador-producto-venta" placeholder="Buscar por nombre..." oninput="filtrarCatalogoVentas()" style="margin-bottom: 8px; background: #1E293B;">
+                            <select id="venta-producto" style="background: #1E293B; color: #fff; margin-bottom: 10px;">
                                 <option value="" disabled selected>Cargando catálogo...</option>
                             </select>
+                            <button type="button" onclick="agregarAlCarritoVenta()" class="btn" style="background: transparent; border: 1px solid #00F0FF; color: #00F0FF; padding: 10px;"><i class="fa-solid fa-plus"></i> Sumar al comprobante</button>
                         </div>
+
                         <div class="form-group">
                             <label>Medio de Pago</label>
-                            <select id="venta-pago" required onchange="actualizarPrecioVenta()" style="background: #1E293B; color: #fff;">
+                            <select id="venta-pago" required onchange="renderizarCarritoVenta()" style="background: #1E293B; color: #fff;">
                                 <option value="Efectivo">Efectivo</option>
                                 <option value="Transferencia">Transferencia</option>
                                 <option value="Dinero en MP">Dinero en MP</option>
@@ -833,22 +847,35 @@
                         </div>
                     </div>
 
-                    <!-- NUEVO: CAJA DE FECHA (OCULTA POR DEFECTO, SOLO PARA ADMIN) -->
-                    <div class="form-row" id="fila-admin-fecha" style="display: none; margin-bottom: 15px;">
-                        <div class="form-group" style="width: 50%;">
-                            <label style="color: #00F0FF;"><i class="fa-regular fa-calendar-days"></i> Fecha del Comprobante</label>
-                            <input type="date" id="venta-fecha" onclick="try{this.showPicker()}catch(e){}" style="background: #1E293B; border-color: #00F0FF; color: #fff; cursor: pointer;">
-                        </div>
+                    <!-- LA TABLA DEL CARRITO -->
+                    <div style="background: #0b0f17; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; margin-bottom: 20px;">
+                        <table style="margin-bottom: 0;">
+                            <thead>
+                                <tr>
+                                    <th>CANT</th>
+                                    <th>PRODUCTO / SERVICIO</th>
+                                    <th style="text-align: right;">PRECIO UNIT.</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carrito-venta-body">
+                                <tr><td colspan="4" style="text-align: center; color: #94A3B8; padding: 20px;">Aún no agregaste ítems a la venta.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
 
+                    <!-- TOTALES AUTOMÁTICOS -->
                     <div style="background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 20px; text-align: right;">
-                        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 5px;">Monto a cobrar al cliente:</div>
-                        <div id="venta-resumen-precio" style="font-size: 28px; font-weight: 800; color: #00ff66;">$0</div>
-                        <div id="venta-resumen-descuento" style="font-size: 13px; color: #00F0FF; margin-top: 5px; font-weight: 600;"></div>
+                        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 5px;">Subtotal (Precio Lista): <span id="venta-resumen-subtotal" style="font-weight: 600; color: #fff;">$0</span></div>
+                        <div id="venta-resumen-bonificacion" style="color: #00ff66; font-size: 13px; margin-bottom: 5px; font-weight: 600; display: none;">Bonificación por diagnóstico: -$0</div>
+                        <div id="venta-resumen-descuento" style="color: #00ff66; font-size: 13px; margin-bottom: 5px; font-weight: 600; display: none;">Descuento pago al contado: -$0</div>
+                        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0 10px auto; width: 250px;">
+                        <div style="color: #00F0FF; font-size: 14px; margin-bottom: 5px; font-weight: 700;">TOTAL A COBRAR:</div>
+                        <div id="venta-resumen-precio" style="font-size: 32px; font-weight: 800; color: #00ff66; line-height: 1;">$0</div>
                     </div>
                     
                     <button type="submit" id="btn-submit-venta" class="btn" style="background: #00ff66; color: #000; box-shadow: 0 4px 15px rgba(0, 255, 102, 0.2);"><i class="fa-solid fa-check"></i> Registrar Venta y Guardar Historial</button>
-                    <button type="button" id="btn-cancelar-venta" onclick="cancelarEdicionVenta()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar Edición</button>
+                    <button type="button" id="btn-cancelar-venta" onclick="cancelarEdicionVenta()" class="btn-delete full-width"><i class="fa-solid fa-xmark"></i> Cancelar / Limpiar</button>
                 </form>
             </div>
 
@@ -2339,11 +2366,12 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         }
 
         // =========================================================================
-        // 10.5 MOTOR DE CAJA REGISTRADORA Y PDF DE COMPROBANTES
+        // 10.5 MOTOR DE CAJA REGISTRADORA Y PDF DE COMPROBANTES (CARRITO INTELIGENTE)
         // =========================================================================
         let catalogoCompleto = [];
         let ventasActuales = [];
         let editandoVentaId = null;
+        let carritoVenta = [];
 
         async function cargarCatalogoVentas() {
             const selectProducto = document.getElementById('venta-producto');
@@ -2362,7 +2390,7 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 if (accesorios.data) accesorios.data.forEach(i => catalogoCompleto.push({ id_cat: 'A-'+i.id, nombre: 'Accesorio: ' + i.titulo, precio: i.precio }));
 
                 catalogoCompleto.sort((a, b) => a.nombre.localeCompare(b.nombre));
-                filtrarCatalogoVentas(); // Esto carga las opciones por defecto
+                filtrarCatalogoVentas(); 
             } catch (err) {
                 console.error("Error al cargar catálogo:", err);
                 selectProducto.innerHTML = '<option value="" disabled selected>Error al cargar catálogo</option>';
@@ -2372,7 +2400,6 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function filtrarCatalogoVentas() {
             const busqueda = document.getElementById('buscador-producto-venta').value.toLowerCase();
             const selectProducto = document.getElementById('venta-producto');
-            
             let opcionesHTML = '<option value="" disabled selected>Seleccioná el producto o servicio...</option>';
             catalogoCompleto.forEach(item => {
                 if (item.nombre.toLowerCase().includes(busqueda)) {
@@ -2385,72 +2412,145 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function actualizarPlaceholderContacto() {
             const tipo = document.getElementById('venta-tipo-contacto').value;
             const inputContacto = document.getElementById('venta-contacto');
-            
-            if (tipo === 'DNI') {
-                inputContacto.placeholder = 'Ej: 35.123.456';
-            } else if (tipo === 'Email') {
-                inputContacto.placeholder = 'Ej: cliente@correo.com';
-            } else {
-                inputContacto.placeholder = 'Ej: 11-2345-6789';
-            }
+            if (tipo === 'DNI') inputContacto.placeholder = 'Ej: 35.123.456';
+            else if (tipo === 'Email') inputContacto.placeholder = 'Ej: cliente@correo.com';
+            else inputContacto.placeholder = 'Ej: 11-2345-6789';
         }
 
-        function actualizarPrecioVenta() {
+        // --- LÓGICA DEL CARRITO DE VENTAS ---
+        function agregarAlCarritoVenta() {
             const idSeleccionado = document.getElementById('venta-producto').value;
-            const medioPago = document.getElementById('venta-pago').value;
-            const resumenPrecio = document.getElementById('venta-resumen-precio');
-            const resumenDescuento = document.getElementById('venta-resumen-descuento');
+            if (!idSeleccionado) return alert("Seleccioná un producto o servicio primero.");
+            
+            const producto = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
+            const precioEfvo = producto.precio;
+            const precioLista = Math.round(precioEfvo * 1.15); 
 
-            if (!idSeleccionado) {
-                resumenPrecio.innerHTML = '$0';
-                resumenDescuento.innerHTML = '';
+            carritoVenta.push({
+                id_cat: idSeleccionado,
+                nombre: producto.nombre,
+                precio_efvo: precioEfvo,
+                precio_lista: precioLista
+            });
+            
+            document.getElementById('buscador-producto-venta').value = '';
+            filtrarCatalogoVentas();
+            renderizarCarritoVenta();
+        }
+
+        function quitarDelCarritoVenta(index) {
+            carritoVenta.splice(index, 1);
+            renderizarCarritoVenta();
+        }
+
+        function renderizarCarritoVenta() {
+            const tbody = document.getElementById('carrito-venta-body');
+            const medioPago = document.getElementById('venta-pago').value;
+            const esEfectivo = medioPago !== 'Tarjeta';
+            
+            let subtotalLista = 0;
+            let subtotalEfvo = 0;
+            let tieneDiagnostico = false;
+            let precioDiagnosticoLista = 0;
+            let precioDiagnosticoEfvo = 0;
+
+            if (carritoVenta.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94A3B8; padding: 20px;">Aún no agregaste ítems a la venta.</td></tr>';
+                document.getElementById('venta-resumen-subtotal').innerText = '$0';
+                document.getElementById('venta-resumen-bonificacion').style.display = 'none';
+                document.getElementById('venta-resumen-descuento').style.display = 'none';
+                document.getElementById('venta-resumen-precio').innerText = '$0';
                 return;
             }
-            const producto = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
-            if (!producto) return;
 
-            const precioEfectivo = producto.precio;
-            const precioLista = Math.round(precioEfectivo * 1.15);
-            const ahorro = precioLista - precioEfectivo;
+            tbody.innerHTML = '';
+            carritoVenta.forEach((item, index) => {
+                subtotalLista += item.precio_lista;
+                subtotalEfvo += item.precio_efvo;
+                
+                // Detector Automático de Diagnóstico
+                if (item.nombre.toLowerCase().includes('diagnóstico') || item.nombre.toLowerCase().includes('diagnostico')) {
+                    tieneDiagnostico = true;
+                    if (precioDiagnosticoEfvo === 0) { // Toma el primero que encuentra
+                        precioDiagnosticoEfvo = item.precio_efvo;
+                        precioDiagnosticoLista = item.precio_lista;
+                    }
+                }
 
-            // Ahora cualquier medio que NO sea Tarjeta, lleva descuento.
-            if (medioPago !== 'Tarjeta') {
-                resumenPrecio.innerHTML = `$${new Intl.NumberFormat('es-AR').format(precioEfectivo)}`;
-                resumenDescuento.innerHTML = `<i class="fa-solid fa-gift"></i> Le estás aplicando un descuento de -$${new Intl.NumberFormat('es-AR').format(ahorro)} por pago al contado.`;
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="color:#fff; font-weight:bold;">1</td>
+                        <td style="color:#00F0FF; font-size: 13px;">${item.nombre}</td>
+                        <td style="color:#fff; font-weight:bold; text-align: right;">$${new Intl.NumberFormat('es-AR').format(item.precio_lista)}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button type="button" class="btn-delete" onclick="quitarDelCarritoVenta(${index})" title="Borrar"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Cálculos Inteligentes
+            let bonificacionLista = (tieneDiagnostico && carritoVenta.length > 1) ? precioDiagnosticoLista : 0;
+            let bonificacionEfvo = (tieneDiagnostico && carritoVenta.length > 1) ? precioDiagnosticoEfvo : 0;
+
+            let totalConDiagnosticoLista = subtotalLista - bonificacionLista;
+            let totalConDiagnosticoEfvo = subtotalEfvo - bonificacionEfvo;
+
+            let descuentoEfectivo = esEfectivo ? (totalConDiagnosticoLista - totalConDiagnosticoEfvo) : 0;
+            let totalFinal = esEfectivo ? totalConDiagnosticoEfvo : totalConDiagnosticoLista;
+
+            // Actualizar UI
+            document.getElementById('venta-resumen-subtotal').innerText = '$' + new Intl.NumberFormat('es-AR').format(subtotalLista);
+            document.getElementById('venta-resumen-precio').innerText = '$' + new Intl.NumberFormat('es-AR').format(totalFinal);
+
+            const cajaBonif = document.getElementById('venta-resumen-bonificacion');
+            if (bonificacionLista > 0) {
+                cajaBonif.style.display = 'block';
+                cajaBonif.innerText = 'Diagnóstico bonificado por reparación: -$' + new Intl.NumberFormat('es-AR').format(bonificacionLista);
             } else {
-                resumenPrecio.innerHTML = `$${new Intl.NumberFormat('es-AR').format(precioLista)}`;
-                resumenDescuento.innerHTML = `<i class="fa-solid fa-credit-card"></i> Cobro a precio de lista. Sin descuento.`;
+                cajaBonif.style.display = 'none';
+            }
+
+            const cajaDesc = document.getElementById('venta-resumen-descuento');
+            if (descuentoEfectivo > 0) {
+                cajaDesc.style.display = 'block';
+                cajaDesc.innerText = 'Descuento pago al contado: -$' + new Intl.NumberFormat('es-AR').format(descuentoEfectivo);
+            } else {
+                cajaDesc.style.display = 'none';
             }
         }
 
         document.getElementById('form-ventas').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (carritoVenta.length === 0) return alert("Agregá al menos un ítem a la venta.");
+
             const btnSubmit = document.getElementById('btn-submit-venta');
             const textoOriginal = btnSubmit.innerHTML;
             btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
             btnSubmit.style.pointerEvents = 'none';
 
             try {
-                const idSeleccionado = document.getElementById('venta-producto').value;
-                const productoObj = catalogoCompleto.find(p => p.id_cat === idSeleccionado);
-                
-                // Formateo del contacto
                 const tipoContacto = document.getElementById('venta-tipo-contacto').value;
                 const valorContacto = document.getElementById('venta-contacto').value;
                 const contactoFinal = (valorContacto.trim() !== '') ? `${tipoContacto}: ${valorContacto}` : '';
                 
+                // Calculamos el total efectivo base para guardarlo en la DB
+                let totalEfvo = 0;
+                carritoVenta.forEach(i => totalEfvo += i.precio_efvo);
+
                 const payload = {
                     cliente: document.getElementById('venta-cliente').value,
                     contacto: contactoFinal,
-                    producto: productoObj.nombre,
-                    precio_base: productoObj.precio,
+                    producto: JSON.stringify(carritoVenta), // Guardamos el carrito como JSON
+                    precio_base: totalEfvo, // Total efectivo sin descuentos
                     medio_pago: document.getElementById('venta-pago').value,
                     estado_registro: 'activo'
                 };
 
-                // NUEVO: Si la caja de fecha existe y tiene valor, guardamos esa fecha
                 const inputFecha = document.getElementById('venta-fecha');
-                if (inputFecha && inputFecha.value !== '') {
+                if (inputFecha && inputFecha.value !== '' && document.getElementById('fila-admin-fecha').style.display !== 'none') {
                     payload.created_at = inputFecha.value + 'T12:00:00Z';
                 }
 
@@ -2480,7 +2580,6 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             editandoVentaId = id;
             
             document.getElementById('venta-cliente').value = venta.cliente;
-            
             if (venta.contacto && venta.contacto.includes(':')) {
                 const partes = venta.contacto.split(':');
                 document.getElementById('venta-tipo-contacto').value = partes[0].trim();
@@ -2489,16 +2588,19 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 document.getElementById('venta-contacto').value = venta.contacto || '';
             }
 
-            document.getElementById('buscador-producto-venta').value = '';
-            filtrarCatalogoVentas(); // Resetea la lista visual
-            
-            const index = catalogoCompleto.findIndex(p => p.nombre === venta.producto && p.precio === venta.precio_base);
-            if (index !== -1) document.getElementById('venta-producto').value = catalogoCompleto[index].id_cat;
-            
-            document.getElementById('venta-pago').value = venta.medio_pago;
-            actualizarPrecioVenta();
+            // Cargar Carrito (Magia de retrocompatibilidad)
+            try {
+                carritoVenta = JSON.parse(venta.producto);
+            } catch (e) {
+                // Si falla, es una venta vieja armada de forma manual
+                const precioEfvo = venta.precio_base;
+                const precioLista = Math.round(precioEfvo * 1.15);
+                carritoVenta = [{ nombre: venta.producto, precio_efvo: precioEfvo, precio_lista: precioLista }];
+            }
 
-            // NUEVO: Cargar la fecha del comprobante en el calendario
+            document.getElementById('venta-pago').value = venta.medio_pago;
+            renderizarCarritoVenta();
+
             const inputFecha = document.getElementById('venta-fecha');
             if (inputFecha && venta.created_at) {
                 inputFecha.value = venta.created_at.split('T')[0];
@@ -2513,12 +2615,9 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
         function cancelarEdicionVenta() {
             editandoVentaId = null;
             document.getElementById('form-ventas').reset();
-            document.getElementById('buscador-producto-venta').value = '';
-            filtrarCatalogoVentas();
-            document.getElementById('venta-resumen-precio').innerHTML = '$0';
-            document.getElementById('venta-resumen-descuento').innerHTML = '';
+            carritoVenta = [];
+            renderizarCarritoVenta();
             
-            // NUEVO: Resetear el calendario al día de hoy al limpiar
             const inputFecha = document.getElementById('venta-fecha');
             if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
 
@@ -2543,15 +2642,36 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
                 tabla.innerHTML = '';
                 ventasActuales.forEach(venta => {
                     const fechaObj = new Date(venta.created_at).toLocaleDateString('es-AR');
-                    const precioEfectivo = venta.precio_base;
-                    const precioLista = Math.round(precioEfectivo * 1.15);
-                    const totalCobrado = venta.medio_pago !== 'Tarjeta' ? precioEfectivo : precioLista;
+                    
+                    let textoProducto = '';
+                    let totalCobrado = 0;
+                    let itemsTemp = [];
+                    
+                    try {
+                        itemsTemp = JSON.parse(venta.producto);
+                        textoProducto = itemsTemp.length > 1 ? `<i class="fa-solid fa-boxes-stacked"></i> ${itemsTemp.length} ítems` : itemsTemp[0].nombre;
+                    } catch (e) {
+                        itemsTemp = [{ nombre: venta.producto, precio_efvo: venta.precio_base, precio_lista: Math.round(venta.precio_base * 1.15) }];
+                        textoProducto = venta.producto;
+                    }
+
+                    // Recalcular el total exacto que se cobró para mostrar en tabla
+                    let sLista = 0; let sEfvo = 0; let tDiag = false; let pDiagLista = 0; let pDiagEfvo = 0;
+                    itemsTemp.forEach(i => {
+                        sLista += i.precio_lista; sEfvo += i.precio_efvo;
+                        if (i.nombre.toLowerCase().includes('diagnóstico') || i.nombre.toLowerCase().includes('diagnostico')) {
+                            tDiag = true; if(pDiagEfvo === 0) { pDiagEfvo = i.precio_efvo; pDiagLista = i.precio_lista; }
+                        }
+                    });
+                    let bLista = (tDiag && itemsTemp.length > 1) ? pDiagLista : 0;
+                    let bEfvo = (tDiag && itemsTemp.length > 1) ? pDiagEfvo : 0;
+                    totalCobrado = venta.medio_pago !== 'Tarjeta' ? (sEfvo - bEfvo) : (sLista - bLista);
 
                     tabla.innerHTML += `
                         <tr>
                             <td style="color:#94A3B8;">${fechaObj}</td>
                             <td style="color:#fff; font-weight:600;">${venta.cliente}</td>
-                            <td style="font-size: 13px; color: #00F0FF;">${venta.producto}</td>
+                            <td style="font-size: 13px; color: #00F0FF;">${textoProducto}</td>
                             <td style="color:#00ff66; font-weight:700;">$${new Intl.NumberFormat('es-AR').format(totalCobrado)}</td>
                             <td>
                                 <div class="action-btns">
@@ -2568,9 +2688,6 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             }
         }
 
-        // =========================================================================
-        // EL DIBUJANTE DEL PDF
-        // =========================================================================
         function generarComprobante(idVenta) {
             const venta = ventasActuales.find(v => v.id === idVenta);
             if (!venta) return;
@@ -2579,82 +2696,101 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             const doc = new jsPDF();
 
             const fechaFormat = new Date(venta.created_at).toLocaleDateString('es-AR');
-            const precioEfectivo = venta.precio_base;
-            const precioLista = Math.round(precioEfectivo * 1.15);
-            const ahorro = precioLista - precioEfectivo;
-            
+            let numeroVenta = venta.id + 150; 
             const esEfectivo = venta.medio_pago !== 'Tarjeta';
-            
-            const precioUnitario = precioLista; 
-            const subtotal = precioLista;
-            
-            const descuentoMostrar = esEfectivo ? ahorro : 0;
-            const totalFinal = esEfectivo ? precioEfectivo : precioLista;
 
-            // Dibujo del Logo
+            let items = [];
+            try { items = JSON.parse(venta.producto); } 
+            catch (e) { items = [{ nombre: venta.producto, precio_efvo: venta.precio_base, precio_lista: Math.round(venta.precio_base * 1.15) }]; }
+
+            let subtotalLista = 0; let subtotalEfvo = 0; let tieneDiagnostico = false;
+            let precioDiagnosticoLista = 0; let precioDiagnosticoEfvo = 0; let bodyData = [];
+
+            items.forEach(item => {
+                subtotalLista += item.precio_lista;
+                subtotalEfvo += item.precio_efvo;
+                
+                if (item.nombre.toLowerCase().includes('diagnóstico') || item.nombre.toLowerCase().includes('diagnostico')) {
+                    tieneDiagnostico = true;
+                    if (precioDiagnosticoEfvo === 0) {
+                        precioDiagnosticoEfvo = item.precio_efvo;
+                        precioDiagnosticoLista = item.precio_lista;
+                    }
+                }
+
+                let unitarioStr = `$${new Intl.NumberFormat('es-AR').format(item.precio_lista)}`;
+                bodyData.push(['1', item.nombre, unitarioStr, unitarioStr]);
+            });
+
+            let bonificacionLista = (tieneDiagnostico && items.length > 1) ? precioDiagnosticoLista : 0;
+            let bonificacionEfvo = (tieneDiagnostico && items.length > 1) ? precioDiagnosticoEfvo : 0;
+
+            let totalConDiagnosticoLista = subtotalLista - bonificacionLista;
+            let totalConDiagnosticoEfvo = subtotalEfvo - bonificacionEfvo;
+
+            let descuentoEfectivo = esEfectivo ? (totalConDiagnosticoLista - totalConDiagnosticoEfvo) : 0;
+            let totalFinal = esEfectivo ? totalConDiagnosticoEfvo : totalConDiagnosticoLista;
+
+            // --- DIBUJO DEL PDF ---
             doc.setDrawColor(0, 180, 200); doc.setLineWidth(0.8);
             doc.roundedRect(14, 12, 16, 11, 1.5, 1.5, 'S'); doc.line(18, 23, 16, 28); doc.line(16, 28, 28, 28); doc.line(28, 28, 26, 23); 
             doc.roundedRect(33, 10, 8, 18, 1.5, 1.5, 'S'); doc.line(36, 13, 38, 13); doc.line(36, 16, 38, 16); 
             doc.setDrawColor(150, 150, 150); doc.line(19, 17.5, 25, 17.5); doc.line(22, 14.5, 22, 20.5);
 
-            // Textos del Cabezal
             doc.setTextColor(0, 0, 0); doc.setFontSize(22); doc.setFont("helvetica", "bold");
             doc.text("COMPUTADORAS LEI", 48, 19);
             doc.setTextColor(100, 100, 100); doc.setFontSize(10); doc.setFont("helvetica", "normal");
             doc.text("Soporte Técnico Premium & Armado de PC", 48, 25);
             
-            // Info Comprobante Derecha (Acomodado)
             doc.setFontSize(12); doc.setTextColor(0, 150, 170); doc.setFont("helvetica", "bold");
             doc.text("COMPROBANTE DE VENTA", 196, 15, { align: "right" });
             doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
             doc.text(`Fecha: ${fechaFormat}`, 196, 21, { align: "right" });
-            
-            // EL TRUCO DEL NÚMERO (Le sumamos 150 al ID real)
-            const numeroComprobante = venta.id + 150;
-            doc.text(`Comprobante Nº: 000${numeroComprobante}`, 196, 26, { align: "right" });
+            doc.text(`Comprobante Nº: 00${numeroVenta}`, 196, 26, { align: "right" });
 
-            // Datos del Cliente (Acomodado)
             doc.setDrawColor(200, 200, 200); doc.line(14, 33, 196, 33);
             doc.setFontSize(10); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
             doc.text("DATOS DEL CLIENTE", 14, 40);
             doc.setFont("helvetica", "normal");
             doc.text(`Nombre: ${venta.cliente}`, 14, 47);
-            
-            // Si el contacto está vacío, no se imprime esta línea en el PDF
-            if (venta.contacto && venta.contacto.trim() !== '') {
-                doc.text(`${venta.contacto}`, 14, 52);
-            }
+            if (venta.contacto && venta.contacto.trim() !== '') doc.text(`${venta.contacto}`, 14, 52);
 
-            // Tabla (CANT corregido a width 18)
             doc.autoTable({
                 startY: 59,
                 head: [['CANT', 'DESCRIPCIÓN DEL PRODUCTO / SERVICIO', 'PRECIO UNIT.', 'SUBTOTAL']],
-                body: [['1', venta.producto, `$${new Intl.NumberFormat('es-AR').format(precioUnitario)}`, `$${new Intl.NumberFormat('es-AR').format(subtotal)}`]],
+                body: bodyData,
                 theme: 'grid',
                 headStyles: { fillColor: [23, 30, 44], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
                 columnStyles: { 0: { halign: 'center', cellWidth: 18 }, 1: { halign: 'left' }, 2: { halign: 'right', cellWidth: 35 }, 3: { halign: 'right', cellWidth: 35 } },
                 styles: { fontSize: 10, cellPadding: 4 }
             });
 
-            const finalY = doc.lastAutoTable.finalY;
+            let finalY = doc.lastAutoTable.finalY;
 
-            // Descuento y Total
             doc.setFontSize(10);
-            if (esEfectivo) {
-                doc.setTextColor(100, 100, 100);
+            if (bonificacionLista > 0) {
+                doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
+                doc.text("Diagnóstico bonificado por reparación:", 145, finalY + 10, { align: "right" });
+                doc.setTextColor(34, 197, 94); doc.setFont("helvetica", "bold");
+                doc.text(`-$${new Intl.NumberFormat('es-AR').format(bonificacionLista)}`, 196, finalY + 10, { align: "right" });
+                finalY += 7; 
+            }
+
+            if (descuentoEfectivo > 0) {
+                doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
                 doc.text("Descuento pago al contado:", 145, finalY + 10, { align: "right" });
                 doc.setTextColor(34, 197, 94); doc.setFont("helvetica", "bold");
-                doc.text(`-$${new Intl.NumberFormat('es-AR').format(descuentoMostrar)}`, 196, finalY + 10, { align: "right" });
+                doc.text(`-$${new Intl.NumberFormat('es-AR').format(descuentoEfectivo)}`, 196, finalY + 10, { align: "right" });
+                finalY += 7; 
             }
 
             doc.setFontSize(14); doc.setTextColor(0, 0, 0); doc.setFont("helvetica", "bold");
-            doc.text("TOTAL A PAGAR:", 145, finalY + 22, { align: "right" });
-            doc.text(`$${new Intl.NumberFormat('es-AR').format(totalFinal)}`, 196, finalY + 22, { align: "right" });
+            doc.text("TOTAL A PAGAR:", 145, finalY + 15, { align: "right" });
+            doc.text(`$${new Intl.NumberFormat('es-AR').format(totalFinal)}`, 196, finalY + 15, { align: "right" });
 
-            // Cierre
             doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", "normal");
-            doc.text(`Medio de pago: ${venta.medio_pago}`, 14, finalY + 35);
-            doc.text("¡Gracias por confiar en Computadoras Lei! Documento no válido como factura fiscal.", 14, finalY + 40);
+            doc.text(`Medio de pago: ${venta.medio_pago}`, 14, finalY + 28);
+            doc.text("¡Gracias por confiar en Computadoras Lei! Documento no válido como factura fiscal.", 14, finalY + 33);
 
             doc.save(`Comprobante_${venta.cliente.replace(/\s+/g, '_')}_${fechaFormat}.pdf`);
         }
