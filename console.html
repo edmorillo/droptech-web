@@ -1102,15 +1102,19 @@
     <!-- ========================================================== -->
     <!-- MODAL DE AUMENTO MASIVO DE PRECIOS -->
     <!-- ========================================================== -->
-    <div id="modal-aumento-masivo" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="max-width: 650px;">
+    <div id="modal-aumento-masivo" style="display: none; position: fixed; z-index: 999999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #111622; padding: 35px; border-radius: 12px; border: 1px solid rgba(0, 240, 255, 0.3); max-width: 650px; width: 90%; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);">
             <h2 style="color: #00F0FF; margin-top: 0; font-size: 22px;"><i class="fa-solid fa-arrow-trend-up"></i> Aumento Masivo de Precios</h2>
             <p style="color: #94A3B8; font-size: 14px; margin-bottom: 20px;">Marcá los ítems que querés actualizar y colocá el porcentaje.</p>
             
-            <div class="form-row">
-                <div class="form-group" style="width: 100%;">
-                    <label style="color: #00ff66;"><i class="fa-solid fa-percent"></i> Porcentaje de aumento (%)</label>
-                    <input type="number" id="input-porcentaje-aumento" placeholder="Ej: 10" oninput="calcularVistaPreviaAumento()" style="background: #1E293B; border-color: #00ff66; color: #fff; font-size: 20px; text-align: center; font-weight: bold;">
+            <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+                <div class="form-group" style="width: 130px; margin-bottom: 0;">
+                    <label style="color: #00ff66;"><i class="fa-solid fa-percent"></i> Aumento (%)</label>
+                    <input type="number" id="input-porcentaje-aumento" placeholder="Ej: 10" oninput="calcularVistaPreviaAumento()" style="background: #1E293B; border-color: #00ff66; color: #fff; font-size: 16px; text-align: center; font-weight: bold;">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label style="color: #00F0FF;"><i class="fa-solid fa-magnifying-glass"></i> Buscar ítem o compatibilidad...</label>
+                    <input type="text" id="busqueda-aumento-masivo" oninput="renderizarTablaAumentoMasivo()" placeholder="Ej: Formateo, Kingston, PC, etc..." style="background: #1E293B; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff;">
                 </div>
             </div>
 
@@ -1131,9 +1135,9 @@
                 </table>
             </div>
 
-            <div class="modal-actions" style="margin-top: 25px;">
-                <button type="button" class="btn" id="btn-aplicar-aumento" style="background: #00ff66; color: #000; box-shadow: 0 4px 15px rgba(0, 255, 102, 0.2);" onclick="aplicarAumentoMasivo()"><i class="fa-solid fa-check-double"></i> Aplicar a los seleccionados</button>
-                <button type="button" class="btn-delete" onclick="cerrarModalAumentoMasivo()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+                <button type="button" class="btn-delete" onclick="cerrarModalAumentoMasivo()" style="flex: 1; padding: 12px 20px; font-size: 14px; width: auto; display: block;"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                <button type="button" class="btn" id="btn-aplicar-aumento" onclick="aplicarAumentoMasivo()" style="flex: 1; background: #00ff66; color: #000; padding: 12px 20px; border: none; box-shadow: 0 4px 15px rgba(0, 255, 102, 0.2);"><i class="fa-solid fa-check-double"></i> Aplicar Aumento</button>
             </div>
             
             <input type="hidden" id="aumento-modulo-actual">
@@ -3510,7 +3514,177 @@ await mostrarModalCompresion(`La foto original pesaba ${pesoOriginal} MB y fue r
             document.addEventListener(evento, reiniciarRelojSeguridad, true);
         });
 
-        
+        // =========================================================================
+        // 15. LÓGICA DE AUMENTO MASIVO DE PRECIOS
+        // =========================================================================
+        let datosAumentoMasivo = [];
+
+        async function abrirModalAumentoMasivo(modulo) {
+            document.getElementById('aumento-modulo-actual').value = modulo;
+            document.getElementById('input-porcentaje-aumento').value = '';
+            
+            // Limpiamos el buscador si existe
+            const buscador = document.getElementById('busqueda-aumento-masivo');
+            if (buscador) buscador.value = ''; 
+            
+            document.getElementById('check-todos-aumento').checked = false;
+            
+            const tbody = document.getElementById('tabla-aumento-masivo-body');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando ítems...</td></tr>';
+            
+            document.getElementById('modal-aumento-masivo').style.display = 'flex';
+
+            try {
+                const { data, error } = await db.from(modulo).select('*').eq('estado_registro', 'activo').order('id', { ascending: false });
+                if (error) throw error;
+                
+                datosAumentoMasivo = data || [];
+                
+                // Ordenar alfabéticamente
+                datosAumentoMasivo.sort((a, b) => {
+                    let tituloA = a.servicio || a.titulo || '';
+                    let tituloB = b.servicio || b.titulo || '';
+                    return tituloA.localeCompare(tituloB);
+                });
+
+                renderizarTablaAumentoMasivo();
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:#ff4a4a; text-align:center;">Error al cargar datos.</td></tr>';
+            }
+        }
+
+        function cerrarModalAumentoMasivo() {
+            document.getElementById('modal-aumento-masivo').style.display = 'none';
+            datosAumentoMasivo = [];
+        }
+
+        function renderizarTablaAumentoMasivo() {
+            const tbody = document.getElementById('tabla-aumento-masivo-body');
+            
+            // Atajamos el valor del buscador
+            const inputBuscador = document.getElementById('busqueda-aumento-masivo');
+            const busqueda = inputBuscador ? inputBuscador.value.toLowerCase() : '';
+            
+            const datosFiltrados = datosAumentoMasivo.filter(item => {
+                let titulo = item.servicio || item.titulo || '';
+                let comp = item.compatibilidad || '';
+                return titulo.toLowerCase().includes(busqueda) || comp.toLowerCase().includes(busqueda);
+            });
+
+            if (datosFiltrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#94A3B8;">No hay ítems para mostrar.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            datosFiltrados.forEach(item => {
+                let titulo = item.servicio || item.titulo;
+                let precioActual = item.precio;
+
+                // MAGIA: Si el ítem tiene compatibilidad (es un precio), la sumamos al lado en gris
+                if (item.compatibilidad) {
+                    titulo += ` <span style="color: #64748b; font-size: 11.5px; font-weight: normal; margin-left: 5px;">(${item.compatibilidad})</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;" onmouseover="this.style.background='rgba(0, 240, 255, 0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="text-align: center;"><input type="checkbox" class="check-item-aumento" data-id="${item.id}" data-precio="${precioActual}" onchange="calcularVistaPreviaAumento()" style="cursor: pointer; width: 16px; height: 16px;"></td>
+                        <td style="color: #fff; font-size: 13px; font-weight: 500;">${titulo}</td>
+                        <td style="text-align: right; color: #94A3B8;">$${new Intl.NumberFormat('es-AR').format(precioActual)}</td>
+                        <td style="text-align: right; color: #00ff66; font-weight: 800; font-size: 14px;" id="prev-aumento-${item.id}">-</td>
+                    </tr>
+                `;
+            });
+
+            // Forzamos el recálculo por si ya había un porcentaje escrito y filtramos después
+            calcularVistaPreviaAumento();
+        }
+
+        function toggleTodosAumento() {
+            const checkTodos = document.getElementById('check-todos-aumento').checked;
+            const checks = document.querySelectorAll('.check-item-aumento');
+            checks.forEach(c => c.checked = checkTodos);
+            calcularVistaPreviaAumento();
+        }
+
+        function calcularVistaPreviaAumento() {
+            let porcentaje = parseFloat(document.getElementById('input-porcentaje-aumento').value);
+            if (isNaN(porcentaje)) porcentaje = 0;
+
+            const checks = document.querySelectorAll('.check-item-aumento');
+            checks.forEach(check => {
+                const id = check.getAttribute('data-id');
+                const precioBase = parseFloat(check.getAttribute('data-precio'));
+                const celdaNueva = document.getElementById('prev-aumento-' + id);
+
+                if (check.checked && porcentaje > 0) {
+                    const aumento = Math.round(precioBase * (porcentaje / 100));
+                    const nuevoPrecio = precioBase + aumento;
+                    celdaNueva.innerText = '$' + new Intl.NumberFormat('es-AR').format(nuevoPrecio);
+                    celdaNueva.style.textShadow = '0 0 10px rgba(0, 255, 102, 0.3)';
+                } else {
+                    celdaNueva.innerText = '-';
+                    celdaNueva.style.textShadow = 'none';
+                }
+            });
+        }
+
+        async function aplicarAumentoMasivo() {
+            let porcentaje = parseFloat(document.getElementById('input-porcentaje-aumento').value);
+            if (isNaN(porcentaje) || porcentaje <= 0) return alert("Ingresá un porcentaje de aumento válido (ej: 10).");
+
+            const checks = document.querySelectorAll('.check-item-aumento:checked');
+            if (checks.length === 0) return alert("Seleccioná al menos un ítem (tildalo) para aumentarle el precio.");
+
+            const modulo = document.getElementById('aumento-modulo-actual').value;
+            const btn = document.getElementById('btn-aplicar-aumento');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Actualizando base de datos...';
+            btn.style.pointerEvents = 'none';
+
+            try {
+                const { data: { session } } = await db.auth.getSession();
+                const usuarioEmail = session ? session.user.email : 'Administrador';
+                let actualizadosCount = 0;
+
+                // Loop para actualizar cada ítem seleccionado en la DB
+                for (let i = 0; i < checks.length; i++) {
+                    const id = checks[i].getAttribute('data-id');
+                    const precioBase = parseFloat(checks[i].getAttribute('data-precio'));
+                    const aumento = Math.round(precioBase * (porcentaje / 100));
+                    const nuevoPrecio = precioBase + aumento;
+
+                    const { error } = await db.from(modulo).update({ precio: nuevoPrecio }).eq('id', id);
+                    if (!error) actualizadosCount++;
+                }
+
+                // Guardamos la movida en el historial
+                await db.from('auditoria_borrados').insert([{ 
+                    modulo: modulo, 
+                    registro_id: 0, 
+                    detalle: `Aumento masivo del ${porcentaje}% aplicado a ${actualizadosCount} ítems.`, 
+                    usuario: usuarioEmail 
+                }]);
+
+                mostrarToast(`¡Listo! Se actualizaron los precios de ${actualizadosCount} ítems.`);
+                cerrarModalAumentoMasivo();
+
+                // Recargar el módulo que corresponda para ver los cambios de inmediato
+                if (modulo === 'precios') cargarPrecios();
+                if (modulo === 'notebooks') cargarNotebooks();
+                if (modulo === 'memorias') cargarMemorias();
+                if (modulo === 'accesorios') cargarAccesorios();
+                
+                cargarHistorial();
+
+            } catch (err) {
+                alert("Hubo un error al actualizar: " + err.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
+            }
+        }
 
         // =========================================================================
         // 13. CARGA DE DATOS AL ABRIR LA CONSOLA
