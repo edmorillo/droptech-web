@@ -1095,6 +1095,46 @@
         </div>
     </div>
 
+    <!-- ========================================================== -->
+    <!-- MODAL DE AUMENTO MASIVO DE PRECIOS -->
+    <!-- ========================================================== -->
+    <div id="modal-aumento-masivo" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 650px;">
+            <h2 style="color: #00F0FF; margin-top: 0; font-size: 22px;"><i class="fa-solid fa-arrow-trend-up"></i> Aumento Masivo de Precios</h2>
+            <p style="color: #94A3B8; font-size: 14px; margin-bottom: 20px;">Marcá los ítems que querés actualizar y colocá el porcentaje.</p>
+            
+            <div class="form-row">
+                <div class="form-group" style="width: 100%;">
+                    <label style="color: #00ff66;"><i class="fa-solid fa-percent"></i> Porcentaje de aumento (%)</label>
+                    <input type="number" id="input-porcentaje-aumento" placeholder="Ej: 10" oninput="calcularVistaPreviaAumento()" style="background: #1E293B; border-color: #00ff66; color: #fff; font-size: 20px; text-align: center; font-weight: bold;">
+                </div>
+            </div>
+
+            <!-- TABLA CON VISTA PREVIA -->
+            <div style="background: #0b0f17; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-top: 15px; max-height: 350px; overflow-y: auto;">
+                <table style="margin-bottom: 0;">
+                    <thead style="position: sticky; top: 0; background: #1E293B; z-index: 10;">
+                        <tr>
+                            <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-todos-aumento" onchange="toggleTodosAumento()" style="cursor: pointer;"></th>
+                            <th style="font-size: 12px;">PRODUCTO / SERVICIO</th>
+                            <th style="text-align: right; font-size: 12px;">PRECIO ACTUAL</th>
+                            <th style="text-align: right; color: #00ff66; font-size: 12px;">NUEVO PRECIO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-aumento-masivo-body">
+                        <!-- Acá JS va a inyectar la lista mágica -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 25px;">
+                <button type="button" class="btn" id="btn-aplicar-aumento" style="background: #00ff66; color: #000; box-shadow: 0 4px 15px rgba(0, 255, 102, 0.2);" onclick="aplicarAumentoMasivo()"><i class="fa-solid fa-check-double"></i> Aplicar a los seleccionados</button>
+                <button type="button" class="btn-delete" onclick="cerrarModalAumentoMasivo()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+            </div>
+            
+            <input type="hidden" id="aumento-modulo-actual">
+        </div>
+    </div>
     
 
     <script>
