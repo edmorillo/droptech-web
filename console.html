@@ -161,15 +161,16 @@
             }
 
             /* 4. FIX DEL PISO: 140px de espacio libre al final para ver todo */
-            .main-content { 
-                padding: 20px 15px 140px 15px !important; 
-            }
-            
+            .main-content { padding: 20px 15px 140px 15px !important; }
             .header-title { font-size: 22px !important; }
             .form-row { grid-template-columns: 1fr !important; gap: 15px !important; }
             .panel-card { padding: 15px !important; }
             .panel-card table { display: block !important; overflow-x: auto !important; white-space: nowrap !important; }
             th, td { padding: 12px 15px !important; font-size: 13px !important; }
+            
+            /* Ajustes extra para que los modales y botones entren bien en la pantalla */
+            .modal-content, .modal > div { width: 95% !important; padding: 20px !important; margin: 10px !important; }
+            .btn, .btn-delete { font-size: 13px !important; padding: 12px !important; }
         }
     
     </style>
@@ -1156,6 +1157,16 @@
             document.getElementById('sec-' + idSeccion).classList.add('active');
             document.querySelectorAll('.sidebar-menu a').forEach(btn => btn.classList.remove('active'));
             elementoBoton.classList.add('active');
+
+            // Cierre automático del menú en celulares
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector(".sidebar");
+                const toggleBtn = document.getElementById("menu-toggle-console");
+                if (sidebar && sidebar.classList.contains("active")) {
+                    sidebar.classList.remove("active");
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
+            }
         }
 
         const SUPABASE_URL = 'https://xbsjjqrizxdinmzystfu.supabase.co'; 
