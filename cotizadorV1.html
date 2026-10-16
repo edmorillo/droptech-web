@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador Web | Computadoras Lei</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #070A0F; color: #fff; display: flex; justify-content: center; padding: 50px 20px; min-height: 100vh; }
+        
+        .container { max-width: 1050px; width: 100%; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        
+        .card { background: #111622; border-radius: 16px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .title { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; color: #94A3B8; margin-bottom: 30px; line-height: 1.5; }
+
+        .section-title { font-size: 13px; font-weight: 700; color: #00F0FF; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+
+        /* Estilos de los Planes Base (Radio Buttons) */
+        .plan-options { display: flex; flex-direction: column; gap: 15px; margin-bottom: 35px; }
+        .plan-label { 
+            display: flex; flex-direction: column; background: #1E293B; border: 2px solid transparent; 
+            border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .plan-label::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #00F0FF; opacity: 0; transition: 0.3s; }
+        .plan-label:hover { background: rgba(30, 41, 59, 0.8); border-color: rgba(0, 240, 255, 0.2); }
+        
+        .plan-input { display: none; }
+        .plan-input:checked + .plan-label { border-color: #00F0FF; background: rgba(0, 240, 255, 0.05); }
+        .plan-input:checked + .plan-label::before { opacity: 1; }
+        
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .plan-name { font-size: 18px; font-weight: 700; color: #fff; }
+        .plan-price { font-size: 20px; font-weight: 800; color: #00F0FF; }
+        
+        .plan-features { font-size: 13px; color: #94A3B8; list-style: none; }
+        .plan-features li { margin-bottom: 6px; display: flex; align-items: flex-start; gap: 8px; }
+        .plan-features li i { color: #00ff66; font-size: 12px; margin-top: 3px; }
+        .plan-features li.highlight { color: #facc15; font-weight: 600; }
+        .plan-features li.highlight i { color: #facc15; }
+
+        /* Estilos de Extras (Checkboxes) */
+        .extra-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 35px; }
+        .extra-label { 
+            display: flex; align-items: center; justify-content: space-between; background: #1E293B; 
+            border: 2px solid transparent; border-radius: 10px; padding: 15px 20px; cursor: pointer; transition: 0.3s;
+        }
+        .extra-label:hover { border-color: rgba(168, 85, 247, 0.3); }
+        
+        .extra-input { display: none; }
+        .extra-input:checked + .extra-label { border-color: #a855f7; background: rgba(168, 85, 247, 0.05); }
+        
+        .extra-info { display: flex; align-items: center; gap: 15px; }
+        .checkbox-custom { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #475569; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .extra-input:checked + .extra-label .checkbox-custom { background: #a855f7; border-color: #a855f7; }
+        .checkbox-custom i { color: #fff; font-size: 12px; display: none; }
+        .extra-input:checked + .extra-label .checkbox-custom i { display: block; }
+        
+        .extra-name { font-size: 14px; font-weight: 500; color: #fff; }
+        .extra-price { font-size: 15px; font-weight: 700; color: #a855f7; }
+
+        /* Columna Derecha (Resumen Flotante) */
+        .summary-card { position: sticky; top: 50px; background: #111622; border-radius: 16px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .summary-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 30px; }
+        
+        .summary-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .summary-label { font-size: 14px; color: #94A3B8; font-weight: 500; display: flex; flex-direction: column; gap: 4px; }
+        .summary-tag { font-size: 11px; background: rgba(0, 240, 255, 0.1); color: #00F0FF; padding: 3px 8px; border-radius: 4px; width: fit-content; }
+        
+        .summary-value { font-size: 42px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -1px; }
+        .summary-value.monthly { font-size: 28px; color: #94A3B8; }
+        .summary-value.monthly span { font-size: 14px; font-weight: 400; }
+        
+        .btn-whatsapp { 
+            background: #25D366; color: #fff; border: none; padding: 18px; width: 100%; border-radius: 12px; 
+            font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; 
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+        }
+        .btn-whatsapp:hover { background: #20BD5A; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); }
+
+        .free-badge { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.2); color: #00ff66; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px; }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .summary-card { position: static; margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- COLUMNA IZQUIERDA: CONFIGURADOR -->
+        <div class="card">
+            <h1 class="title">Configura tu Proyecto Web</h1>
+            <p class="subtitle">Selecciona las características que necesitas para tu negocio y obtén una estimación de inversión al instante. Sin costos ocultos.</p>
+
+            <div class="free-badge">
+                <i class="fa-solid fa-gift"></i> ¡Hosting + Dominio (.com) + Certificado SSL GRATIS el primer año!
+            </div>
+
+            <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> 1. Tipo de Web (Base)</h2>
+            <div class="plan-options">
+                <!-- PLAN 1 -->
+                <input type="radio" name="plan_base" id="plan1" class="plan-input" value="300" data-name="Landing Page (Básica)" checked onchange="calcularTotal()">
+                <label for="plan1" class="plan-label">
+                    <div class="plan-header">
+                        <span class="plan-name">Landing Page Profesional</span>
+                        <span class="plan-price">$300</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> Diseño a medida (1 sola página / One-Page)</li>
+                        <li><i class="fa-solid fa-check"></i> Diseño Responsive (Adaptable a celulares)</li>
+                        <li><i class="fa-solid fa-check"></i> Formulario de contacto y enlaces a Redes</li>
+                        <li><i class="fa-solid fa-check"></i> Botón de WhatsApp flotante</li>
+                        <li><i class="fa-solid fa-check"></i> Alta en buscadores (SEO básico)</li>
+                        <li class="highlight"><i class="fa-solid fa-envelope"></i> Correo corporativo incluido</li>
+                    </ul>
+                </label>
+
+                <!-- PLAN 2 -->
+                <input type="radio" name="plan_base" id="plan2" class="plan-input" value="450" data-name="Web Profesional (Institucional)" onchange="calcularTotal()">
+                <label for="plan2" class="plan-label">
+                    <div class="plan-header">
+                        <span class="plan-name">Web Institucional (Más popular)</span>
+                        <span class="plan-price">$450</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> <strong>Todo lo del plan Landing, más:</strong></li>
+                        <li><i class="fa-solid fa-check"></i> Estructura Multi-página (Inicio, Nosotros, Servicios, etc.)</li>
+                        <li><i class="fa-solid fa-check"></i> Hasta 4 secciones detalladas</li>
+                        <li><i class="fa-solid fa-check"></i> Hasta 20 imágenes profesionales procesadas</li>
+                    </ul>
+                </label>
+
+                <!-- PLAN 3 -->
+                <input type="radio" name="plan_base" id="plan3" class="plan-input" value="700" data-name="Web Dinámica (Catálogo)" onchange="calcularTotal()">
+                <label for="plan3" class="plan-label">
+                    <div class="plan-header">
+                        <span class="plan-name">Web Dinámica / Catálogo</span>
+                        <span class="plan-price">$700</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> <strong>Todo lo del plan Institucional, más:</strong></li>
+                        <li><i class="fa-solid fa-check"></i> Panel Autogestionable para el cliente</li>
+                        <li><i class="fa-solid fa-check"></i> Catálogo de productos / Galería dinámica</li>
+                        <li><i class="fa-solid fa-check"></i> Base de datos integrada</li>
+                    </ul>
+                </label>
+            </div>
+
+            <h2 class="section-title" style="color: #a855f7;"><i class="fa-solid fa-puzzle-piece"></i> 2. Características Extra (Pago Único)</h2>
+            <div class="extra-options">
+                <input type="checkbox" id="extra1" class="extra-input" value="150" data-name="Múltiples Idiomas" onchange="calcularTotal()">
+                <label for="extra1" class="extra-label">
+                    <div class="extra-info">
+                        <div class="checkbox-custom"><i class="fa-solid fa-check"></i></div>
+                        <span class="extra-name">Sitio Multi-idioma (Inglés/Español)</span>
+                    </div>
+                    <span class="extra-price">+$150</span>
+                </label>
+
+                <input type="checkbox" id="extra2" class="extra-input" value="100" data-name="SEO Avanzado" onchange="calcularTotal()">
+                <label for="extra2" class="extra-label">
+                    <div class="extra-info">
+                        <div class="checkbox-custom"><i class="fa-solid fa-check"></i></div>
+                        <span class="extra-name">SEO Avanzado (Posicionamiento Pro)</span>
+                    </div>
+                    <span class="extra-price">+$100</span>
+                </label>
+            </div>
+
+            <h2 class="section-title" style="color: #94A3B8;"><i class="fa-solid fa-rotate"></i> 3. Servicios Recurrentes (Opcional)</h2>
+            <div class="extra-options" style="margin-bottom: 0;">
+                <input type="checkbox" id="extra3" class="extra-input mensual" value="50" data-name="Mantenimiento Mensual" onchange="calcularTotal()">
+                <label for="extra3" class="extra-label" style="border-color: rgba(255,255,255,0.1);">
+                    <div class="extra-info">
+                        <div class="checkbox-custom" style="border-color: #94A3B8;"><i class="fa-solid fa-check"></i></div>
+                        <span class="extra-name">Mantenimiento (Soporte, Servidor y Backups)</span>
+                    </div>
+                    <span class="extra-price" style="color: #fff;">+$50/mes</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: RESUMEN -->
+        <div>
+            <div class="summary-card">
+                <h3 class="summary-title">Resumen de Inversión</h3>
+                
+                <div class="summary-row">
+                    <div class="summary-label">
+                        Costo de Desarrollo
+                        <span class="summary-tag">Pago Único</span>
+                    </div>
+                    <div class="summary-value" id="total-unico">$300</div>
+                </div>
+
+                <div class="summary-row" style="border-bottom: none; margin-bottom: 30px;">
+                    <div class="summary-label">
+                        Costo Mensual
+                        <span style="font-size: 11px; margin-top: 4px;">Solo si eliges mantenimiento</span>
+                    </div>
+                    <div class="summary-value monthly" id="total-mensual">$0<span>/mes</span></div>
+                </div>
+
+                <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i> Solicitar Presupuesto
+                </button>
+                <p style="text-align: center; font-size: 11px; color: #64748b; margin-top: 15px;">Sin compromisos. Te enviaremos los detalles para comenzar.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Formateador de moneda
+        const formatearDinero = (numero) => '$' + numero.toLocaleString('en-US');
+
+        function calcularTotal() {
+            let totalUnico = 0;
+            let totalMensual = 0;
+
+            // 1. Obtener el valor del plan base seleccionado
+            const planSeleccionado = document.querySelector('input[name="plan_base"]:checked');
+            if (planSeleccionado) {
+                totalUnico += parseInt(planSeleccionado.value);
+            }
+
+            // 2. Obtener los extras de pago único
+            const extrasUnicos = document.querySelectorAll('.extra-input:not(.mensual):checked');
+            extrasUnicos.forEach(extra => {
+                totalUnico += parseInt(extra.value);
+            });
+
+            // 3. Obtener los recurrentes
+            const extrasMensuales = document.querySelectorAll('.extra-input.mensual:checked');
+            extrasMensuales.forEach(extra => {
+                totalMensual += parseInt(extra.value);
+            });
+
+            // Actualizar la interfaz
+            document.getElementById('total-unico').innerText = formatearDinero(totalUnico);
+            document.getElementById('total-mensual').innerHTML = formatearDinero(totalMensual) + '<span>/mes</span>';
+        }
+
+        function enviarWhatsApp() {
+            // Número de WhatsApp (Reemplazar por el tuyo con código de país, ej: 54911...)
+            const numeroDestino = "5491140822356"; 
+
+            // Recopilar datos
+            const planSeleccionado = document.querySelector('input[name="plan_base"]:checked');
+            const nombrePlan = planSeleccionado.getAttribute('data-name');
+            const precioPlan = planSeleccionado.value;
+
+            let textoExtras = "";
+            let sumaUnica = parseInt(precioPlan);
+            let sumaMensual = 0;
+
+            const extrasCheckeados = document.querySelectorAll('.extra-input:checked');
+            if (extrasCheckeados.length > 0) {
+                textoExtras = "%0A%0A*Características Adicionales:*";
+                extrasCheckeados.forEach(extra => {
+                    const nombre = extra.getAttribute('data-name');
+                    const precio = parseInt(extra.value);
+                    if (extra.classList.contains('mensual')) {
+                        textoExtras += `%0A- ${nombre} (+$${precio}/mes)`;
+                        sumaMensual += precio;
+                    } else {
+                        textoExtras += `%0A- ${nombre} (+$${precio})`;
+                        sumaUnica += precio;
+                    }
+                });
+            } else {
+                textoExtras = "%0A%0A*Sin características adicionales.*";
+            }
+
+            // Armar el mensaje final
+            let mensaje = `👋 Hola Lei! Quiero empezar un proyecto web. Estuve viendo el cotizador y este es mi resumen:%0A%0A`;
+            mensaje += `*Plan Base:* ${nombrePlan} ($${precioPlan})`;
+            mensaje += textoExtras;
+            mensaje += `%0A%0A*Inversión Inicial Estimada:* $${sumaUnica} USD`;
+            if (sumaMensual > 0) {
+                mensaje += `%0A*Costo Mensual (Mantenimiento):* $${sumaMensual} USD/mes`;
+            }
+            mensaje += `%0A%0A¿Cómo avanzamos con los detalles?`;
+
+            // Abrir WhatsApp
+            window.open(`https://wa.me/${numeroDestino}?text=${mensaje}`, '_blank');
+        }
+
+        // Ejecutar al inicio para setear los valores base
+        calcularTotal();
+    </script>
+</body>
+</html>
