@@ -352,8 +352,8 @@
         }
 
         function enviarWhatsApp() {
-            // Número de WhatsApp (Poné tu número acá. Ej: 5491100000000 o 593987654321)
-            const numeroDestino = "5491100000000"; 
+            // Número de WhatsApp ya configurado: Computadoras Lei
+            const numeroDestino = "5491140822356"; 
             
             const planSeleccionado = document.querySelector('input[name="plan_base"]:checked');
             const nombrePlan = planSeleccionado.getAttribute('data-name');
@@ -365,43 +365,46 @@
 
             const extrasCheckeados = document.querySelectorAll('.extra-input:checked');
             if (extrasCheckeados.length > 0) {
-                textoExtras = "%0A%0A*Características Adicionales:*";
+                textoExtras = "\n\n*Características Adicionales:*";
                 extrasCheckeados.forEach(extra => {
                     const nombre = extra.getAttribute('data-name');
                     const precio = parseInt(extra.value);
                     if (extra.classList.contains('mensual')) {
-                        textoExtras += `%0A- ${nombre} (+$${precio}/mes)`;
+                        textoExtras += `\n- ${nombre} (+$${precio}/mes)`;
                         sumaMensual += precio;
                     } else {
-                        textoExtras += `%0A- ${nombre} (+$${precio})`;
+                        textoExtras += `\n- ${nombre} (+$${precio})`;
                         sumaBase += precio;
                     }
                 });
             } else {
-                textoExtras = "%0A%0A*Sin adicionales extras.*";
+                textoExtras = "\n\n*Sin adicionales extras.*";
             }
 
             let descuentoMonetario = sumaBase * porcentajeDescuento;
             let totalFinalUnico = sumaBase - descuentoMonetario;
 
-            let mensaje = `👋 Hola Lei! Quiero empezar un proyecto web. Estuve viendo el cotizador y este es mi resumen:%0A%0A`;
+            // Usamos saltos de línea estándar (\n) que luego se codificarán correctamente
+            let mensaje = `👋 Hola Lei! Quiero empezar un proyecto web. Estuve viendo el cotizador y este es mi resumen:\n\n`;
             mensaje += `*Plan Elegido:* ${nombrePlan} ($${precioPlan})`;
             mensaje += textoExtras;
             
             if (porcentajeDescuento > 0) {
-                mensaje += `%0A%0A*Subtotal Desarrollo:* $${sumaBase} USD`;
-                mensaje += `%0A*Cupón aplicado (${codigoCuponActivo}):* -$${descuentoMonetario} USD`;
-                mensaje += `%0A*INVERSIÓN FINAL DE DESARROLLO:* $${totalFinalUnico} USD`;
+                mensaje += `\n\n*Subtotal Desarrollo:* $${sumaBase} USD`;
+                mensaje += `\n*Cupón aplicado (${codigoCuponActivo}):* -$${descuentoMonetario} USD`;
+                mensaje += `\n*INVERSIÓN FINAL DE DESARROLLO:* $${totalFinalUnico} USD`;
             } else {
-                mensaje += `%0A%0A*Inversión de Desarrollo:* $${sumaBase} USD`;
+                mensaje += `\n\n*Inversión de Desarrollo:* $${sumaBase} USD`;
             }
 
             if (sumaMensual > 0) {
-                mensaje += `%0A*Costo Mensual (Mantenimiento):* $${sumaMensual} USD/mes`;
+                mensaje += `\n*Costo Mensual (Mantenimiento):* $${sumaMensual} USD/mes`;
             }
-            mensaje += `%0A%0A¿Cómo avanzamos con los detalles?`;
+            mensaje += `\n\n¿Cómo avanzamos con los detalles?`;
 
-            window.open(`https://wa.me/${numeroDestino}?text=${mensaje}`, '_blank');
+            // La magia: encodeURIComponent arregla los emojis, y api.whatsapp.com mejora la vista de empresa
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWhatsApp, '_blank');
         }
 
         // Ejecutar al inicio para setear los valores base
