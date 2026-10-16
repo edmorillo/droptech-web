@@ -15,7 +15,7 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: #070A0F; color: #fff; display: flex; justify-content: center; padding: 50px 20px; min-height: 100vh; }
+        body { background: #070A0F; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 100px 20px 0px 20px; min-height: 100vh; }
         
         /* Contenedor más ancho para que entren bien las tarjetas */
         .container { max-width: 1250px; width: 100%; display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; }
@@ -176,10 +176,51 @@
             .summary-value { font-size: 34px; }
             .summary-value.monthly { font-size: 22px; }
             .btn-whatsapp { font-size: 15px; padding: 15px; }
+
+            /* 7. Barra flotante de Total en Celulares */
+            .mobile-total-bar {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #111622;
+                border-top: 1px solid rgba(0, 240, 255, 0.3);
+                padding: 15px 20px;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 9998; /* Un punto menos que el botón de WA */
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+            }
+            .mobile-total-bar .m-text { font-size: 12px; color: #94A3B8; font-weight: 500; display: block; }
+            .mobile-total-bar .m-precio { font-size: 22px; font-weight: 800; color: #fff; line-height: 1; }
+            .mobile-total-bar .btn-ir { background: #00F0FF; color: #000; font-weight: 700; border: none; padding: 8px 15px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+            
+            /* Subir un poco el botón de WA y dar espacio al fondo */
+            .whatsapp-float { bottom: 85px; }
+            body { padding-bottom: 100px; }
+
         }
+        .mobile-total-bar { display: none; }
     </style>
 </head>
 <body>
+
+    <!-- ENCABEZADO OFICIAL LEY -->
+    <header style="width: 100%; position: absolute; top: 0; left: 0; padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 100; background: #070A0F;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
+                <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size: 18px; font-weight: 800; color: #fff;">Computadoras Lei</span>
+        </div>
+        <a href="index.html" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s;" onmouseover="this.style.color='#00F0FF'" onmouseout="this.style.color='#94A3B8'">Página Principal</a>
+    </header>
 
     <div class="container">
         <!-- COLUMNA IZQUIERDA: CONFIGURADOR -->
@@ -348,6 +389,20 @@
         </div>
     </div>
 
+    <!-- BARRA TOTAL FLOTANTE (Solo visible en celular) -->
+    <div class="mobile-total-bar">
+        <div>
+            <span class="m-text">Total Estimado</span>
+            <span class="m-precio" id="mobile-precio-final">$300</span>
+        </div>
+        <button class="btn-ir" onclick="document.querySelector('.summary-card').scrollIntoView({behavior: 'smooth'})">Ver Resumen</button>
+    </div>
+
+    <!-- FOOTER SIMPLE LEY -->
+    <footer style="width: 100%; text-align: center; margin-top: auto; padding: 60px 20px 30px 20px;">
+        <p style="color: #64748b; font-size: 13px;">&copy; 2026 Computadoras Lei. Soluciones de Software y Desarrollo Web Profesional. Lugano, CABA, Argentina.</p>
+    </footer>
+
     <script>
         // Formateador de moneda
         const formatearDinero = (numero) => '$' + numero.toLocaleString('en-US');
@@ -425,6 +480,7 @@
 
             document.getElementById('total-unico').innerText = formatearDinero(totalFinalUnico);
             document.getElementById('total-mensual').innerHTML = formatearDinero(totalMensual) + '<span>/mes</span>';
+            document.getElementById('mobile-precio-final').innerText = formatearDinero(totalFinalUnico);
         }
 
         function enviarWhatsApp() {
@@ -486,6 +542,8 @@
         // Ejecutar al inicio para setear los valores base
         calcularTotal();
     </script>
+
+    
 
     <!-- BOTÓN FLOTANTE WHATSAPP -->
     <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20el%20cotizador%20web%20y%20tengo%20una%20duda." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
