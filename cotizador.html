@@ -451,10 +451,10 @@
             const input = document.getElementById('input-cupon').value.trim().toUpperCase();
             const msj = document.getElementById('msj-cupon');
             
-            if (input === 'AMIGO25') {
+            if (input === 'AMIGO26') {
                 porcentajeDescuento = 0.25; 
-                codigoCuponActivo = "AMIGO25";
-                msj.innerText = "¡Cupón AMIGO25 (25% OFF) aplicado con éxito!";
+                codigoCuponActivo = "AMIGO26";
+                msj.innerText = "¡Cupón AMIGO26 (25% OFF) aplicado con éxito!";
                 msj.style.color = "#00ff66";
                 msj.style.display = "block";
             } else if (input === 'ECUADOR26') {
@@ -462,6 +462,12 @@
                 codigoCuponActivo = "ECUADOR26";
                 msj.innerText = "¡Cupón ECUADOR26 (20% OFF) aplicado con éxito!";
                 msj.style.color = "#00F0FF"; 
+                msj.style.display = "block";
+            } else if (input === 'PROMO26') {
+                porcentajeDescuento = 0.20; 
+                codigoCuponActivo = "PROMO26";
+                msj.innerText = "¡Cupón PROMO26 (20% OFF) aplicado con éxito!";
+                msj.style.color = "#a855f7"; 
                 msj.style.display = "block";
             } else {
                 porcentajeDescuento = 0;
