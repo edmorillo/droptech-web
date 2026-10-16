@@ -341,7 +341,13 @@
         <!-- COLUMNA DERECHA: RESUMEN -->
         <div>
             <div class="summary-card">
-                <h3 class="summary-title">Resumen de Inversión</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3 class="summary-title" style="margin-bottom: 0;">Resumen</h3>
+                    <select id="selector-moneda" onchange="cambiarMoneda()" style="background: #1E293B; color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; outline: none; cursor: pointer;">
+                        <option value="USD">USD ($)</option>
+                        <option value="ARS">ARS ($)</option>
+                    </select>
+                </div>
                 
                 <!-- CAJA DEL CUPÓN DE DESCUENTO -->
                 <div style="margin-bottom: 25px; background: rgba(0, 240, 255, 0.05); padding: 15px; border-radius: 10px; border: 1px dashed rgba(0, 240, 255, 0.3);">
@@ -405,12 +411,42 @@
     </footer>
 
     <script>
-        // Formateador de moneda
-        const formatearDinero = (numero) => '$' + numero.toLocaleString('en-US');
-
+        // 1. CONFIGURACIÓN INICIAL Y DE SEGURIDAD
+        let valorDolarDinamico = 1010; // Dólar de respaldo (por si falla el internet del cliente)
+        let monedaActual = "USD";
         let porcentajeDescuento = 0;
         let codigoCuponActivo = "";
 
+        // 2. CONEXIÓN AUTOMÁTICA A LA API (DÓLAR BLUE)
+        async function obtenerCotizacionDolar() {
+            try {
+                const respuesta = await fetch('https://dolarapi.com/v1/dolares/blue');
+                if (respuesta.ok) {
+                    const datos = await respuesta.json();
+                    // Dólar Emprendedor: Tomamos el Blue real y le aplicamos un 35% de descuento (multiplicando por 0.65)
+                    valorDolarDinamico = datos.venta * 0.65; 
+                    console.log("Dólar Emprendedor aplicado: $" + valorDolarDinamico + " (Blue real: $" + datos.venta + ")");
+                }
+            } catch (error) {
+                console.warn("Usando dólar de respaldo. No se pudo conectar a la API.");
+            }
+        }
+        obtenerCotizacionDolar(); // Se ejecuta solito al abrir la web
+
+        // 3. FUNCIONES DE CAMBIO Y FORMATO
+        function cambiarMoneda() {
+            monedaActual = document.getElementById('selector-moneda').value;
+            calcularTotal(); 
+        }
+
+        const formatearDinero = (numero) => {
+            if (monedaActual === "ARS") {
+                return '$' + Math.round(numero).toLocaleString('es-AR');
+            }
+            return '$' + numero.toLocaleString('en-US');
+        };
+
+        // 4. LÓGICA DE CUPONES
         function aplicarCupon() {
             const input = document.getElementById('input-cupon').value.trim().toUpperCase();
             const msj = document.getElementById('msj-cupon');
@@ -437,40 +473,36 @@
             calcularTotal();
         }
 
+        // 5. MOTOR DE CÁLCULO PRINCIPAL
         function calcularTotal() {
-            let totalBaseYExtras = 0;
-            let totalMensual = 0;
+            let totalBaseYExtrasUSD = 0;
+            let totalMensualUSD = 0;
 
-            // 1. Obtener el valor del plan base
             const planSeleccionado = document.querySelector('input[name="plan_base"]:checked');
-            if (planSeleccionado) {
-                totalBaseYExtras += parseInt(planSeleccionado.value);
-            }
+            if (planSeleccionado) { totalBaseYExtrasUSD += parseInt(planSeleccionado.value); }
 
-            // 2. Obtener los extras de pago único
             const extrasUnicos = document.querySelectorAll('.extra-input:not(.mensual):checked');
-            extrasUnicos.forEach(extra => {
-                totalBaseYExtras += parseInt(extra.value);
-            });
+            extrasUnicos.forEach(extra => { totalBaseYExtrasUSD += parseInt(extra.value); });
 
-            // 3. Obtener los recurrentes
             const extrasMensuales = document.querySelectorAll('.extra-input.mensual:checked');
-            extrasMensuales.forEach(extra => {
-                totalMensual += parseInt(extra.value);
-            });
+            extrasMensuales.forEach(extra => { totalMensualUSD += parseInt(extra.value); });
 
-            // 4. Aplicar Descuento al pago único
+            // El truco de la conversión
+            let multiplicador = (monedaActual === "ARS") ? valorDolarDinamico : 1;
+
+            let totalBaseYExtras = totalBaseYExtrasUSD * multiplicador;
+            let totalMensual = totalMensualUSD * multiplicador;
+            
             let descuentoMonetario = totalBaseYExtras * porcentajeDescuento;
             let totalFinalUnico = totalBaseYExtras - descuentoMonetario;
 
-            // Actualizar Interfaz visual
+            // Actualizar Pantalla
             const divOriginal = document.getElementById('precio-original');
             const filaDescuento = document.getElementById('fila-descuento');
             
             if (porcentajeDescuento > 0) {
                 divOriginal.style.display = "block";
                 divOriginal.innerText = formatearDinero(totalBaseYExtras);
-                
                 filaDescuento.style.display = "flex";
                 document.getElementById('nombre-cupon-aplicado').innerText = codigoCuponActivo;
                 document.getElementById('valor-descuento').innerText = "-" + formatearDinero(descuentoMonetario);
@@ -481,16 +513,22 @@
 
             document.getElementById('total-unico').innerText = formatearDinero(totalFinalUnico);
             document.getElementById('total-mensual').innerHTML = formatearDinero(totalMensual) + '<span>/mes</span>';
-            document.getElementById('mobile-precio-final').innerText = formatearDinero(totalFinalUnico);
+            
+            if(document.getElementById('mobile-precio-final')) {
+                document.getElementById('mobile-precio-final').innerText = formatearDinero(totalFinalUnico);
+            }
         }
 
+        // 6. ARMADO DEL MENSAJE DE WHATSAPP CON MONEDA EXACTA
         function enviarWhatsApp() {
-            // Número de WhatsApp ya configurado: Computadoras Lei
             const numeroDestino = "5491140822356"; 
             
             const planSeleccionado = document.querySelector('input[name="plan_base"]:checked');
             const nombrePlan = planSeleccionado.getAttribute('data-name');
-            const precioPlan = parseInt(planSeleccionado.value);
+            const precioPlanUSD = parseInt(planSeleccionado.value);
+
+            let multiplicador = (monedaActual === "ARS") ? valorDolarDinamico : 1;
+            let precioPlan = precioPlanUSD * multiplicador;
 
             let textoExtras = "";
             let sumaBase = precioPlan;
@@ -501,13 +539,15 @@
                 textoExtras = "\n\n*Características Adicionales:*";
                 extrasCheckeados.forEach(extra => {
                     const nombre = extra.getAttribute('data-name');
-                    const precio = parseInt(extra.value);
+                    const precioExtUSD = parseInt(extra.value);
+                    const precioExt = precioExtUSD * multiplicador;
+                    
                     if (extra.classList.contains('mensual')) {
-                        textoExtras += `\n- ${nombre} (+$${precio}/mes)`;
-                        sumaMensual += precio;
+                        textoExtras += `\n- ${nombre} (+${formatearDinero(precioExt)}/mes)`;
+                        sumaMensual += precioExt;
                     } else {
-                        textoExtras += `\n- ${nombre} (+$${precio})`;
-                        sumaBase += precio;
+                        textoExtras += `\n- ${nombre} (+${formatearDinero(precioExt)})`;
+                        sumaBase += precioExt;
                     }
                 });
             } else {
@@ -517,30 +557,27 @@
             let descuentoMonetario = sumaBase * porcentajeDescuento;
             let totalFinalUnico = sumaBase - descuentoMonetario;
 
-            // Usamos saltos de línea estándar (\n) que luego se codificarán correctamente
             let mensaje = `Hola Lei! Quiero empezar un proyecto web. Estuve viendo el cotizador y este es mi resumen:\n\n`;
-            mensaje += `*Plan Elegido:* ${nombrePlan} ($${precioPlan})`;
+            mensaje += `*Plan Elegido:* ${nombrePlan} (${formatearDinero(precioPlan)} ${monedaActual})`;
             mensaje += textoExtras;
             
             if (porcentajeDescuento > 0) {
-                mensaje += `\n\n*Subtotal Desarrollo:* $${sumaBase} USD`;
-                mensaje += `\n*Cupón aplicado (${codigoCuponActivo}):* -$${descuentoMonetario} USD`;
-                mensaje += `\n*INVERSIÓN FINAL DE DESARROLLO:* $${totalFinalUnico} USD`;
+                mensaje += `\n\n*Subtotal Desarrollo:* ${formatearDinero(sumaBase)} ${monedaActual}`;
+                mensaje += `\n*Cupón aplicado (${codigoCuponActivo}):* -${formatearDinero(descuentoMonetario)} ${monedaActual}`;
+                mensaje += `\n*INVERSIÓN FINAL DE DESARROLLO:* ${formatearDinero(totalFinalUnico)} ${monedaActual}`;
             } else {
-                mensaje += `\n\n*Inversión de Desarrollo:* $${sumaBase} USD`;
+                mensaje += `\n\n*Inversión de Desarrollo:* ${formatearDinero(sumaBase)} ${monedaActual}`;
             }
 
             if (sumaMensual > 0) {
-                mensaje += `\n*Costo Mensual (Mantenimiento):* $${sumaMensual} USD/mes`;
+                mensaje += `\n*Costo Mensual (Mantenimiento):* ${formatearDinero(sumaMensual)} ${monedaActual}/mes`;
             }
             mensaje += `\n\n¿Cómo avanzamos con los detalles?`;
 
-            // La magia: encodeURIComponent arregla los emojis, y api.whatsapp.com mejora la vista de empresa
             const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(mensaje)}`;
             window.open(urlWhatsApp, '_blank');
         }
 
-        // Ejecutar al inicio para setear los valores base
         calcularTotal();
     </script>
 
