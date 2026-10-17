@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demos de Proyectos | Computadoras Lei</title>
+    
+    <!-- Íconos idénticos a la página principal -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="assets/img/logo_icon1.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #070A0F; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 120px 20px 0px 20px; min-height: 100vh; }
+        
+        .header-title { text-align: center; margin-bottom: 40px; }
+        .header-title h1 { font-size: 36px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .header-title p { font-size: 15px; color: #94A3B8; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* NUEVO: SISTEMA DE PESTAÑAS FIJO (STICKY) */
+        .filtros-container {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 50px; max-width: 900px;
+            /* La magia para que se quede fijo debajo del menú */
+            position: sticky;
+            top: 80px; /* La altura de tu header */
+            z-index: 900; /* Un poco menos que el header para que quede por debajo */
+            background: rgba(7, 10, 15, 0.9); /* Fondo semi transparente */
+            backdrop-filter: blur(10px);
+            padding: 15px; /* Espaciado interno para que no se vea feo al hacer scroll */
+            border-radius: 40px; /* Bordes redondeados para el contenedor */
+            border: 1px solid rgba(255,255,255,0.05); /* Borde sutil */
+        }
+        .btn-filtro {
+            background: transparent; color: #94A3B8; border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px; /* Botones un poco más chicos */
+            border-radius: 30px; cursor: pointer; font-size: 13px; /* Texto un poco más chico */
+            font-weight: 500; transition: all 0.3s ease; outline: none;
+        }
+        .btn-filtro:hover { border-color: #00F0FF; color: #fff; }
+        .btn-filtro.activo { background: rgba(0, 240, 255, 0.1); color: #00F0FF; border-color: #00F0FF; font-weight: 600; }
+
+        /* NUEVO: GRILLA MÁS COMPACTA (4 Columnas) */
+        .demos-grid { 
+            display: grid; 
+            /* Esto hace que entren hasta 4 tarjetas, y si la pantalla es chica, se adaptan */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 25px; /* Espacio un poco menor */
+            max-width: 1200px; width: 100%; margin-bottom: 60px; 
+        }
+        
+        .demo-card {
+            background: #111622; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden; transition: all 0.4s ease; display: flex; flex-direction: column;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .demo-card:hover { transform: translateY(-8px); border-color: rgba(0, 240, 255, 0.3); box-shadow: 0 15px 40px rgba(0, 240, 255, 0.1); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* NUEVO: FOTOS EN LUGAR DE ÍCONOS */
+        .demo-img-placeholder {
+            width: 100%; height: 180px; /* Altura un poco menor */
+            border-bottom: 1px solid rgba(255,255,255,0.05); position: relative;
+            overflow: hidden; /* Para que la imagen no se salga si hace zoom */
+        }
+        .demo-img-placeholder img {
+            width: 100%; height: 100%; object-fit: cover; /* La imagen cubre todo el espacio */
+            transition: transform 0.5s ease; /* Efecto suave de zoom */
+        }
+        .demo-card:hover .demo-img-placeholder img {
+            transform: scale(1.05); /* Pequeño zoom al pasar el mouse */
+        }
+        
+        /* Capa oscura sutil sobre la foto para que no quede tan brillante */
+        .demo-img-placeholder::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+        }
+
+        .demo-content { padding: 25px; flex: 1; display: flex; flex-direction: column; } /* Padding un poco menor */
+        
+        .badge { align-self: flex-start; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; } /* Badges un poco más chicos */
+        .badge.b-landing { background: rgba(0, 240, 255, 0.1); color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.3); }
+        .badge.b-inst { background: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .badge.b-auto { background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+        .demo-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 5px; } /* Título un poco más chico */
+        .demo-subtitle { font-size: 12px; font-weight: 600; margin-bottom: 12px; } /* Subtítulo un poco más chico */
+        .text-landing { color: #00F0FF; } .text-inst { color: #facc15; } .text-auto { color: #a855f7; }
+
+        .demo-desc { font-size: 13px; color: #94A3B8; line-height: 1.5; margin-bottom: 20px; flex: 1; } /* Texto un poco más chico */
+        
+        .btn-demo { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; } /* Botón un poco más chico */
+        .btn-demo:hover { background: #00F0FF; color: #000; border-color: #00F0FF; }
+        .btn-demo.disabled { opacity: 0.5; pointer-events: none; border-style: dashed; }
+
+        .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+        @media (max-width: 768px) {
+            body { padding-top: 100px; }
+            .header-title h1 { font-size: 28px; }
+            .demos-grid { grid-template-columns: 1fr; }
+            .filtros-container { top: 70px; } /* Ajuste del sticky para móvil */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO OFICIAL (AHORA FIJO) -->
+    <header style="width: 100%; position: fixed; top: 0; left: 0; padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(7, 10, 15, 0.95); backdrop-filter: blur(10px);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
+                <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size: 18px; font-weight: 800; color: #fff;">Computadoras Lei</span>
+        </div>
+        <a href="index.html" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s;" onmouseover="this.style.color='#00F0FF'" onmouseout="this.style.color='#94A3B8'">Página Principal</a>
+    </header>
+
+    <div class="header-title">
+        <h1>Portfolio de Proyectos</h1>
+        <p>Explorá nuestras maquetas interactivas y descubrí la calidad visual, estructura y rendimiento que tu marca puede alcanzar en internet.</p>
+    </div>
+
+    <!-- BOTONES DE FILTRO CON NOMBRES OFICIALES -->
+    <div class="filtros-container">
+        <button class="btn-filtro activo" data-filtro="todos">Todos</button>
+        <button class="btn-filtro" data-filtro="landing">Landing Page Profesional</button>
+        <button class="btn-filtro" data-filtro="institucional">Diseño Web Profesional</button>
+        <button class="btn-filtro" data-filtro="autogestionable">Web Autogestionable</button>
+    </div>
+
+    <!-- GRILLA DE DEMOS (Con Imágenes) -->
+    <div class="demos-grid" id="grilla-demos">
+        
+        <!-- DEMO 1: JURÍDICO -->
+        <div class="demo-card" data-categoria="landing">
+            <div class="demo-img-placeholder">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600" alt="Estudio Jurídico Demo">
+            </div>
+            <div class="demo-content">
+                <span class="badge b-landing">Landing Page</span>
+                <h3 class="demo-title">Estudio Jurídico</h3>
+                <div class="demo-subtitle text-landing">Web One-Pager Corporativa</div>
+                <p class="demo-desc">Diseño sobrio y elegante con scroll suave. Ideal para firmas legales o consultorías.</p>
+                <a href="demo1-juridico.html" class="btn-demo"><i class="fa-solid fa-desktop"></i> Ver Demo en Vivo</a>
+            </div>
+        </div>
+
+        <!-- DEMO 2: CREATIVA (ADELINA) -->
+        <div class="demo-card" data-categoria="landing">
+            <div class="demo-img-placeholder">
+                <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=600" alt="Marca Creativa Demo">
+            </div>
+            <div class="demo-content">
+                <span class="badge b-landing">Landing Page</span>
+                <h3 class="demo-title">Marca Creativa</h3>
+                <div class="demo-subtitle text-landing">Minimalismo Editorial</div>
+                <p class="demo-desc">Diseño luminoso y vanguardista. Perfecto para diseñadores, coaches y marcas personales.</p>
+                <a href="demo2-creativa.html" class="btn-demo"><i class="fa-solid fa-desktop"></i> Ver Demo en Vivo</a>
+            </div>
+        </div>
+
+        <!-- DEMO 3: INSTITUCIONAL (EN DESARROLLO) -->
+        <div class="demo-card" data-categoria="institucional">
+            <div class="demo-img-placeholder">
+                <img src="https://images.unsplash.com/photo-1586528116311-ad8ed7c861e6?q=80&w=600" alt="Logística Demo">
+            </div>
+            <div class="demo-content">
+                <span class="badge b-inst">Institucional ($450)</span>
+                <h3 class="demo-title">Empresa Logística</h3>
+                <div class="demo-subtitle text-inst">Web Multi-Página</div>
+                <p class="demo-desc">Arquitectura completa de 4 secciones. Para mostrar infraestructura y generar presencia B2B.</p>
+                <a href="#" class="btn-demo disabled"><i class="fa-solid fa-hammer"></i> En desarrollo...</a>
+            </div>
+        </div>
+
+        <!-- DEMO 4: AUTOGESTIONABLE (EN DESARROLLO) -->
+        <div class="demo-card" data-categoria="autogestionable">
+            <div class="demo-img-placeholder">
+                <img src="https://images.unsplash.com/photo-1560518846-1ea4a4f6d18c?q=80&w=600" alt="Inmobiliaria Demo">
+            </div>
+            <div class="demo-content">
+                <span class="badge b-auto">Autogestionable ($700)</span>
+                <h3 class="demo-title">Inmobiliaria</h3>
+                <div class="demo-subtitle text-auto">Catálogo + Panel</div>
+                <p class="demo-desc">Sitio interactivo con filtros de búsqueda y fichas avanzadas para controlar tu base de datos.</p>
+                <a href="#" class="btn-demo disabled"><i class="fa-solid fa-hammer"></i> En desarrollo...</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="width: 100%; text-align: center; margin-top: auto; padding: 60px 20px 30px 20px;">
+        <p style="color: #64748b; font-size: 13px;">&copy; 2026 Computadoras Lei. Soluciones de Software y Desarrollo Web Profesional. Lugano, CABA, Argentina.</p>
+    </footer>
+
+    <!-- WHATSAPP -->
+    <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20sus%20Demos%20Web%20y%20me%20gustaría%20hacerles%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- SCRIPT DEL FILTRO -->
+    <script>
+        const botonesFiltro = document.querySelectorAll('.btn-filtro');
+        const tarjetasDemo = document.querySelectorAll('.demo-card');
+
+        botonesFiltro.forEach(boton => {
+            boton.addEventListener('click', () => {
+                botonesFiltro.forEach(b => b.classList.remove('activo'));
+                boton.classList.add('activo');
+
+                const filtro = boton.getAttribute('data-filtro');
+
+                tarjetasDemo.forEach(tarjeta => {
+                    const categoriaTarjeta = tarjeta.getAttribute('data-categoria');
+                    
+                    if (filtro === 'todos' || filtro === categoriaTarjeta) {
+                        tarjeta.style.display = 'flex';
+                        tarjeta.style.animation = 'none';
+                        setTimeout(() => tarjeta.style.animation = 'fadeIn 0.5s ease forwards', 10);
+                    } else {
+                        tarjeta.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
