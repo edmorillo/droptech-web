@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leila | Portfolio & Marca Personal</title>
+
+    <!-- Íconos idénticos a la página principal -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="assets/img/logo_icon1.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <!-- Fuentes estilo Editorial: Cormorant para elegancia, DM Sans para limpieza -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        /* PALETA DE COLORES "Leila" */
+        :root {
+            --bg-color: #F7F5F0; /* Crema muy suave */
+            --text-dark: #1A1A1A; /* Casi negro */
+            --text-light: #5A5A5A; /* Gris elegante */
+            --accent: #E2D3C1; /* Beige cálido */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'DM Sans', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-dark); 
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; }
+
+        /* MAGIA 1: Animaciones de revelado editorial súper suaves */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); /* Curva de animación premium */
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BOTÓN VOLVER A DEMOS (Tu portfolio) */
+        .btn-volver-demos {
+            position: fixed; top: 30px; left: 30px; background: var(--text-dark); color: #fff;
+            padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500;
+            text-decoration: none; z-index: 999; transition: 0.4s; border: 1px solid var(--text-dark);
+        }
+        .btn-volver-demos:hover { background: transparent; color: var(--text-dark); }
+
+        /* NAVEGACIÓN INVISIBLE */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 30px 60px;
+            display: flex; justify-content: flex-end; z-index: 100;
+            background: linear-gradient(to bottom, rgba(247, 245, 240, 0.9) 0%, rgba(247, 245, 240, 0) 100%);
+        }
+        nav { display: flex; gap: 40px; }
+        nav a { 
+            color: var(--text-dark); text-decoration: none; font-size: 14px; 
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+            position: relative;
+        }
+        nav a::after {
+            content: ''; position: absolute; width: 0; height: 1px; 
+            bottom: -5px; left: 0; background-color: var(--text-dark); transition: 0.3s;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* SECCIÓN 1: HERO ESTILO REVISTA */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 10vw; padding-top: 80px; gap: 50px;
+        }
+        .hero-text { flex: 1; }
+        .hero-text h1 { 
+            font-size: clamp(4rem, 8vw, 7rem); /* Texto gigante que se adapta */
+            line-height: 0.9; margin-bottom: 30px; font-weight: 400;
+        }
+        .hero-text p { font-size: 18px; color: var(--text-light); max-width: 400px; line-height: 1.6; margin-bottom: 40px; }
+        
+        .hero-img-container { flex: 1; display: flex; justify-content: flex-end; }
+        .hero-img {
+            width: 100%; max-width: 500px; height: 700px; object-fit: cover;
+            /* El famoso borde redondeado estilo "Arco" de las plantillas modernas */
+            border-radius: 300px 300px 0 0;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+        }
+
+        .btn-primario {
+            display: inline-block; padding: 18px 45px; background: var(--text-dark); 
+            color: #fff; text-decoration: none; border-radius: 50px; font-size: 14px; 
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.4s; border: 1px solid var(--text-dark);
+        }
+        .btn-primario:hover { background: transparent; color: var(--text-dark); }
+
+        /* MAGIA 2: MARQUEE (Texto deslizante infinito) */
+        .marquee-wrapper {
+            background: var(--text-dark); color: #fff; padding: 25px 0;
+            overflow: hidden; white-space: nowrap; margin-top: 50px;
+        }
+        .marquee-content {
+            display: inline-block; font-family: 'Cormorant Garamond', serif; font-size: 28px;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-content span { margin: 0 30px; font-style: italic; }
+
+        /* SECCIÓN 2: SERVICIOS / PORTFOLIO */
+        .section-padding { padding: 120px 10vw; }
+        .titulo-seccion { font-size: 3rem; margin-bottom: 60px; text-align: center; font-weight: 400; }
+
+        .servicios-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .servicio-card { text-align: center; }
+        .servicio-img {
+            width: 100%; height: 400px; object-fit: cover; border-radius: 20px;
+            margin-bottom: 25px; transition: 0.5s; filter: grayscale(20%);
+        }
+        .servicio-card:hover .servicio-img { filter: grayscale(0%); transform: translateY(-10px); }
+        .servicio-card h3 { font-size: 24px; margin-bottom: 10px; }
+        .servicio-card p { color: var(--text-light); font-size: 15px; }
+
+        /* SECCIÓN 3: CONTACTO MINIMALISTA */
+        .contacto-seccion { background: var(--accent); border-radius: 40px; margin: 0 5vw 100px 5vw; padding: 80px 5vw; display: flex; flex-wrap: wrap; gap: 60px; }
+        .contacto-texto { flex: 1; min-width: 300px; }
+        .contacto-texto h2 { font-size: 4rem; line-height: 1; margin-bottom: 20px; }
+        .contacto-texto p { font-size: 18px; margin-bottom: 40px; }
+        
+        .formulario { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 30px; }
+        .input-linea {
+            background: transparent; border: none; border-bottom: 1px solid var(--text-dark);
+            padding: 15px 0; font-size: 16px; font-family: 'DM Sans', sans-serif; color: var(--text-dark); outline: none;
+        }
+        .input-linea::placeholder { color: rgba(26, 26, 26, 0.5); }
+        .btn-secundario {
+            align-self: flex-start; padding: 15px 40px; background: transparent; border: 1px solid var(--text-dark);
+            color: var(--text-dark); border-radius: 50px; cursor: pointer; transition: 0.4s; font-size: 14px; text-transform: uppercase;
+        }
+        .btn-secundario:hover { background: var(--text-dark); color: #fff; }
+
+        /* MODAL ÉXITO (Adaptado al estilo Leila) */
+        .modal-fondo { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(247, 245, 240, 0.9); z-index: 2000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s; backdrop-filter: blur(5px); }
+        .modal-fondo.activo { display: flex; opacity: 1; }
+        .modal-contenido { background: #fff; padding: 50px 40px; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; transform: scale(0.9); transition: transform 0.4s; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .modal-fondo.activo .modal-contenido { transform: scale(1); }
+        .modal-contenido h3 { font-size: 32px; margin-bottom: 15px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 120px; }
+            .hero-img { height: 500px; border-radius: 200px 200px 0 0; }
+            header { justify-content: center; padding: 20px; background: var(--bg-color); }
+            .btn-volver-demos { display: none; } /* Se oculta en móvil para no molestar */
+            .contacto-seccion { padding: 60px 30px; margin: 0 20px 50px 20px; border-radius: 20px; }
+        }
+
+        /* BOTÓN WHATSAPP FLOTANTE */
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: #fff;
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); z-index: 9999; text-decoration: none; transition: 0.3s;
+            cursor: pointer;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+    </style>
+</head>
+<body>
+
+    <a href="demos.html" class="btn-volver-demos"><i class="fa-solid fa-arrow-left"></i> Volver a Demos</a>
+
+    <header>
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="#trabajos">Portfolio</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <!-- SECCIÓN HERO -->
+    <section id="inicio" class="hero">
+        <div class="hero-text reveal">
+            <h1>Leila<br><span style="font-style: italic;">Studio</span></h1>
+            <p>Especialista en Diseño Web, Identidad Visual y Dirección de Arte para marcas que buscan destacar con elegancia.</p>
+            <a href="#contacto" class="btn-primario">Hablemos de tu proyecto</a>
+        </div>
+        <div class="hero-img-container reveal" style="transition-delay: 0.2s;">
+            <!-- Imagen con forma de arco típica de Hostinger -->
+            <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=800" alt="Retrato Leila" class="hero-img">
+        </div>
+    </section>
+
+    <!-- MARQUEE INFINITO -->
+    <div class="marquee-wrapper reveal">
+        <div class="marquee-content">
+            DISEÑO EDITORIAL <span>✦</span> DIRECCIÓN DE ARTE <span>✦</span> BRANDING PREMIUM <span>✦</span> DESARROLLO WEB <span>✦</span> DISEÑO EDITORIAL <span>✦</span> DIRECCIÓN DE ARTE <span>✦</span> BRANDING PREMIUM <span>✦</span> DESARROLLO WEB <span>✦</span>
+        </div>
+    </div>
+
+    <!-- SECCIÓN TRABAJOS (Galería) -->
+    <section id="trabajos" class="section-padding">
+        <h2 class="titulo-seccion reveal">Casos de Éxito</h2>
+        
+        <div class="servicios-grid">
+            <div class="servicio-card reveal" style="transition-delay: 0.1s;">
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800" alt="Moda" class="servicio-img">
+                <h3>Revista Vogue</h3>
+                <p>Dirección de Arte & Maquetación</p>
+            </div>
+            <div class="servicio-card reveal" style="transition-delay: 0.3s;">
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=800" alt="Interiorismo" class="servicio-img">
+                <h3>Studio K</h3>
+                <p>Branding Completo</p>
+            </div>
+            <div class="servicio-card reveal" style="transition-delay: 0.5s;">
+                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=800" alt="Fotografía" class="servicio-img">
+                <h3>Lumiere</h3>
+                <p>Diseño Web UI/UX</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN CONTACTO -->
+    <section id="contacto" class="reveal">
+        <div class="contacto-seccion">
+            <div class="contacto-texto">
+                <h2>Creemos algo <span style="font-style: italic;">único.</span></h2>
+                <p>¿Lista para elevar la imagen de tu marca al siguiente nivel? Escribime y charlamos.</p>
+                <div style="margin-top: 40px;">
+                    <p><strong>Email:</strong> hola@Leilastudio.com</p>
+                    <p><strong>Instagram:</strong> @Leila.studio</p>
+                </div>
+            </div>
+            
+            <form class="formulario" onsubmit="enviarFormularioDemo(event)">
+                <input type="text" class="input-linea" placeholder="Tu nombre" required>
+                <input type="email" class="input-linea" placeholder="Tu email" required>
+                <input type="text" class="input-linea" placeholder="Contame sobre tu proyecto" required>
+                <button type="submit" class="btn-secundario">Enviar Mensaje</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- MODAL DE ÉXITO (Reutilizable) -->
+    <div id="modal-exito" class="modal-fondo">
+        <div class="modal-contenido">
+            <!-- Agregamos un ícono oculto por defecto para que no se rompa el JS -->
+            <i id="icono-modal" class="fa-regular fa-circle-check" style="font-size: 50px; color: var(--text-dark); margin-bottom: 20px; display: none;"></i>
+            <h3 id="titulo-modal" class="serif">¡Mensaje Recibido!</h3>
+            <p id="texto-modal" style="color: var(--text-light); margin-bottom: 25px;">Esta es una demostración de Landing Page. En la vida real, me contactaría contigo enseguida.</p>
+            <button onclick="cerrarModal()" class="btn-primario" style="width: 100%;">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- WHATSAPP FLOTANTE (DEMO) -->
+    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- SCRIPT ÚNICO DE ANIMACIONES Y MODALES -->
+    <script>
+        // 1. Animaciones de scroll (Reveal)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // 2. Controladores de los Modales
+        const modal = document.getElementById('modal-exito');
+        const iconoModal = document.getElementById('icono-modal');
+        const tituloModal = document.getElementById('titulo-modal');
+        const textoModal = document.getElementById('texto-modal');
+
+        // Función cuando envían el formulario
+        function enviarFormularioDemo(event) {
+            event.preventDefault();
+            
+            // Textos y estilos para el Formulario
+            iconoModal.style.display = 'none'; // Sin ícono para que sea minimalista como queríamos
+            tituloModal.innerText = "¡Mensaje Recibido!";
+            textoModal.innerText = "Esta es una demostración de Landing Page. En la vida real, me contactaría contigo enseguida.";
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('activo'), 10);
+            event.target.reset(); // Limpia el formulario
+        }
+
+        // Función cuando tocan el botón de WhatsApp
+        function mostrarAvisoWhatsApp(event) {
+            event.preventDefault();
+            
+            // Textos y estilos para el aviso de WhatsApp
+            iconoModal.className = "fa-brands fa-whatsapp";
+            iconoModal.style.color = "#25D366";
+            iconoModal.style.display = 'block'; // Mostramos el ícono
+            
+            tituloModal.innerText = "Conexión a WhatsApp";
+            textoModal.innerText = "¡Acá redirige a tu cuenta de WhatsApp! Esta es una función de demostración. En tu web real, al tocar este botón, el cliente abrirá un chat directo con tu número.";
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('activo'), 10);
+        }
+
+        // Función para cerrar (sirve para ambos)
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            setTimeout(() => modal.style.display = 'none', 400);
+        }
+    </script>
+
+</body>
+</html>
