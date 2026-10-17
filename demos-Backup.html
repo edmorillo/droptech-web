@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demos de Proyectos | Computadoras Lei</title>
+    
+    <!-- Íconos idénticos a la página principal -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="assets/img/logo_icon1.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #070A0F; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 120px 20px 0px 20px; min-height: 100vh; }
+        
+        .header-title { text-align: center; margin-bottom: 50px; }
+        .header-title h1 { font-size: 36px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .header-title p { font-size: 15px; color: #94A3B8; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        .demos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; width: 100%; margin-bottom: 60px; }
+        
+        .demo-card {
+            background: #111622;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .demo-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 240, 255, 0.1);
+        }
+
+        .demo-img-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #1E293B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .demo-img-placeholder i { z-index: 2; color: rgba(255,255,255,0.15); transition: 0.3s; }
+        .demo-card:hover .demo-img-placeholder i { color: #00F0FF; transform: scale(1.1); }
+        
+        /* Efecto de gradiente sutil */
+        .demo-img-placeholder::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(0,240,255,0.05), transparent);
+        }
+
+        .demo-content { padding: 30px; flex: 1; display: flex; flex-direction: column; }
+        
+        .badge {
+            align-self: flex-start; background: rgba(0, 240, 255, 0.1); color: #00F0FF; 
+            border: 1px solid rgba(0, 240, 255, 0.3); padding: 5px 12px; border-radius: 20px; 
+            font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase;
+        }
+        .badge.popular { background: rgba(250, 204, 21, 0.1); color: #facc15; border-color: rgba(250, 204, 21, 0.3); }
+        .badge.premium { background: rgba(168, 85, 247, 0.1); color: #a855f7; border-color: rgba(168, 85, 247, 0.3); }
+
+        .demo-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .demo-subtitle { font-size: 13px; color: #00F0FF; font-weight: 600; margin-bottom: 15px; }
+        .demo-desc { font-size: 14px; color: #94A3B8; line-height: 1.6; margin-bottom: 25px; flex: 1; }
+        
+        .btn-demo {
+            background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); 
+            padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; 
+            font-weight: 600; font-size: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-demo:hover { background: #00F0FF; color: #000; border-color: #00F0FF; }
+
+        .btn-demo.disabled { opacity: 0.5; pointer-events: none; border-style: dashed; }
+
+        /* Botón Flotante WhatsApp */
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff;
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+        @media (max-width: 768px) {
+            body { padding-top: 100px; }
+            .header-title h1 { font-size: 28px; }
+            .demos-grid { grid-template-columns: 1fr; }
+            .whatsapp-float { bottom: 20px; right: 20px; width: 50px; height: 50px; font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO OFICIAL LEY -->
+    <header style="width: 100%; position: absolute; top: 0; left: 0; padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 100; background: #070A0F;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;">
+                <rect x="2" y="7" width="16" height="11" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M6 18L4 23H16L14 18" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="21" y="5" width="8" height="18" rx="1.5" stroke="#00F0FF" stroke-width="2"/>
+                <path d="M24 8H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M24 11H26" stroke="#00F0FF" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 12.5H13M10 9.5V15.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size: 18px; font-weight: 800; color: #fff;">Computadoras Lei</span>
+        </div>
+        <a href="index.html" style="color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s;" onmouseover="this.style.color='#00F0FF'" onmouseout="this.style.color='#94A3B8'">Página Principal</a>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="header-title">
+        <h1>Portfolio de Proyectos</h1>
+        <p>Explorá nuestras maquetas interactivas y descubrí la calidad visual, estructura y rendimiento que tu marca puede alcanzar en internet.</p>
+    </div>
+
+    <div class="demos-grid">
+        
+        <!-- DEMO 1: LANDING PAGE -->
+        <div class="demo-card">
+            <div class="demo-img-placeholder">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div class="demo-content">
+                <span class="badge">Plan Landing Page ($300)</span>
+                <h3 class="demo-title">Estudio Jurídico</h3>
+                <div class="demo-subtitle">Web One-Pager (Una sola pantalla)</div>
+                <p class="demo-desc">Diseño elegante con navegación de scroll suave. Perfecta para captación rápida de clientes, mostrando áreas de práctica, equipo y formulario de contacto en una sola estructura optimizada.</p>
+                <!-- Enlace a la demo que vamos a armar -->
+                <a href="demo1-juridico.html" class="btn-demo"><i class="fa-solid fa-desktop"></i> Ver Demo en Vivo</a>
+            </div>
+        </div>
+
+        <!-- DEMO 2: INSTITUCIONAL -->
+        <div class="demo-card">
+            <div class="demo-img-placeholder">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div class="demo-content">
+                <span class="badge popular">Plan Institucional ($450)</span>
+                <h3 class="demo-title">Empresa de Logística</h3>
+                <div class="demo-subtitle">Web Multi-Página Corporativa</div>
+                <p class="demo-desc">Arquitectura completa de 4 secciones. Ideal para mostrar infraestructura, servicios detallados, certificaciones internacionales y generar una fuerte presencia B2B en la web.</p>
+                <a href="#" class="btn-demo disabled"><i class="fa-solid fa-hammer"></i> En desarrollo...</a>
+            </div>
+        </div>
+
+        <!-- DEMO 3: AUTOGESTIONABLE -->
+        <div class="demo-card">
+            <div class="demo-img-placeholder">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div class="demo-content">
+                <span class="badge premium">Plan Autogestionable ($700)</span>
+                <h3 class="demo-title">Agencia Inmobiliaria</h3>
+                <div class="demo-subtitle">Catálogo Dinámico + Panel</div>
+                <p class="demo-desc">Sitio interactivo con filtros de búsqueda, fichas de propiedades avanzadas y simulación del panel administrativo para que experimentes el control total de tu propia web.</p>
+                <a href="#" class="btn-demo disabled"><i class="fa-solid fa-hammer"></i> En desarrollo...</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER SIMPLE LEY -->
+    <footer style="width: 100%; text-align: center; margin-top: auto; padding: 60px 20px 30px 20px;">
+        <p style="color: #64748b; font-size: 13px;">&copy; 2026 Computadoras Lei. Soluciones de Software y Desarrollo Web Profesional. Lugano, CABA, Argentina.</p>
+    </footer>
+
+    <!-- BOTÓN FLOTANTE WHATSAPP -->
+    <a href="https://wa.me/5491140822356?text=Hola%20Lei,%20estuve%20viendo%20sus%20Demos%20Web%20y%20me%20gustaría%20hacerles%20una%20consulta." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+</body>
+</html>

@@ -54,6 +54,14 @@
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#precios">Precios</a></li>
                 <li><a href="#productos">Tienda</a></li>
+                <!-- NUEVO MENÚ DESPLEGABLE DEV -->
+                <li class="dropdown" onclick="this.classList.toggle('active')">
+                    <a href="javascript:void(0)" class="dropdown-btn">Desarrollo Web <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="cotizador.html"><i class="fa-solid fa-calculator" style="width: 20px;"></i> Cotizador</a>
+                        <a href="demos.html"><i class="fa-solid fa-desktop" style="width: 20px;"></i> Portfolio Demos</a>
+                    </div>
+                </li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </nav>
@@ -169,7 +177,7 @@
                 <h3>Memorias RAM & SSDs</h3>
                 <p>Módulos de memoria RAM de 8GB y 16GB (Nuevas y Usadas Premium) y discos sólidos SSD de alta velocidad.</p>
                 <a href="memorias.html" class="prod-badge" style="text-decoration: none;" onclick="event.stopPropagation();">Nuevas / Usadas</a>
-            </div>f
+            </div>
             
             <!-- Tarjeta Accesorios -->
             <div class="product-card reveal" onclick="setTimeout(() => window.location.href='accesorios.html', 150)" ontouchstart="" style="cursor: pointer;">

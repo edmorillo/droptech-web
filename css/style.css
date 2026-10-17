@@ -1569,3 +1569,114 @@ h2 {
     white-space: normal !important; 
     word-break: break-word !important; 
 }
+
+/* ==========================================================================
+   ESTILOS PARA EL MENÚ DESPLEGABLE DE DESARROLLO (CORREGIDO)
+   ========================================================================== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* El cuadro negro del submenú */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #0b0f17; /* Fondo oscuro sólido */
+    min-width: 180px;
+    box-shadow: 0px 10px 25px rgba(0, 240, 255, 0.1);
+    z-index: 1000;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    overflow: hidden;
+    top: 100%; /* Justo debajo del texto */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 0;
+}
+
+/* Enlaces del submenú */
+.dropdown-content a {
+    color: var(--color-gris);
+    padding: 12px 18px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transicion);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background-color: rgba(0, 240, 255, 0.05);
+    color: #00F0FF;
+    padding-left: 22px; /* Efecto fachero al pasar el mouse */
+}
+
+/* Flechita */
+.dropdown-btn i {
+    font-size: 11px;
+    transition: transform 0.3s;
+}
+
+/* ----------------------------------------------------
+   COMPORTAMIENTO EN PC (Se abre solo con Hover)
+---------------------------------------------------- */
+@media (min-width: 769px) {
+    .dropdown:hover .dropdown-content {
+        display: block;
+        animation: fadeIn 0.3s ease; /* Aparece suave */
+    }
+    .dropdown:hover .dropdown-btn i {
+        transform: rotate(180deg);
+    }
+    /* Neutralizamos el clic en PC para que no rompa el diseño */
+    .dropdown.active .dropdown-content {
+        position: absolute;
+        width: auto;
+        background-color: #0b0f17;
+        border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+}
+
+/* ----------------------------------------------------
+   COMPORTAMIENTO EN CELULAR (Se abre con Clic)
+---------------------------------------------------- */
+@media (max-width: 768px) {
+    .dropdown-content {
+        display: none;
+        position: static; /* Fluye hacia abajo empujando los demás links */
+        transform: none;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.02);
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding-left: 15px; /* Lo mete un poquito para adentro */
+        border-left: 2px solid rgba(0, 240, 255, 0.3);
+        margin-top: 5px;
+    }
+    
+    .dropdown.active .dropdown-content {
+        display: block;
+    }
+    
+    .dropdown.active .dropdown-btn i {
+        transform: rotate(180deg);
+    }
+    
+    .dropdown-content a {
+        padding: 10px 15px;
+    }
+}
