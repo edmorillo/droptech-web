@@ -3,156 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransLogix Global | Soluciones en Transporte & Logística B2B</title>
+    <title>TransLogix Global | Operador Logístico Integral B2B</title>
     
-    <!-- Íconos idénticos a la página principal -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="icon" type="image/png" href="../assets/img/logo_icon1.png">
     <link rel="apple-touch-icon" href="../assets/img/logo_icon1.png">
 
-    <!-- Tipografía industrial y moderna -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
     <style>
         :root {
-            --fondo-oscuro: #0B1120;
-            --tarjeta-bg: #151E32;
-            --tarjeta-secundaria: #1E293B;
-            --naranja-industrial: #F59E0B;
-            --naranja-hover: #D97706;
-            --texto-blanco: #FFFFFF;
-            --texto-gris: #94A3B8;
-            --borde-sutil: rgba(255, 255, 255, 0.08);
+            --bg-dark: #0B1120;
+            --card-bg: #151E32;
+            --accent-orange: #F59E0B;
+            --accent-hover: #D97706;
+            --text-white: #FFFFFF;
+            --text-gray: #94A3B8;
+            --border-soft: rgba(255, 255, 255, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--fondo-oscuro); 
-            color: var(--texto-blanco); 
-            overflow-x: hidden; 
-            line-height: 1.6;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-white); overflow-x: hidden; line-height: 1.6; }
 
-        /* BOTÓN VOLVER A DEMOS (CALIBRADO) */
         .btn-volver-demos {
             position: fixed; top: 85px; left: 25px; background: #fff; color: #000;
             padding: 9px 18px; border-radius: 30px; font-size: 12px; font-weight: 700;
             text-decoration: none; z-index: 1001; transition: 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;
         }
-        .btn-volver-demos:hover { background: var(--naranja-industrial); color: #fff; }
+        .btn-volver-demos:hover { background: var(--accent-orange); color: #fff; }
 
-        /* HEADER FIJO */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 20px 8%;
             display: flex; justify-content: space-between; align-items: center; z-index: 1000;
-            background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--borde-sutil);
+            background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-soft);
         }
         .logo { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .logo span { color: var(--naranja-industrial); }
-        nav { display: flex; gap: 30px; }
-        nav a { color: var(--texto-gris); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
-        nav a:hover { color: var(--naranja-industrial); }
+        .logo span { color: var(--accent-orange); }
+        nav { display: flex; gap: 26px; }
+        nav a { color: var(--text-gray); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; padding-bottom: 4px; }
+        nav a:hover, nav a.active { color: var(--accent-orange); border-bottom: 2px solid var(--accent-orange); }
 
-        /* HERO B2B */
         .hero {
-            min-height: 90vh; padding: 160px 8% 80px 8%;
-            display: flex; align-items: center; justify-content: space-between; gap: 50px;
-            background: linear-gradient(135deg, rgba(11, 17, 32, 0.92) 0%, rgba(15, 23, 42, 0.95) 100%),
-                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=800') center/cover no-repeat;
+            min-height: 90vh; padding: 160px 8% 80px 8%; display: flex; align-items: center; justify-content: space-between; gap: 50px;
+            background: linear-gradient(135deg, rgba(11, 17, 32, 0.93) 0%, rgba(15, 23, 42, 0.96) 100%),
+                        url('https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=1600') center/cover no-repeat;
         }
-        .hero-text { flex: 1; max-width: 620px; }
+        .hero-text { flex: 1; max-width: 650px; }
         .tag-b2b {
             display: inline-flex; align-items: center; gap: 8px; background: rgba(245, 158, 11, 0.12);
-            color: var(--naranja-industrial); border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px;
+            color: var(--accent-orange); border: 1px solid rgba(245, 158, 11, 0.3); padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px;
         }
         .hero h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1.15; font-weight: 800; margin-bottom: 20px; }
-        .hero p { color: var(--texto-gris); font-size: 16px; margin-bottom: 35px; line-height: 1.7; }
+        .hero p { color: var(--text-gray); font-size: 16px; margin-bottom: 35px; line-height: 1.7; }
         .hero-btns { display: flex; gap: 15px; flex-wrap: wrap; }
         
         .btn-industrial {
-            background: var(--naranja-industrial); color: #000; padding: 15px 32px; border-radius: 8px;
+            background: var(--accent-orange); color: #000; padding: 15px 32px; border-radius: 8px;
             font-weight: 700; font-size: 14px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer;
         }
-        .btn-industrial:hover { background: var(--naranja-hover); color: #fff; transform: translateY(-2px); }
+        .btn-industrial:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); }
 
         .btn-sec {
-            background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--borde-sutil);
+            background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--border-soft);
             padding: 15px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: 0.3s;
         }
-        .btn-sec:hover { border-color: var(--naranja-industrial); color: var(--naranja-industrial); }
+        .btn-sec:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
 
-        /* MÉTRICAS */
         .metricas-bar {
-            background: var(--tarjeta-bg); padding: 40px 8%; border-top: 1px solid var(--borde-sutil);
-            border-bottom: 1px solid var(--borde-sutil); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;
+            background: var(--card-bg); padding: 40px 8%; border-top: 1px solid var(--border-soft);
+            border-bottom: 1px solid var(--border-soft); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;
         }
-        .metrica-num { font-size: 34px; font-weight: 800; color: var(--naranja-industrial); }
-        .metrica-label { font-size: 12px; color: var(--texto-gris); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .metrica-num { font-size: 34px; font-weight: 800; color: var(--accent-orange); }
+        .metrica-label { font-size: 12px; color: var(--text-gray); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 
-        /* SECCIÓN GENERAL */
-        section { padding: 100px 8%; }
-        .sec-header { text-align: center; max-width: 650px; margin: 0 auto 60px auto; }
-        .sec-header span { color: var(--naranja-industrial); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        section { padding: 90px 8%; }
+        .sec-header { text-align: center; max-width: 650px; margin: 0 auto 50px auto; }
+        .sec-header span { color: var(--accent-orange); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
         .sec-header h2 { font-size: 34px; font-weight: 800; margin-top: 10px; margin-bottom: 15px; }
-        .sec-header p { color: var(--texto-gris); font-size: 15px; }
+        .sec-header p { color: var(--text-gray); font-size: 15px; }
 
-        /* SECCIÓN 2: SERVICIOS */
         .servicios-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .serv-card {
-            background: var(--tarjeta-bg); border: 1px solid var(--borde-sutil); border-radius: 14px; padding: 35px 25px;
+            background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 14px; padding: 35px 25px;
             transition: 0.3s; display: flex; flex-direction: column;
         }
-        .serv-card:hover { transform: translateY(-6px); border-color: var(--naranja-industrial); }
+        .serv-card:hover { transform: translateY(-6px); border-color: var(--accent-orange); }
         .serv-icon {
             width: 60px; height: 60px; border-radius: 10px; background: rgba(245, 158, 11, 0.1);
-            color: var(--naranja-industrial); font-size: 26px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;
+            color: var(--accent-orange); font-size: 26px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;
         }
         .serv-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
-        .serv-card p { font-size: 14px; color: var(--texto-gris); line-height: 1.6; }
+        .serv-card p { font-size: 14px; color: var(--text-gray); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+        .serv-link { color: var(--accent-orange); text-decoration: none; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
 
-        /* SECCIÓN 3: FLOTA & INFRAESTRUCTURA */
-        .infra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .infra-card {
-            background: var(--tarjeta-bg); border-radius: 14px; overflow: hidden; border: 1px solid var(--borde-sutil);
+        .banner-infra {
+            background: linear-gradient(rgba(11, 17, 32, 0.88), rgba(11, 17, 32, 0.95)),
+                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1600') center/cover;
+            border-radius: 20px; padding: 70px 50px; border: 1px solid var(--border-soft); text-align: center; margin: 40px 8% 80px 8%;
         }
-        .infra-img { width: 100%; height: 220px; object-fit: cover; }
-        .infra-body { padding: 25px; }
-        .infra-body h3 { font-size: 20px; margin-bottom: 10px; }
-        .infra-body p { font-size: 13.5px; color: var(--texto-gris); margin-bottom: 15px; }
-        .infra-specs { display: flex; gap: 15px; font-size: 12px; color: var(--naranja-industrial); font-weight: 600; }
+        .banner-infra h2 { font-size: 32px; font-weight: 800; margin-bottom: 15px; }
+        .banner-infra p { max-width: 600px; margin: 0 auto 30px auto; color: var(--text-gray); font-size: 15px; }
 
-        /* SECCIÓN 4: COTIZADOR B2B & CONTACTO */
-        .contacto-wrapper {
-            background: var(--tarjeta-bg); border: 1px solid var(--borde-sutil); border-radius: 20px;
-            padding: 60px 40px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px;
-        }
-        .info-b2b h2 { font-size: 32px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
-        .info-b2b p { color: var(--texto-gris); font-size: 15px; margin-bottom: 30px; }
-        .item-contacto { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 14px; color: #CBD5E1; }
-        .item-contacto i { color: var(--naranja-industrial); font-size: 18px; width: 25px; text-align: center; }
+        footer { background: #070A0F; padding: 45px 20px; text-align: center; font-size: 13px; color: var(--text-gray); border-top: 1px solid var(--border-soft); }
 
-        .form-b2b { display: flex; flex-direction: column; gap: 18px; }
-        .campo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .input-industrial {
-            width: 100%; padding: 14px 16px; background: var(--fondo-oscuro); border: 1px solid var(--borde-sutil);
-            color: #fff; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; transition: 0.3s;
-        }
-        .input-industrial:focus { border-color: var(--naranja-industrial); }
-        select.input-industrial { color: var(--texto-gris); cursor: pointer; }
-
-        /* FOOTER */
-        footer {
-            background: #070A0F; padding: 45px 20px; text-align: center; font-size: 13px; color: var(--texto-gris);
-            border-top: 1px solid var(--borde-sutil);
-        }
-
-        /* WHATSAPP FLOTANTE */
         .whatsapp-float {
             position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff;
             width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -160,7 +116,6 @@
         }
         .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
 
-        /* MODAL UNIFICADO */
         .modal-fondo {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(7, 10, 15, 0.9); z-index: 2000; justify-content: center; align-items: center;
@@ -168,64 +123,54 @@
         }
         .modal-fondo.activo { display: flex; opacity: 1; }
         .modal-contenido {
-            background: var(--tarjeta-bg); padding: 45px 35px; border-radius: 16px; text-align: center;
-            max-width: 440px; width: 90%; border: 1px solid var(--naranja-industrial);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            background: var(--card-bg); padding: 45px 35px; border-radius: 16px; text-align: center;
+            max-width: 440px; width: 90%; border: 1px solid var(--accent-orange); box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
-        .modal-icono { font-size: 55px; margin-bottom: 20px; }
+        .modal-icono { font-size: 55px; margin-bottom: 20px; color: #25D366; }
         .modal-contenido h3 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-        .modal-contenido p { color: var(--texto-gris); font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+        .modal-contenido p { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
 
-        /* ANIMACIÓN REVEAL */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.activo { opacity: 1; transform: translateY(0); }
 
-        /* RESPONSIVE MÓVIL (CON TU REGLA TOP:60px; LEFT:0px;) */
         @media (max-width: 900px) {
             header { padding: 18px 20px; justify-content: flex-end; }
             .logo { display: none; }
-            
-            .btn-volver-demos {
-                top: 60px; left: 0px; padding: 6px 12px; font-size: 11px;
-            }
-
+            .btn-volver-demos { top: 60px; left: 0px; padding: 6px 12px; font-size: 11px; }
             .hero { padding-top: 130px; text-align: center; }
             .hero-btns { justify-content: center; }
-            .campo-row { grid-template-columns: 1fr; }
-            .contacto-wrapper { grid-template-columns: 1fr; padding: 35px 20px; }
+            nav { gap: 14px; }
+            nav a { font-size: 12px; }
+            .banner-infra { padding: 40px 20px; margin: 30px 4% 60px 4%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BOTÓN VOLVER A DEMOS (CON TU AJUSTE EXACTO) -->
     <a href="/demos/" class="btn-volver-demos"><i class="fa-solid fa-arrow-left"></i> Volver a Demos</a>
 
-    <!-- NAVEGACIÓN MULTISECCIÓN -->
     <header>
-        <a href="#inicio" class="logo"><i class="fa-solid fa-truck-fast"></i> Trans<span>Logix</span></a>
+        <a href="demo4-logistica.html" class="logo"><i class="fa-solid fa-truck-fast"></i> Trans<span>Logix</span></a>
         <nav>
-            <a href="demo4-logistica.html">Inicio</a>
+            <a href="demo4-logistica.html" class="active">Inicio</a>
             <a href="demo4-servicios.html">Servicios</a>
             <a href="demo4-flota.html">Flota & Almacén</a>
             <a href="demo4-contacto.html">Cotización B2B</a>
         </nav>
     </header>
 
-    <!-- SECCIÓN 1: INICIO (HERO) -->
-    <section id="inicio" class="hero">
+    <section class="hero">
         <div class="hero-text reveal">
-            <span class="tag-b2b"><i class="fa-solid fa-shield-halved"></i> Operador Logístico Certificado</span>
-            <h1>Logística integral y transporte de carga pesada a nivel nacional.</h1>
-            <p>Conectamos centros de producción, depósitos fiscales y puertos comerciales con flota propia monitoreada satelitalmente 24/7. Eficiencia, trazabilidad y seguridad en cada entrega.</p>
+            <span class="tag-b2b"><i class="fa-solid fa-shield-halved"></i> Operador Logístico Certificado ISO 9001</span>
+            <h1>Logística de carga pesada y transporte B2B en todo el país.</h1>
+            <p>Conectamos plantas de producción, terminales portuarias y depósitos fiscales con flota propia monitoreada por telemetría GPS las 24 horas.</p>
             <div class="hero-btns">
-                <a href="#cotizar" class="btn-industrial"><i class="fa-solid fa-file-invoice-dollar"></i> Cotizar Operación</a>
-                <a href="#servicios" class="btn-sec">Ver Soluciones</a>
+                <a href="demo4-contacto.html" class="btn-industrial"><i class="fa-solid fa-file-invoice-dollar"></i> Cotizar Operación</a>
+                <a href="demo4-servicios.html" class="btn-sec">Ver Servicios</a>
             </div>
         </div>
     </section>
 
-    <!-- BARRA DE MÉTRICAS -->
     <div class="metricas-bar reveal">
         <div>
             <div class="metrica-num">+140</div>
@@ -233,7 +178,7 @@
         </div>
         <div>
             <div class="metrica-num">35.000 m²</div>
-            <div class="metrica-label">Capacidad de Almacenaje</div>
+            <div class="metrica-label">Naves de Almacenaje</div>
         </div>
         <div>
             <div class="metrica-num">99.4%</div>
@@ -241,177 +186,77 @@
         </div>
         <div>
             <div class="metrica-num">24 / 7</div>
-            <div class="metrica-label">Monitoreo Satelital GPS</div>
+            <div class="metrica-label">Monitoreo Satelital Propio</div>
         </div>
     </div>
 
-    <!-- SECCIÓN 2: SERVICIOS DETALLADOS -->
-    <section id="servicios">
+    <section>
         <div class="sec-header reveal">
-            <span>Cobertura Logística</span>
-            <h2>Servicios para Empresas</h2>
-            <p>Diseñamos operaciones a medida de tu cadena de suministro, optimizando tiempos de tránsito y costos operativos.</p>
+            <span>Soluciones Corporativas</span>
+            <h2>Servicios de Alta Escala</h2>
+            <p>Optimizamos la cadena de abastecimiento de empresas industriales y comerciales con trazabilidad garantizada.</p>
         </div>
 
         <div class="servicios-grid">
             <div class="serv-card reveal">
                 <div class="serv-icon"><i class="fa-solid fa-truck-moving"></i></div>
-                <h3>Transporte Troncal & Distribución</h3>
-                <p>Cargas completas (FTL) y parciales (LTL) a los principales polos industriales y centros de consumo del país.</p>
+                <h3>Transporte Troncal (FTL / LTL)</h3>
+                <p>Cargas completas y consolidadas con semirremolques modernos, trazabilidad satelital y seguro integral de mercadería.</p>
+                <a href="demo4-servicios.html" class="serv-link">Conocer más <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="serv-card reveal" style="transition-delay: 0.1s;">
                 <div class="serv-icon"><i class="fa-solid fa-warehouse"></i></div>
-                <h3>Almacenaje & Cross-Docking</h3>
-                <p>Gestión de inventarios, consolidación de mercadería y despacho ágil en naves logísticas con seguridad permanente.</p>
+                <h3>Almacén & WMS Inteligente</h3>
+                <p>35.000 m² de infraestructura clase A con control computarizado de inventario, docks hidráulicos y picking de precisión.</p>
+                <a href="demo4-servicios.html" class="serv-link">Conocer más <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="serv-card reveal" style="transition-delay: 0.2s;">
                 <div class="serv-icon"><i class="fa-solid fa-ship"></i></div>
-                <h3>Logística Portuaria & Comercio Exterior</h3>
-                <p>Traslado de contenedores, enlace directo con terminales portuarias y depósitos fiscales bajo estricta normativa aduanera.</p>
+                <h3>Operaciones Portuarias & Aduana</h3>
+                <p>Retiro y traslado de contenedores en terminales portuarias con enlaces fiscales y choferes con credenciales de aduana.</p>
+                <a href="demo4-servicios.html" class="serv-link">Conocer más <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN 3: FLOTA & INFRAESTRUCTURA -->
-    <section id="flota" style="background: rgba(255,255,255,0.01);">
-        <div class="sec-header reveal">
-            <span>Infraestructura Propia</span>
-            <h2>Tecnología y Flota en Ruta</h2>
-            <p>Invertimos en unidades modernas y sistemas de telemetría de última generación para resguardar el valor de tu carga.</p>
-        </div>
+    <div class="banner-infra reveal">
+        <h2>Infraestructura que Respalda su Negocio</h2>
+        <p>Conozca nuestra galería técnica con más de 15 registros reales de unidades pesadas, naves de racks selectivos y centro de telemetría.</p>
+        <a href="demo4-flota.html" class="btn-industrial"><i class="fa-solid fa-images"></i> Explorar Flota & Almacenes</a>
+    </div>
 
-        <div class="infra-grid">
-            <div class="infra-card reveal">
-                <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800" alt="Flota Pesada" class="infra-img">
-                <div class="infra-body">
-                    <h3>Tractores & Semirremolques</h3>
-                    <p>Unidades equipadas con control de temperatura, suspensión neumática y doble conductor para rutas de larga distancia.</p>
-                    <div class="infra-specs">
-                        <span><i class="fa-solid fa-weight-hanging"></i> Hasta 30 Tn</span>
-                        <span><i class="fa-solid fa-satellite"></i> Telemetría GPS</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="infra-card reveal" style="transition-delay: 0.15s;">
-                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=800" alt="Centro de Distribución" class="infra-img">
-                <div class="infra-body">
-                    <h3>Centro de Distribución Central</h3>
-                    <p>35.000 m² cubiertos con docks de carga hidráulicos y sistema WMS propio para visibilidad total de existencias.</p>
-                    <div class="infra-specs">
-                        <span><i class="fa-solid fa-boxes-stacked"></i> Racks Selectivos</span>
-                        <span><i class="fa-solid fa-camera"></i> CCTV 24hs</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN 4: COTIZACIÓN B2B / CONTACTO -->
-    <section id="cotizar">
-        <div class="contacto-wrapper reveal">
-            <div class="info-b2b">
-                <h2>Solicitá una propuesta para tu empresa.</h2>
-                <p>Dejanos los detalles del volumen de carga, frecuencia de envíos y origen/destino. Un asesor corporativo analizará tu requerimiento en menos de 2 horas hábiles.</p>
-                
-                <div class="item-contacto"><i class="fa-solid fa-location-dot"></i> Parque Industrial Norte, Ruta 9 Km 42.</div>
-                <div class="item-contacto"><i class="fa-solid fa-envelope"></i> operaciones@translogix-demo.com.ar</div>
-                <div class="item-contacto"><i class="fa-solid fa-phone"></i> 0810-555-LOGIX (5644)</div>
-                <div class="item-contacto"><i class="fa-solid fa-clock"></i> Despacho en ruta: 24 hs los 365 días del año.</div>
-            </div>
-
-            <form class="form-b2b" onsubmit="enviarFormularioDemo(event)">
-                <div class="campo-row">
-                    <input type="text" class="input-industrial" placeholder="Empresa / Razón Social" required>
-                    <input type="text" class="input-industrial" placeholder="Nombre del Contacto" required>
-                </div>
-                <div class="campo-row">
-                    <input type="email" class="input-industrial" placeholder="Email Corporativo" required>
-                    <input type="tel" class="input-industrial" placeholder="Teléfono" required>
-                </div>
-                <div class="campo-row">
-                    <select class="input-industrial" required>
-                        <option value="" disabled selected>Tipo de Operación...</option>
-                        <option value="ftl">Carga Completa (FTL)</option>
-                        <option value="ltl">Carga Parcial / Consolidada</option>
-                        <option value="almacen">Almacenaje & Depósito</option>
-                        <option value="puerto">Contenedores Portuarios</option>
-                    </select>
-                    <input type="text" class="input-industrial" placeholder="Origen - Destino aproximado" required>
-                </div>
-                <textarea class="input-industrial" rows="3" placeholder="Detalle adicional de la mercadería o peso estimado..." style="resize: none;"></textarea>
-                <button type="submit" class="btn-industrial" style="justify-content: center;">Enviar Solicitud de Cotización B2B</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- FOOTER OFICIAL -->
     <footer>
         <p>&copy; 2026 TransLogix Global. Demo diseñada por Computadoras Lei. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- WHATSAPP FLOTANTE (DEMO) -->
-    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
-    <!-- MODAL REUTILIZABLE (FORMULARIO Y WHATSAPP) -->
     <div id="modal-exito" class="modal-fondo">
         <div class="modal-contenido">
-            <i id="icono-modal" class="fa-regular fa-circle-check modal-icono" style="color: var(--naranja-industrial);"></i>
-            <h3 id="titulo-modal">¡Solicitud B2B Enviada!</h3>
-            <p id="texto-modal">Esta es una demostración. En un sitio real, el equipo de tráfico y cotizaciones recibiría la planilla técnica al instante para emitir el presupuesto formal.</p>
+            <i class="fa-brands fa-whatsapp modal-icono"></i>
+            <h3>Conexión a WhatsApp</h3>
+            <p>¡Acá redirige a tu WhatsApp! Esta es una demo institucional para empresas. En tu web real abrirá un chat directo con tu central de logística.</p>
             <button onclick="cerrarModal()" class="btn-industrial" style="width: 100%; justify-content: center;">Entendido</button>
         </div>
     </div>
 
-    <!-- SCRIPT ANIMACIONES Y MODAL -->
     <script>
-        // Animaciones al scroll
-        const observador = new IntersectionObserver((entradas) => {
-            entradas.forEach(entrada => {
-                if (entrada.isIntersecting) {
-                    entrada.target.classList.add('activo');
-                }
-            });
-        }, { threshold: 0.12 });
+        const obs = new IntersectionObserver(ents => ents.forEach(e => { if (e.isIntersecting) e.target.classList.add('activo'); }), { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-        document.querySelectorAll('.reveal').forEach(el => observador.observe(el));
-
-        // Controladores de modal
-        const modal = document.getElementById('modal-exito');
-        const iconoModal = document.getElementById('icono-modal');
-        const tituloModal = document.getElementById('titulo-modal');
-        const textoModal = document.getElementById('texto-modal');
-
-        function enviarFormularioDemo(event) {
-            event.preventDefault();
-            iconoModal.className = "fa-regular fa-circle-check modal-icono";
-            iconoModal.style.color = "#F59E0B";
-            tituloModal.innerText = "¡Solicitud B2B Enviada!";
-            textoModal.innerText = "Esta es una demostración de Sitio Institucional. En una empresa real, el departamento comercial recibe los datos de la carga para cotizar la ruta.";
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('activo'), 10);
-            event.target.reset();
+        function mostrarAvisoWhatsApp(e) {
+            e.preventDefault();
+            const m = document.getElementById('modal-exito');
+            m.style.display = 'flex';
+            setTimeout(() => m.classList.add('activo'), 10);
         }
-
-        function mostrarAvisoWhatsApp(event) {
-            event.preventDefault();
-            iconoModal.className = "fa-brands fa-whatsapp modal-icono";
-            iconoModal.style.color = "#25D366";
-            tituloModal.innerText = "Conexión a WhatsApp";
-            textoModal.innerText = "¡Acá redirige a tu cuenta de WhatsApp! Esta es una función de demostración. En tu web real, al tocar este botón, el cliente B2B abrirá un chat directo con tu central de operaciones.";
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('activo'), 10);
-        }
-
         function cerrarModal() {
-            modal.classList.remove('activo');
-            setTimeout(() => modal.style.display = 'none', 300);
+            const m = document.getElementById('modal-exito');
+            m.classList.remove('activo');
+            setTimeout(() => m.style.display = 'none', 300);
         }
     </script>
-
 </body>
 </html>
