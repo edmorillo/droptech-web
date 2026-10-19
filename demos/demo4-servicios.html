@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios & Soluciones Logísticas | TransLogix Global</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="../assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="../assets/img/logo_icon1.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0B1120;
+            --card-bg: #151E32;
+            --accent-orange: #F59E0B;
+            --accent-hover: #D97706;
+            --text-white: #FFFFFF;
+            --text-gray: #94A3B8;
+            --border-soft: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-white); overflow-x: hidden; line-height: 1.6; }
+
+        .btn-volver-demos {
+            position: fixed; top: 85px; left: 25px; background: #fff; color: #000;
+            padding: 9px 18px; border-radius: 30px; font-size: 12px; font-weight: 700;
+            text-decoration: none; z-index: 1001; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;
+        }
+        .btn-volver-demos:hover { background: var(--accent-orange); color: #fff; }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 8%;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+            background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-soft);
+        }
+        .logo { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--accent-orange); }
+        nav { display: flex; gap: 26px; }
+        nav a { color: var(--text-gray); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; padding-bottom: 4px; }
+        nav a:hover, nav a.active { color: var(--accent-orange); border-bottom: 2px solid var(--accent-orange); }
+
+        .page-header {
+            padding: 150px 8% 60px 8%; text-align: center; background: radial-gradient(circle at top, rgba(245, 158, 11, 0.1) 0%, transparent 60%);
+        }
+        .page-header span { color: var(--accent-orange); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .page-header h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 800; margin-top: 10px; margin-bottom: 15px; }
+        .page-header p { color: var(--text-gray); max-width: 650px; margin: 0 auto; font-size: 16px; }
+
+        section { padding: 40px 8% 100px 8%; }
+        .serv-detallado {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; margin-bottom: 90px;
+            background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 18px; padding: 45px;
+        }
+        .serv-detallado:nth-child(even) { direction: rtl; }
+        .serv-detallado:nth-child(even) .serv-info { direction: ltr; }
+        .serv-img { width: 100%; height: 360px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border-soft); }
+        .serv-info h2 { font-size: 28px; font-weight: 800; margin-bottom: 15px; color: #fff; }
+        .serv-info p { color: var(--text-gray); font-size: 15px; margin-bottom: 20px; line-height: 1.7; }
+        .features-list { list-style: none; margin-bottom: 30px; }
+        .features-list li { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #CBD5E1; }
+        .features-list i { color: var(--accent-orange); }
+
+        .btn-industrial {
+            background: var(--accent-orange); color: #000; padding: 13px 28px; border-radius: 8px;
+            font-weight: 700; font-size: 13.5px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer;
+        }
+        .btn-industrial:hover { background: var(--accent-hover); color: #fff; }
+
+        footer { background: #070A0F; padding: 45px 20px; text-align: center; font-size: 13px; color: var(--text-gray); border-top: 1px solid var(--border-soft); }
+
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff;
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+        .modal-fondo {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 10, 15, 0.9); z-index: 2000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(6px);
+        }
+        .modal-fondo.activo { display: flex; opacity: 1; }
+        .modal-contenido {
+            background: var(--card-bg); padding: 45px 35px; border-radius: 16px; text-align: center;
+            max-width: 440px; width: 90%; border: 1px solid var(--accent-orange); box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .modal-icono { font-size: 55px; margin-bottom: 20px; color: #25D366; }
+        .modal-contenido h3 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+        .modal-contenido p { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.activo { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 900px) {
+            header { padding: 18px 20px; justify-content: flex-end; }
+            .logo { display: none; }
+            .btn-volver-demos { top: 60px; left: 0px; padding: 6px 12px; font-size: 11px; }
+            nav { gap: 14px; }
+            nav a { font-size: 12px; }
+            .serv-detallado { grid-template-columns: 1fr; padding: 25px; gap: 25px; }
+            .serv-detallado:nth-child(even) { direction: ltr; }
+            .serv-img { height: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/demos/" class="btn-volver-demos"><i class="fa-solid fa-arrow-left"></i> Volver a Demos</a>
+
+    <header>
+        <a href="demo4-logistica.html" class="logo"><i class="fa-solid fa-truck-fast"></i> Trans<span>Logix</span></a>
+        <nav>
+            <a href="demo4-logistica.html">Inicio</a>
+            <a href="demo4-servicios.html" class="active">Servicios</a>
+            <a href="demo4-flota.html">Flota & Almacén</a>
+            <a href="demo4-contacto.html">Cotización B2B</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <span>Cartera de Operaciones</span>
+        <h1>Soluciones Logísticas B2B</h1>
+        <p>Garantizamos cobertura integral con unidades certificadas, trazabilidad en tiempo real y seguros de carga de primer nivel.</p>
+    </div>
+
+    <section>
+        <div class="serv-detallado reveal">
+            <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800" alt="Transporte Troncal" class="serv-img">
+            <div class="serv-info">
+                <h2>Transporte Troncal & FTL Nacional</h2>
+                <p>Servicio punto a punto de carga completa (Full Truckload) para traslados industriales de gran volumen, conectando fábricas, puertos y centros de distribución con cumplimiento horario estricto.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check-circle"></i> Semirremolques Sider y Baranda Volcable (hasta 30 Tn).</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Monitoreo satelital y paradas seguras homologadas.</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Pólizas de transporte todo riesgo (All-Risk) incluidas.</li>
+                </ul>
+                <a href="demo4-contacto.html" class="btn-industrial">Cotizar este servicio</a>
+            </div>
+        </div>
+
+        <div class="serv-detallado reveal">
+            <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=800" alt="Almacenaje y Depósito" class="serv-img">
+            <div class="serv-info">
+                <h2>Almacenaje, Cross-Docking & WMS</h2>
+                <p>Naves de almacenaje clase A preparadas para guarda temporal o permanente, consolidados de carga y despacho rápido con visibilidad de inventario minuto a minuto.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check-circle"></i> Racks selectivos antisísmicos con capacidad de 18.000 posiciones.</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Docks de carga y descarga con rampas niveladoras hidráulicas.</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Sistema WMS con reportes automáticos vía API/Excel.</li>
+                </ul>
+                <a href="demo4-contacto.html" class="btn-industrial">Cotizar este servicio</a>
+            </div>
+        </div>
+
+        <div class="serv-detallado reveal">
+            <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=800" alt="Comercio Exterior" class="serv-img">
+            <div class="serv-info">
+                <h2>Logística Portuaria & Contenedores</h2>
+                <p>Enlace ágil con las principales terminales marítimas y depósitos fiscales. Gestión de vacíos, traslados de importación y entrega en plazo de exportaciones con despacho de aduana.</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check-circle"></i> Portacontenedores para unidades de 20 y 40 pies (Dry y Reefer).</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Choferes con habilitación para zonas portuarias restringidas.</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Gestión operativa y coordinación con despachantes.</li>
+                </ul>
+                <a href="demo4-contacto.html" class="btn-industrial">Cotizar este servicio</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 TransLogix Global. Demo diseñada por Computadoras Lei. Todos los derechos reservados.</p>
+    </footer>
+
+    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
+
+    <div id="modal-exito" class="modal-fondo">
+        <div class="modal-contenido">
+            <i class="fa-brands fa-whatsapp modal-icono"></i>
+            <h3>Conexión a WhatsApp</h3>
+            <p>¡Acá redirige a tu WhatsApp! Esta es una demo institucional para empresas. En tu web real abrirá un chat directo con tu central de operaciones.</p>
+            <button onclick="cerrarModal()" class="btn-industrial" style="width: 100%; justify-content: center;">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const obs = new IntersectionObserver(ents => ents.forEach(e => { if (e.isIntersecting) e.target.classList.add('activo'); }), { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        function mostrarAvisoWhatsApp(e) {
+            e.preventDefault();
+            const m = document.getElementById('modal-exito');
+            m.style.display = 'flex';
+            setTimeout(() => m.classList.add('activo'), 10);
+        }
+        function cerrarModal() {
+            const m = document.getElementById('modal-exito');
+            m.classList.remove('activo');
+            setTimeout(() => m.style.display = 'none', 300);
+        }
+    </script>
+</body>
+</html>

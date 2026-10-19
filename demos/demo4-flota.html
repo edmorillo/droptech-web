@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flota & Almacén | Galería Técnica | TransLogix Global</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="../assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="../assets/img/logo_icon1.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0B1120;
+            --card-bg: #151E32;
+            --accent-orange: #F59E0B;
+            --accent-hover: #D97706;
+            --text-white: #FFFFFF;
+            --text-gray: #94A3B8;
+            --border-soft: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-white); overflow-x: hidden; line-height: 1.6; }
+
+        .btn-volver-demos {
+            position: fixed; top: 85px; left: 25px; background: #fff; color: #000;
+            padding: 9px 18px; border-radius: 30px; font-size: 12px; font-weight: 700;
+            text-decoration: none; z-index: 1001; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;
+        }
+        .btn-volver-demos:hover { background: var(--accent-orange); color: #fff; }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 8%;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+            background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-soft);
+        }
+        .logo { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--accent-orange); }
+        nav { display: flex; gap: 26px; }
+        nav a { color: var(--text-gray); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; padding-bottom: 4px; }
+        nav a:hover, nav a.active { color: var(--accent-orange); border-bottom: 2px solid var(--accent-orange); }
+
+        .page-header {
+            padding: 150px 8% 50px 8%; text-align: center; background: radial-gradient(circle at top, rgba(245, 158, 11, 0.1) 0%, transparent 60%);
+        }
+        .page-header span { color: var(--accent-orange); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .page-header h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 800; margin-top: 10px; margin-bottom: 15px; }
+        .page-header p { color: var(--text-gray); max-width: 650px; margin: 0 auto; font-size: 16px; }
+
+        section { padding: 30px 8% 90px 8%; }
+        .galeria-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .galeria-item {
+            background: var(--card-bg); border-radius: 14px; overflow: hidden; border: 1px solid var(--border-soft);
+            transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .galeria-item:hover { transform: translateY(-5px); border-color: var(--accent-orange); }
+        .galeria-foto { width: 100%; height: 230px; object-fit: cover; }
+        .galeria-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .galeria-tag { font-size: 11px; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; margin-bottom: 6px; }
+        .galeria-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .galeria-info p { font-size: 13px; color: var(--text-gray); line-height: 1.5; flex: 1; }
+
+        .tech-box {
+            background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 18px; padding: 50px 40px;
+            margin: 0 8% 90px 8%; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; text-align: center;
+        }
+        .tech-card i { font-size: 32px; color: var(--accent-orange); margin-bottom: 15px; }
+        .tech-card h4 { font-size: 18px; margin-bottom: 8px; }
+        .tech-card p { font-size: 13px; color: var(--text-gray); }
+
+        footer { background: #070A0F; padding: 45px 20px; text-align: center; font-size: 13px; color: var(--text-gray); border-top: 1px solid var(--border-soft); }
+
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff;
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+        .modal-fondo {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 10, 15, 0.9); z-index: 2000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(6px);
+        }
+        .modal-fondo.activo { display: flex; opacity: 1; }
+        .modal-contenido {
+            background: var(--card-bg); padding: 45px 35px; border-radius: 16px; text-align: center;
+            max-width: 440px; width: 90%; border: 1px solid var(--accent-orange); box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .modal-icono { font-size: 55px; margin-bottom: 20px; color: #25D366; }
+        .modal-contenido h3 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+        .modal-contenido p { color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.activo { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 900px) {
+            header { padding: 18px 20px; justify-content: flex-end; }
+            .logo { display: none; }
+            .btn-volver-demos { top: 60px; left: 0px; padding: 6px 12px; font-size: 11px; }
+            nav { gap: 14px; }
+            nav a { font-size: 12px; }
+            .galeria-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/demos/" class="btn-volver-demos"><i class="fa-solid fa-arrow-left"></i> Volver a Demos</a>
+
+    <header>
+        <a href="demo4-logistica.html" class="logo"><i class="fa-solid fa-truck-fast"></i> Trans<span>Logix</span></a>
+        <nav>
+            <a href="demo4-logistica.html">Inicio</a>
+            <a href="demo4-servicios.html">Servicios</a>
+            <a href="demo4-flota.html" class="active">Flota & Almacén</a>
+            <a href="demo4-contacto.html">Cotización B2B</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <span>Infraestructura Propia</span>
+        <h1>Flota Operativa & Centros Logísticos</h1>
+        <p>Inversión permanente en equipamiento de transporte, naves de almacenaje y sistemas de telemetría de vanguardia.</p>
+    </div>
+
+    <section>
+        <div class="galeria-grid">
+            <div class="galeria-item reveal">
+                <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800" alt="Unidades Pesadas" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Flota Pesada</span>
+                    <h3>Tractores de Larga Distancia</h3>
+                    <p>Unidades Scania R500 y Volvo FH con suspensión neumática integral y telemetría satelital activa.</p>
+                </div>
+            </div>
+
+            <div class="galeria-item reveal" style="transition-delay: 0.1s;">
+                <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=800" alt="Centro Logístico" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Almacenaje</span>
+                    <h3>Nave Central Norte (Ruta 9)</h3>
+                    <p>35.000 m² con piso de alta resistencia, racks selectivos y docks de carga rápida.</p>
+                </div>
+            </div>
+
+            <div class="galeria-item reveal" style="transition-delay: 0.2s;">
+                <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=800" alt="Terminal Portuaria" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Comercio Exterior</span>
+                    <h3>Operaciones Portuarias</h3>
+                    <p>Portacontenedores de 20 y 40 pies con enlace permanente en terminales de Buenos Aires y Zárate.</p>
+                </div>
+            </div>
+
+            <div class="galeria-item reveal">
+                <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?q=80&w=800" alt="Control de Stock" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Tecnología WMS</span>
+                    <h3>Picking & Despacho Inmediato</h3>
+                    <p>Control de lectura por radiofrecuencia para inventario en tiempo real sin desvíos de stock.</p>
+                </div>
+            </div>
+
+            <div class="galeria-item reveal" style="transition-delay: 0.1s;">
+                <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800" alt="Cross-Docking" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Distribución Urbana</span>
+                    <h3>Logística Capilar & Cross-Dock</h3>
+                    <p>Furgones y camiones medianos para ingreso eficiente a centros comerciales y polos urbanos.</p>
+                </div>
+            </div>
+
+            <div class="galeria-item reveal" style="transition-delay: 0.2s;">
+                <img src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?q=80&w=800" alt="Centro de Monitoreo" class="galeria-foto">
+                <div class="galeria-info">
+                    <span class="galeria-tag">Seguridad 24/7</span>
+                    <h3>Central de Telemetría GPS</h3>
+                    <p>Seguimiento continuo de velocidad, ruta, apertura de puertas y temperaturas de carga en tránsito.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="tech-box reveal">
+        <div class="tech-card">
+            <i class="fa-solid fa-satellite-dish"></i>
+            <h4>Geolocalización Activa</h4>
+            <p>Monitoreo GPS segundo a segundo con sensor de corte y geocercas inteligentes.</p>
+        </div>
+        <div class="tech-card">
+            <i class="fa-solid fa-certificate"></i>
+            <h4>Norma ISO 9001:2015</h4>
+            <p>Procesos operativos auditados bajo estándares internacionales de calidad de servicio.</p>
+        </div>
+        <div class="tech-card">
+            <i class="fa-solid fa-shield-virus"></i>
+            <h4>Pólizas All-Risk</h4>
+            <p>Cobertura total respaldada por compañías aseguradoras líderes en transporte de carga.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 TransLogix Global. Demo diseñada por Computadoras Lei. Todos los derechos reservados.</p>
+    </footer>
+
+    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
+
+    <div id="modal-exito" class="modal-fondo">
+        <div class="modal-contenido">
+            <i class="fa-brands fa-whatsapp modal-icono"></i>
+            <h3>Conexión a WhatsApp</h3>
+            <p>¡Acá redirige a tu WhatsApp! Esta es una demo institucional para empresas. En tu web real abrirá un chat directo con tu central de logística.</p>
+            <button onclick="cerrarModal()" class="btn-industrial" style="width: 100%; justify-content: center;">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const obs = new IntersectionObserver(ents => ents.forEach(e => { if (e.isIntersecting) e.target.classList.add('activo'); }), { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        function mostrarAvisoWhatsApp(e) {
+            e.preventDefault();
+            const m = document.getElementById('modal-exito');
+            m.style.display = 'flex';
+            setTimeout(() => m.classList.add('activo'), 10);
+        }
+        function cerrarModal() {
+            const m = document.getElementById('modal-exito');
+            m.classList.remove('activo');
+            setTimeout(() => m.style.display = 'none', 300);
+        }
+    </script>
+</body>
+</html>
