@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (navMenu && navMenu.classList.contains('active')) {
             navMenu.classList.remove('active');
             if (menuToggle) { menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>'; }
+            // Cierra también el submenú si quedó abierto
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
         }
     }
 
@@ -26,7 +28,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.querySelectorAll('.menu a').forEach(link => { link.addEventListener('click', closeMobileMenu); });
+    // 1. Cerramos el menú con cualquier link, EXCEPTO el botón que despliega "Desarrollo Web"
+    document.querySelectorAll('.menu a:not(.dropdown-btn)').forEach(link => { 
+        link.addEventListener('click', closeMobileMenu); 
+    });
+
+    // 2. Control exclusivo del botón "Desarrollo Web" en móvil (abre/cierra sin cerrar el menú principal)
+    const dropdownBtn = document.querySelector('.dropdown-btn');
+    if (dropdownBtn) {
+        dropdownBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation(); // Evita que el clic cierre el menú
+            dropdownBtn.closest('.dropdown').classList.toggle('active');
+        });
+    }
 
     document.addEventListener('click', (event) => {
         if (navMenu && navMenu.classList.contains('active')) {
