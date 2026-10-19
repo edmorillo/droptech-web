@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Dental GIME | Odontología Avanzada & Estética</title>
+    
+    <!-- Íconos idénticos a la página principal -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='7' width='16' height='11' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M6 18L4 23H16L14 18' stroke='%2300F0FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='21' y='5' width='8' height='18' rx='1.5' stroke='%2300F0FF' stroke-width='2'/%3E%3Cpath d='M24 8H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M24 11H26' stroke='%2300F0FF' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M7 12.5H13M10 9.5V15.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="assets/img/logo_icon1.png">
+    <link rel="apple-touch-icon" href="assets/img/logo_icon1.png">
+
+    <!-- Tipografía médica moderna y limpia -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --azul-marino: #0F172A;
+            --turquesa: #00B4D8;
+            --turquesa-hover: #0096C7;
+            --fondo-suave: #F8FAFC;
+            --blanco: #FFFFFF;
+            --texto-oscuro: #1E293B;
+            --texto-gris: #64748B;
+            --borde-suave: #E2E8F0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--fondo-suave); 
+            color: var(--texto-oscuro); 
+            overflow-x: hidden; 
+            line-height: 1.6;
+        }
+
+        /* BOTÓN VOLVER A DEMOS (Estandarizado) */
+        .btn-volver-demos {
+            position: fixed; top: 25px; left: 25px; background: var(--azul-marino); color: #fff;
+            padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600;
+            text-decoration: none; z-index: 1001; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-volver-demos:hover { background: var(--turquesa); color: #fff; border-color: var(--turquesa); }
+
+        /* HEADER FIJO CON BLUR */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 8%;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--borde-suave);
+        }
+        .logo { font-size: 22px; font-weight: 800; color: var(--azul-marino); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo i { color: var(--turquesa); font-size: 24px; }
+        nav { display: flex; gap: 30px; }
+        nav a { color: var(--texto-oscuro); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        nav a:hover { color: var(--turquesa); }
+
+        /* ANIMACIONES DE SCROLL */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.activo { opacity: 1; transform: translateY(0); }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 160px 8% 90px 8%;
+            display: flex; align-items: center; justify-content: space-between; gap: 50px;
+            background: radial-gradient(circle at top right, rgba(0, 180, 216, 0.08) 0%, transparent 60%);
+        }
+        .hero-text { flex: 1; max-width: 600px; }
+        .badge-clinica {
+            display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 180, 216, 0.1);
+            color: var(--turquesa-hover); padding: 8px 16px; border-radius: 30px; font-size: 12px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px;
+        }
+        .hero-text h1 { font-size: clamp(2.5rem, 5vw, 3.8rem); line-height: 1.15; color: var(--azul-marino); margin-bottom: 20px; font-weight: 800; }
+        .hero-text p { font-size: 17px; color: var(--texto-gris); margin-bottom: 35px; line-height: 1.7; }
+        .hero-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        
+        .btn-cta {
+            background: var(--turquesa); color: #fff; padding: 16px 36px; border-radius: 10px;
+            font-weight: 700; font-size: 15px; text-decoration: none; transition: 0.3s; border: none; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 180, 216, 0.3); display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-cta:hover { background: var(--turquesa-hover); transform: translateY(-2px); }
+
+        .btn-tel {
+            background: #fff; color: var(--azul-marino); padding: 16px 28px; border-radius: 10px;
+            font-weight: 700; font-size: 15px; text-decoration: none; transition: 0.3s; border: 1px solid var(--borde-suave);
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-tel:hover { border-color: var(--turquesa); color: var(--turquesa); }
+
+        .hero-img-container { flex: 1; display: flex; justify-content: flex-end; position: relative; }
+        .hero-img { width: 100%; max-width: 520px; height: 550px; object-fit: cover; border-radius: 24px; box-shadow: 0 25px 50px rgba(15, 23, 42, 0.1); }
+        
+        .hero-floating-card {
+            position: absolute; bottom: -20px; left: -20px; background: #fff; padding: 18px 24px;
+            border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 15px;
+            border: 1px solid var(--borde-suave);
+        }
+        .hero-floating-card i { font-size: 28px; color: #22C55E; }
+        .hero-floating-card strong { font-size: 14px; color: var(--azul-marino); display: block; }
+        .hero-floating-card span { font-size: 12px; color: var(--texto-gris); }
+
+        /* MÉTRICAS RÁPIDAS */
+        .metricas {
+            background: #fff; padding: 40px 8%; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;
+            border-top: 1px solid var(--borde-suave); border-bottom: 1px solid var(--borde-suave);
+        }
+        .metrica-item { text-align: center; }
+        .metrica-item h3 { font-size: 34px; font-weight: 800; color: var(--turquesa); margin-bottom: 5px; }
+        .metrica-item p { font-size: 13px; color: var(--texto-gris); font-weight: 600; text-transform: uppercase; }
+
+        /* SECCIÓN TRATAMIENTOS */
+        .seccion-padding { padding: 100px 8%; }
+        .cabecera-seccion { text-align: center; max-width: 650px; margin: 0 auto 60px auto; }
+        .cabecera-seccion span { color: var(--turquesa); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .cabecera-seccion h2 { font-size: 36px; font-weight: 800; color: var(--azul-marino); margin-top: 8px; margin-bottom: 15px; }
+        .cabecera-seccion p { color: var(--texto-gris); font-size: 15px; }
+
+        .servicios-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
+        .servicio-card {
+            background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid var(--borde-suave);
+            transition: all 0.3s ease; display: flex; flex-direction: column;
+        }
+        .servicio-card:hover { transform: translateY(-8px); border-color: var(--turquesa); box-shadow: 0 15px 35px rgba(0, 180, 216, 0.12); }
+        .servicio-img { width: 100%; height: 200px; object-fit: cover; }
+        .servicio-cuerpo { padding: 25px; flex: 1; display: flex; flex-direction: column; }
+        .servicio-cuerpo h3 { font-size: 19px; font-weight: 700; color: var(--azul-marino); margin-bottom: 10px; }
+        .servicio-cuerpo p { font-size: 14px; color: var(--texto-gris); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+        .servicio-link { color: var(--turquesa); font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+
+        /* SECCIÓN CONTACTO / TURNO */
+        .contacto-seccion { background: var(--azul-marino); color: #fff; border-radius: 24px; padding: 70px 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+        .contacto-info h2 { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+        .contacto-info p { color: #94A3B8; font-size: 15px; margin-bottom: 35px; }
+        .info-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 15px; color: #E2E8F0; }
+        .info-item i { color: var(--turquesa); font-size: 20px; width: 30px; text-align: center; }
+
+        .formulario-turno { background: #fff; padding: 40px; border-radius: 18px; display: flex; flex-direction: column; gap: 18px; }
+        .input-campo {
+            width: 100%; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--borde-suave);
+            font-size: 14px; font-family: inherit; outline: none; transition: 0.3s; color: var(--texto-oscuro);
+        }
+        .input-campo:focus { border-color: var(--turquesa); box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15); }
+        select.input-campo { cursor: pointer; color: var(--texto-gris); }
+
+        /* FOOTER OFICIAL */
+        footer {
+            background: #0B1120; color: #94A3B8; text-align: center; padding: 50px 20px 30px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px;
+        }
+
+        /* WHATSAPP FLOTANTE */
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px; background-color: #25D366; color: #fff;
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20bd5a; }
+
+        /* MODAL REUTILIZABLE */
+        .modal-fondo {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); z-index: 2000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(6px);
+        }
+        .modal-fondo.activo { display: flex; opacity: 1; }
+        .modal-contenido {
+            background: #fff; padding: 45px 35px; border-radius: 20px; text-align: center;
+            max-width: 440px; width: 90%; transform: scale(0.92); transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+        .modal-fondo.activo .modal-contenido { transform: scale(1); }
+        .modal-icono { font-size: 55px; margin-bottom: 20px; }
+        .modal-contenido h3 { font-size: 24px; font-weight: 800; color: var(--azul-marino); margin-bottom: 12px; }
+        .modal-contenido p { color: var(--texto-gris); font-size: 14px; line-height: 1.6; margin-bottom: 25px; }
+
+        /* RESPONSIVE MÓVIL EXACTO Y CALIBRADO */
+        @media (max-width: 900px) {
+            header { padding: 18px 20px; justify-content: flex-end; }
+            .logo { display: none; } /* Oculto en móvil para dar espacio al menú */
+            
+            /* Calibración precisa para que NO tape la navegación */
+            .btn-volver-demos {
+                top: 75px; left: 20px; padding: 8px 15px; font-size: 11px;
+            }
+
+            .hero { flex-direction: column; text-align: center; padding-top: 130px; }
+            .hero-actions { justify-content: center; }
+            .hero-img-container { width: 100%; justify-content: center; }
+            .hero-img { height: 380px; }
+            .hero-floating-card { bottom: -15px; left: 50%; transform: translateX(-50%); width: 85%; }
+            .contacto-seccion { grid-template-columns: 1fr; padding: 40px 20px; }
+            .formulario-turno { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN VOLVER A DEMOS (CALIBRADO PARA NO TAPAR NADA) -->
+    <a href="demos.html" class="btn-volver-demos"><i class="fa-solid fa-arrow-left"></i> Volver a Demos</a>
+
+    <!-- NAVEGACIÓN -->
+    <header>
+        <a href="#inicio" class="logo"><i class="fa-solid fa-tooth"></i> GIME Dental</a>
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="#tratamientos">Tratamientos</a>
+            <a href="#contacto">Turnos</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="inicio" class="hero">
+        <div class="hero-text reveal">
+            <span class="badge-clinica"><i class="fa-solid fa-circle-check"></i> Tecnología Digital & Sin Dolor</span>
+            <h1>Tu sonrisa ideal en manos de especialistas.</h1>
+            <p>Odontología estética, implantes de carga inmediata y ortodoncia invisible con diagnósticos 3D de alta precisión. Cuidamos tu salud y tu estética con máxima dedicación.</p>
+            <div class="hero-actions">
+                <a href="#contacto" class="btn-cta"><i class="fa-regular fa-calendar-check"></i> Solicitar Turno</a>
+                <a href="tel:+541140000000" class="btn-tel"><i class="fa-solid fa-phone"></i> +54 11 4000-0000</a>
+            </div>
+        </div>
+        <div class="hero-img-container reveal" style="transition-delay: 0.15s;">
+            <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=800" alt="Clínica Odontológica Profesional" class="hero-img">
+            <div class="hero-floating-card">
+                <i class="fa-solid fa-shield-heart"></i>
+                <div>
+                    <strong>Atención 100% Personalizada</strong>
+                    <span>Protocolos de bioseguridad garantizados</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MÉTRICAS DE CONFIANZA -->
+    <div class="metricas reveal">
+        <div class="metrica-item">
+            <h3>+12</h3>
+            <p>Años de Trayectoria</p>
+        </div>
+        <div class="metrica-item">
+            <h3>+4.800</h3>
+            <p>Pacientes Felices</p>
+        </div>
+        <div class="metrica-item">
+            <h3>100%</h3>
+            <p>Equipamiento Digital</p>
+        </div>
+        <div class="metrica-item">
+            <h3>★ 4.9</h3>
+            <p>Calificación en Google</p>
+        </div>
+    </div>
+
+    <!-- SECCIÓN TRATAMIENTOS -->
+    <section id="tratamientos" class="seccion-padding">
+        <div class="cabecera-seccion reveal">
+            <span>Especialidades Médicas</span>
+            <h2>Tratamientos de Vanguardia</h2>
+            <p>Procedimientos mínimamente invasivos diseñados para devolverte la funcionalidad, comodidad y una sonrisa radiante.</p>
+        </div>
+
+        <div class="servicios-grid">
+            <div class="servicio-card reveal">
+                <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=600" alt="Estética Dental" class="servicio-img">
+                <div class="servicio-cuerpo">
+                    <h3>Estética & Blanqueamiento</h3>
+                    <p>Carillas de porcelana ultradelgadas y blanqueamiento láser con resultados visibles desde la primera sesión.</p>
+                    <a href="#contacto" class="servicio-link">Consultar tratamiento <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="servicio-card reveal" style="transition-delay: 0.1s;">
+                <img src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=600" alt="Ortodoncia Invisible" class="servicio-img">
+                <div class="servicio-cuerpo">
+                    <h3>Ortodoncia Invisible</h3>
+                    <p>Alineadores transparentes y removibles para corregir la posición de tus dientes sin brackets visibles ni molestias.</p>
+                    <a href="#contacto" class="servicio-link">Consultar tratamiento <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="servicio-card reveal" style="transition-delay: 0.2s;">
+                <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=600" alt="Implantes Dentales" class="servicio-img">
+                <div class="servicio-cuerpo">
+                    <h3>Implantes Guiados 3D</h3>
+                    <p>Reposición dental con titanio biocompatible de máxima duración mediante cirugía digital guiada por computadora.</p>
+                    <a href="#contacto" class="servicio-link">Consultar tratamiento <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN CONTACTO / FORMULARIO -->
+    <section id="contacto" class="seccion-padding" style="padding-top: 0;">
+        <div class="contacto-seccion reveal">
+            <div class="contacto-info">
+                <h2>Agenda tu consulta de evaluación inicial.</h2>
+                <p>Completá el formulario para que nuestro equipo te asigne un turno disponible o te asesore según tus necesidades.</p>
+                
+                <div class="info-item"><i class="fa-solid fa-location-dot"></i> Av. del Libertador 4500, Belgrano, CABA.</div>
+                <div class="info-item"><i class="fa-solid fa-envelope"></i> turnos@clinicagime.com.ar</div>
+                <div class="info-item"><i class="fa-regular fa-clock"></i> Lunes a Viernes de 9:00 a 19:00 hs.</div>
+                <div class="info-item"><i class="fa-solid fa-credit-card"></i> Cuotas sin interés en tratamientos integrales.</div>
+            </div>
+
+            <form class="formulario-turno" onsubmit="enviarFormularioDemo(event)">
+                <input type="text" class="input-campo" placeholder="Nombre y Apellido" required>
+                <input type="email" class="input-campo" placeholder="Correo electrónico" required>
+                <input type="tel" class="input-campo" placeholder="Teléfono de contacto" required>
+                <select class="input-campo" required>
+                    <option value="" disabled selected>Tratamiento de interés...</option>
+                    <option value="estetica">Estética & Blanqueamiento</option>
+                    <option value="ortodoncia">Ortodoncia Invisible</option>
+                    <option value="implantes">Implantes Dentales</option>
+                    <option value="general">Control General / Limpieza</option>
+                </select>
+                <button type="submit" class="btn-cta" style="width: 100%; justify-content: center;">Enviar Solicitud de Turno</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER OFICIAL -->
+    <footer>
+        <p>&copy; 2026 Clínica Dental GIME. Demo diseñada por Computadoras Lei. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- WHATSAPP FLOTANTE (DEMO) -->
+    <a href="#" onclick="mostrarAvisoWhatsApp(event)" class="whatsapp-float">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- MODAL REUTILIZABLE (FORMULARIO Y WHATSAPP) -->
+    <div id="modal-exito" class="modal-fondo">
+        <div class="modal-contenido">
+            <i id="icono-modal" class="fa-regular fa-circle-check modal-icono" style="color: var(--turquesa);"></i>
+            <h3 id="titulo-modal">¡Turno Solicitado!</h3>
+            <p id="texto-modal">Esta es una demostración. En un sitio real, la clínica recibiría este mensaje de inmediato en su bandeja de entrada o sistema de gestión de pacientes.</p>
+            <button onclick="cerrarModal()" class="btn-cta" style="width: 100%; justify-content: center;">Entendido</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE ANIMACIONES Y MODAL INTELIGENTE -->
+    <script>
+        // 1. Animaciones de scroll (Reveal)
+        const observador = new IntersectionObserver((entradas) => {
+            entradas.forEach(entrada => {
+                if (entrada.isIntersecting) {
+                    entrada.target.classList.add('activo');
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => observador.observe(el));
+
+        // 2. Control de los Modales
+        const modal = document.getElementById('modal-exito');
+        const iconoModal = document.getElementById('icono-modal');
+        const tituloModal = document.getElementById('titulo-modal');
+        const textoModal = document.getElementById('texto-modal');
+
+        // Formulario de Turno
+        function enviarFormularioDemo(event) {
+            event.preventDefault();
+            
+            iconoModal.className = "fa-regular fa-circle-check modal-icono";
+            iconoModal.style.color = "#00B4D8";
+            
+            tituloModal.innerText = "¡Solicitud de Turno Enviada!";
+            textoModal.innerText = "Esta es una demostración de Landing Page. En una web real, el consultorio recibiría los datos del paciente al instante para confirmar el horario disponible.";
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('activo'), 10);
+            event.target.reset();
+        }
+
+        // WhatsApp Flotante
+        function mostrarAvisoWhatsApp(event) {
+            event.preventDefault();
+            
+            iconoModal.className = "fa-brands fa-whatsapp modal-icono";
+            iconoModal.style.color = "#25D366";
+            
+            tituloModal.innerText = "Conexión a WhatsApp";
+            textoModal.innerText = "¡Acá redirige a tu cuenta de WhatsApp! Esta es una función de demostración. En tu web real, al tocar este botón, el paciente abrirá un chat directo con tu consultorio médico.";
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('activo'), 10);
+        }
+
+        // Cerrar Modal
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    </script>
+
+</body>
+</html>
