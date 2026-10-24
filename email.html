@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body style="margin: 0; padding: 0; background-color: #07101E; font-family: 'Plus Jakarta Sans', Arial, sans-serif; color: #FFFFFF;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #07101E; padding: 35px 15px;">
+    <tr>
+      <td align="center">
+        <!-- Tarjeta Principal -->
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #0E1A2E; border: 1px solid rgba(194, 167, 92, 0.35); border-radius: 16px; overflow: hidden; max-width: 600px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+          
+          <!-- Header con el Logo de JONIGE -->
+          <tr>
+            <td align="center" style="background-color: #050C16; padding: 28px 25px; border-bottom: 2px solid #C2A75C;">
+              <img src="https://www.jonige.com/assets/img/Logo.png" alt="JONIGE S.A.S." style="height: 55px; object-fit: contain; display: block; margin-bottom: 10px;" />
+              <span style="color: #C2A75C; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">
+                Mesa de Negocios &bull; Solicitud Oficial Web
+              </span>
+            </td>
+          </tr>
+
+          <!-- Insignia Dinámica del Rubro Seleccionado -->
+          <tr>
+            <td style="padding: 28px 30px 10px 30px;">
+              <p style="margin: 0 0 8px 0; font-size: 11px; color: #9BB0CE; text-transform: uppercase; letter-spacing: 1px;">
+                Línea de Negocio Seleccionada:
+              </p>
+              <div style="display: inline-block; background-color: rgba(194, 167, 92, 0.15); border: 1px solid #C2A75C; color: #C2A75C; padding: 8px 18px; border-radius: 50px; font-size: 14px; font-weight: 700;">
+                {{linea_interes}}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Datos del Cliente -->
+          <tr>
+            <td style="padding: 15px 30px;">
+              <table width="100%" cellpadding="12" cellspacing="0" style="background-color: #15243C; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); font-size: 14px; color: #FFFFFF;">
+                <tr>
+                  <td width="38%" style="color: #C2A75C; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06);">Cliente / Contacto:</td>
+                  <td style="color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.06);">{{nombre}}</td>
+                </tr>
+                <tr>
+                  <td style="color: #C2A75C; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06);">Empresa / País:</td>
+                  <td style="color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.06);">{{empresa_pais}}</td>
+                </tr>
+                <tr>
+                  <td style="color: #C2A75C; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06);">Correo Comercial:</td>
+                  <td style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <a href="mailto:{{email}}" style="color: #D8BD6E; text-decoration: none;">{{email}}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: #C2A75C; font-weight: 600;">WhatsApp / Teléfono:</td>
+                  <td style="color: #FFFFFF;">{{telefono}}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Detalle del Pedido -->
+          <tr>
+            <td style="padding: 10px 30px 25px 30px;">
+              <p style="margin: 0 0 8px 0; font-size: 11px; color: #9BB0CE; text-transform: uppercase; letter-spacing: 1px;">
+                Especificaciones / Volumen / Puerto de Destino:
+              </p>
+              <div style="background-color: #07101E; border-left: 3px solid #C2A75C; border-radius: 8px; padding: 16px; color: #FFFFFF; font-size: 14px; line-height: 1.6; white-space: pre-line;">
+                {{mensaje}}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Botones de Respuesta Directa -->
+          <tr>
+            <td align="center" style="padding: 5px 30px 30px 30px;">
+              <a href="mailto:{{email}}?subject=Propuesta Comercial JONIGE S.A.S. - {{linea_interes}}" 
+                 style="background-color: #C2A75C; color: #07101E; text-decoration: none; padding: 12px 26px; border-radius: 50px; font-size: 13px; font-weight: 700; display: inline-block;">
+                Responder al Cliente por Correo
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer de la Maqueta -->
+          <tr>
+            <td align="center" style="background-color: #050C16; padding: 16px 20px; font-size: 11px; color: #9BB0CE; border-top: 1px solid rgba(255,255,255,0.06);">
+              JONIGE S.A.S. &bull; RUC: 0993396391001 &bull; El Empalme, Guayas - Ecuador<br>
+              Enviado desde <a href="https://www.jonige.com" style="color: #C2A75C; text-decoration: none;">www.jonige.com</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
